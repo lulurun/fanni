@@ -1,0 +1,12 @@
+Import("env")
+
+files = ["ExceptionBase.cpp",
+		 "Exception.cpp",
+		 "UUID.cpp",
+		 ]
+
+env.SharedLibrary("../lib/basic",
+				files,
+				CPPPATH = "../include",
+				)
+

@@ -1,0 +1,17 @@
+Import("env")
+
+files = [
+	"PacketBase.cpp",
+	"PacketFactory.cpp",
+	"PacketHeader.cpp",
+	"PacketSerializer.cpp",
+	"PacketBaseTypes.cpp",
+	"PacketHandlerFactory.cpp",
+	]
+
+env.SharedLibrary(
+	"../../lib/packets",
+	files,
+	CPPPATH=["../../include", "../../Protocol"]
+	)
+

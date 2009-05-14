@@ -1,0 +1,10 @@
+Import("env")
+
+files = [	"QueueFactory.cpp",
+			"ThreadManager.cpp",
+			"ThreadWorker.cpp",
+			"Mutex.cpp",
+			"Thread.cpp",
+			]
+
+env.SharedLibrary("../../lib/framework_threads", files, CPPPATH="../../include")

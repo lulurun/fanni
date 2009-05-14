@@ -1,0 +1,13 @@
+# TODO: should not import
+Import("test_env")
+
+test_env.Program("test_app",
+		[
+		"test_app.cpp",
+		"PacketReactor.cpp",
+		"AckManager.cpp"
+		],
+		LIBS = ["framework_network", "basic", "event", "framework_threads", "pthread", "packets", "log4cxx"],
+		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
+		LIBPATH = ["../../lib"],
+		)
