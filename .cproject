@@ -27,6 +27,7 @@
 <listOptionValue builtIn="false" value="/home/lulu/temp/install/include"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/FanniPlanet/Framework}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/FanniPlanet/Protocol}&quot;"/>
+<listOptionValue builtIn="false" value="/usr/include/boost-1_36"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1366559801" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>

@@ -62,7 +62,7 @@ void Test_UDPClient::sendUseCircuitCode() {
 }
 
 void Test_UDPClient::test_send() {
-	for(int i=0; i<1000; i++) {
+	for(int i=0; i<10; i++) {
 		this->sendUseCircuitCode();
 	}
 }
