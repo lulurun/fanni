@@ -12,11 +12,13 @@
 #include <memory>
 #include <boost/thread.hpp>
 
+namespace Fanni {
+
 template<class T>
 class Singleton {
 private:
 	static std::auto_ptr<T> instance;
-	static std::once_flag flag;
+	static boost::once_flag flag;
 
 	static void init() {
 		instance.reset( new T );
@@ -29,10 +31,14 @@ public:
 	}
 };
 
+/*
 template<class T>
-std::once_flag Singleton<T>::flag = boost::BOOST_ONCE_INIT;
+boost::once_flag Singleton<T>::flag = boost::BOOST_ONCE_INIT;
 
 template<class T>
 std::auto_ptr<T> Singleton<T>::instance;
+*/
+
+}
 
 #endif /* SINGLETONTEMPLATE_H_ */

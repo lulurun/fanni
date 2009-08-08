@@ -19,12 +19,12 @@ private:
 	unsigned char *_tail;
 	unsigned char *_head;
 
-	void check_capability(size_t len) {
+	void check_capability(size_t len) const {
 		if (this->getLength() + len >= FixedLength) {
 			ErrorException::throw_exception(EXP_FixedLengthBuffer, EXP_PRE_MSG, "not enough space %d %d", this->getLength(), len);
 		}
 	};
-	void check_length(size_t len) {
+	void check_length(size_t len) const {
 		if (this->_ptr + len > this->_tail) {
 			ErrorException::throw_exception(EXP_FixedLengthBuffer, EXP_PRE_MSG,
 					"buffer over flow %d %d", this->_tail - this->_ptr, len);
@@ -39,8 +39,7 @@ public:
 		this->_ptr = this->_head;
 		this->_tail = this->_head;
 	};
-	FixedLengthBuffer(unsigned char *data, size_t len) {
-		this->check_capacity(len);
+	FixedLengthBuffer(const unsigned char *data, size_t len) {
 		this->_head = new unsigned char[len];
 		::memcpy(this->_head, data, len);
 		this->_ptr = this->_head;
@@ -56,7 +55,7 @@ public:
 	~FixedLengthBuffer() {
 	};
 
-	unsigned char operator[](int i) {
+	unsigned char operator[](int i) const {
 		return this->_head[i];
 	};
 	const unsigned char *getPos() const {

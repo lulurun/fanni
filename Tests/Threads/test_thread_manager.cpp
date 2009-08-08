@@ -1,9 +1,10 @@
 #include <string>
 #include <iostream>
-#include "ThreadWorker.h"
-#include "ThreadManager.h"
-#include "SeqGenerator.h"
 #include "fanni/Exception.h"
+
+#include "Threads/ThreadWorker.h"
+#include "Threads/ThreadManager.h"
+#include "Threads/SeqGenerator.h"
 
 using namespace std;
 using namespace Fanni;

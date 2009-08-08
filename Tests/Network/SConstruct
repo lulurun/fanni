@@ -15,10 +15,3 @@ Import("test_env")
 #		LIBPATH = ["../../lib"],
 #		)
 #
-
-test_env.Program("test_udpclient",
-		"Test_UDPClient.cpp",
-		LIBS = ["basic", "event", "framework_network", "framework_threads", "pthread", "log4cxx", "packets"],
-		CPPPATH = ["../../Framework", "../../include", "../../Protocol"],
-		LIBPATH = ["../../lib"],
-		)

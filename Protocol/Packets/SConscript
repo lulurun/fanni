@@ -6,7 +6,6 @@ files = [
 	"PacketHeader.cpp",
 	"PacketSerializer.cpp",
 	"PacketBaseTypes.cpp",
-	"PacketHandlerFactory.cpp",
 	]
 
 env.SharedLibrary(

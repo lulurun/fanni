@@ -15,12 +15,11 @@
 namespace Fanni {
 
 class PacketHandlerBase {
+protected:
+	  PacketHandlerBase(){};
 public:
-  PacketHandlerBase(){};
   virtual ~PacketHandlerBase(){};
-  virtual void operator()(const PacketBase &packet, const EndPoint &ep) const {
-		WarnException::throw_exception(EXP_Packet, EXP_PRE_MSG, "Default packet handler called, implement me");
-	};
+  virtual void operator()(const PacketBase &packet, const EndPoint &ep) const = 0;
 };
 
 }

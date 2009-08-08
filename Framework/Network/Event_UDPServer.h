@@ -4,26 +4,17 @@
 #include <string>
 #include "fanni/Event++.h"
 #include "fanni/Exception.h"
-#include "UDPServerBase.h"
+
+#include "UDPBase.h"
+#include "Event_OnRecvHandler.h"
 
 namespace Fanni {
 namespace Network {
 
-class Event_UDPServer : public UDPServerBase {
-private:
-	// only used internally
-	class Private_OnRecvHandler : public EventHandlerBase {
-		const OnRecvHandlerBase *UDPServer_recv_handler;
-	public:
-		Private_OnRecvHandler(const OnRecvHandlerBase *handler) {
-			this->UDPServer_recv_handler = handler;
-		}
-		virtual void operator() (int fd, short flags) const;
-	};
-
+class Event_UDPServer : public UDPBase {
 private:
 	EventManager em;
-	Private_OnRecvHandler *_private_handler;
+	Event_OnRecvHandler *_libevent_OnRecv_handler;
 
 public:
 	Event_UDPServer();
@@ -31,7 +22,6 @@ public:
 	virtual ~Event_UDPServer();
 
 	virtual void start();
-	virtual void shutdown();
 
 };
 
