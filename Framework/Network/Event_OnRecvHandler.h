@@ -35,12 +35,6 @@ public:
 		EndPoint ep;
 
 		int recv_len = FanniSock::GetPacket(fd, buffer->getBuffer(), reinterpret_cast<sockaddr *> (&ep));
-		/*
-		socklen_t l = sizeof(struct sockaddr);
-		int recv_len = ::recvfrom(fd, buffer->getBuffer(),
-				PacketBuffer::Capacity, 0, reinterpret_cast<sockaddr *> (&ep),
-				&l);
-		*/
 		// TODO @@@ non-blocking ?
 		if (recv_len == -1) {
 			ERROR_LOG("recvfrom() returned -1");

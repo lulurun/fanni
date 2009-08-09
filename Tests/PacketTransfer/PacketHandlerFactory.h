@@ -21,7 +21,7 @@ class PacketHandlerBase {
 public:
 	PacketHandlerBase() {};
 	virtual ~PacketHandlerBase() {};
-	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferManager *ptm) const = 0;
+	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferManager *ptm = NULL) const = 0;
 };
 
 class PacketHandlerFactory {

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Network/Event_UDPServer.h"
+#include "Network/Event_UDP.h"
 #include "Network/FanniSock.h"
 
 #include "fanni/Logger.h"
@@ -24,7 +24,7 @@ static SequenceGenerator *sg =
 		SequenceGeneratorFactory::GetInstance()->createGenerator();
 
 // Client
-class Test_UDPClient : public Event_UDPServer {
+class Test_UDPClient : public Event_UDP {
 private:
 	PacketSerializer serializer;
 	EndPoint current_server;
@@ -34,10 +34,8 @@ public:
 	virtual ~Test_UDPClient() {};
 
 	void sendStartPingCheck(uint8_t ping_id) {
-		PacketBase *packet = PacketFactory::GetInstance()->createPacket(
-				StartPingCheck_ID);
-		StartPingCheckPacket *start_ping_packet =
-				dynamic_cast<StartPingCheckPacket *> (packet);
+		PacketBase *packet = PacketFactory::GetInstance()->createPacket(StartPingCheck_ID);
+		StartPingCheckPacket *start_ping_packet = dynamic_cast<StartPingCheckPacket *> (packet);
 		if (start_ping_packet == NULL) {
 			FatalException::throw_exception(EXP_TEST, EXP_PRE_MSG,"wrong implementation" );
 		}
@@ -45,10 +43,8 @@ public:
 		start_ping_packet->setSequence(sg->next());
 
 		int buffer_size = 0;
-		const unsigned char *buffer = this->serializer.serialize(start_ping_packet,
-				&buffer_size);
-		FanniSock::SendPacket(this->socket, buffer_size, buffer,
-				this->current_server.getSockAddr());
+		const unsigned char *buffer = this->serializer.serialize(start_ping_packet, &buffer_size);
+		FanniSock::SendPacket(this->socket, buffer_size, buffer, this->current_server.getSockAddr());
 	};
 
 	int connect(const EndPoint &ep) {
@@ -111,10 +107,10 @@ public:
 class PacketServer_OnRecvHandler : public UDP_OnRecvHandlerBase {
 private:
 	PacketSerializer packet_serializer;
-	Event_UDPServer &udp_server;
+	Event_UDP &udp_server;
 
 public:
-	PacketServer_OnRecvHandler(Event_UDPServer &udp_server) :
+	PacketServer_OnRecvHandler(Event_UDP &udp_server) :
 		udp_server(udp_server){
 	};
 
@@ -165,9 +161,9 @@ public:
 
 class PacketTransfer_ThreadHandler : public ThreadHandlerBase {
 private:
-	Event_UDPServer &peer;
+	Event_UDP &peer;
 public:
-	PacketTransfer_ThreadHandler(Event_UDPServer &peer) : peer(peer) { }
+	PacketTransfer_ThreadHandler(Event_UDP &peer) : peer(peer) { }
 	virtual void setArg(void *arg) { }
 	virtual void operator()() {
 		this->peer.start();
@@ -192,7 +188,7 @@ int main(int argc, char **argv) {
 	}
 	try {
 		if (server_mode) {
-			Event_UDPServer peer(::DEFAULT_ADDR, ::DEFAULT_PORT);
+			Event_UDP peer(::DEFAULT_ADDR, ::DEFAULT_PORT);
 			peer.setOnRecvHandler(new PacketServer_OnRecvHandler(peer));
 
 			PacketTransfer_ThreadHandler thread_handler(peer);

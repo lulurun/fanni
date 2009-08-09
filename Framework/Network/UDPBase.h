@@ -9,6 +9,7 @@
 #define UDPSERVERBASE_H_
 
 #include <string>
+
 #include "fanni/PacketBuffer.h"
 #include "fanni/EndPoint.h"
 #include "fanni/Exception.h"
@@ -18,11 +19,6 @@
 namespace Fanni {
 namespace Network {
 
-static const short DEFAULT_PORT = 0;
-static const std::string DEFAULT_ADDR = "0.0.0.0";
-
-class UDPBase;
-
 class UDP_OnRecvHandlerBase {
 public:
 	UDP_OnRecvHandlerBase() {};
@@ -30,7 +26,11 @@ public:
 	virtual void operator()(PacketBuffer *buffer, const EndPoint *ep) = 0;
 };
 
+static const short _UDPBASE_DEFAULT_PORT = 0;
+static const std::string _UDPBASE_DEFAULT_ADDR = "0.0.0.0";
+
 class UDPBase {
+
 protected:
 	EndPoint ep;
     SOCKET socket;
@@ -38,8 +38,8 @@ protected:
 
 public:
 	UDPBase() {
-		this->ep.setAddr(DEFAULT_ADDR);
-		this->ep.setPort(DEFAULT_PORT);
+		this->ep.setAddr(_UDPBASE_DEFAULT_ADDR);
+		this->ep.setPort(_UDPBASE_DEFAULT_PORT);
 		this->socket = 0;
 		this->recv_handler = NULL;
 	};

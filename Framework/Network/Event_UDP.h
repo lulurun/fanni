@@ -11,15 +11,17 @@
 namespace Fanni {
 namespace Network {
 
-class Event_UDPServer : public UDPBase {
+class Event_UDP : public UDPBase {
 private:
 	EventManager em;
 	Event_OnRecvHandler *_libevent_OnRecv_handler;
 
+	void _init();
+
 public:
-	Event_UDPServer();
-	Event_UDPServer(const std::string &addr, int port);
-	virtual ~Event_UDPServer();
+	Event_UDP();
+	Event_UDP(const std::string &addr, int port);
+	virtual ~Event_UDP();
 
 	virtual void start();
 

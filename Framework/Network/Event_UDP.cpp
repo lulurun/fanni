@@ -1,5 +1,7 @@
+/*
 #include <sys/types.h>
 #include <sys/stat.h>
+
 #ifndef WIN32
 #include <sys/queue.h>
 #include <unistd.h>
@@ -12,36 +14,32 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-
+*/
 #include <event.h>
 
-#include "Event_UDPServer.h"
+#include "Event_UDP.h"
 #include "FanniSock.h"
 #include "fanni/Logger.h"
 
 using namespace Fanni;
 using namespace Network;
 
-Event_UDPServer::Event_UDPServer() :
-	UDPBase() {
+Event_UDP::Event_UDP() :
+	UDPBase() { this->_init(); }
+
+Event_UDP::Event_UDP(const std::string &addr, int port) :
+	UDPBase(addr, port) { this->_init(); }
+
+void Event_UDP::_init() {
 	this->socket = FanniSock::OpenUDPSocket(this->ep);
 	if (this->socket == FanniSock::INVALID_SOCKET) {
 		ErrorException::throw_exception(Fanni::EXP_UUID, EXP_PRE_MSG, "invalid socket");
 	}
 }
 
-Event_UDPServer::Event_UDPServer(const std::string &addr, int port) :
-	UDPBase(addr, port) {
-	this->socket = FanniSock::OpenUDPSocket(this->ep);
-	if (this->socket == FanniSock::INVALID_SOCKET) {
-		ErrorException::throw_exception(Fanni::EXP_UUID, EXP_PRE_MSG, "invalid socket");
-	}
-}
+Event_UDP::~Event_UDP() { }
 
-Event_UDPServer::~Event_UDPServer() {
-}
-
-void Event_UDPServer::start() {
+void Event_UDP::start() {
 	TRACE_LOG("enter");
 	try {
 		if (this->recv_handler == NULL) {

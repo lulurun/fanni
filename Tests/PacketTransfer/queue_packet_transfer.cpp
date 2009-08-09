@@ -9,9 +9,10 @@
 // framework
 #include "fanni/Logger.h"
 #include "fanni/ThreadTemplate.h"
-#include "Network/Event_UDPServer.h"
+#include "Network/Event_UDP.h"
 #include "Network/FanniSock.h"
 #include "Threads/ThreadManager.h"
+#include "Threads/SeqGenerator.h"
 // packets
 #include "fanni/PacketBuffer.h"
 #include "Packets/PacketBase.h"
@@ -20,7 +21,8 @@
 // app
 #include "TransferData.h"
 #include "PacketTransfer.h"
-#include "ServerRecevierBase.h"
+#include "RecevierBase.h"
+#include "PacketTransferHandlers.h"
 
 using namespace std;
 using namespace Fanni;
@@ -29,82 +31,25 @@ using namespace Fanni::Network;
 namespace Fanni {
 namespace Tests {
 
-class StartPingCheckPacketHandler : public PacketHandlerBase {
-public:
-	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferManager *packet_transfer_manager) const {
-		const StartPingCheckPacket *start_ping_packet = dynamic_cast<const StartPingCheckPacket *> (packet);
-		if (start_ping_packet == NULL) {
-			ERROR_LOG("unexpected packet type");
-			return;
-		}
-		uint8_t ping_id = start_ping_packet->PingID.PingID;
-		// create response packet
-		PacketBase *packet_base = PacketFactory::GetInstance()->createPacket(CompletePingCheck_ID);
-		CompletePingCheckPacket *complete_ping_packet = dynamic_cast<CompletePingCheckPacket *> (packet_base);
-		if (complete_ping_packet == NULL) {
-			FATAL_LOG("should never reach here");
-			return;
-		}
-		complete_ping_packet->PingID.PingID = ping_id;
-		 DEBUG_LOG("answering start_ping: " << ping_id);
-		 TransferDataPacket *resp_data = new TransferDataPacket();
-		 resp_data->data = complete_ping_packet;
-		 resp_data->ep = ep;
-		 packet_transfer_manager->deliverTask(resp_data);
-	};
-};
-
-class ServerReceiverManager: public ThreadManager {
-private:
-	int thread_number;
-	PacketTransferManager *packet_transfer_manager;
-	PacketHandlerFactory packet_handler_factory;
-
-public:
-	ServerReceiverManager(int thread_number, PacketTransferManager *packet_transfer_manager) :
-		thread_number(thread_number), packet_transfer_manager(packet_transfer_manager) {}
-
-	void registerHandlers() {
-		this->packet_handler_factory.registerPacketHandler(StartPingCheck_ID, new StartPingCheckPacketHandler());
-	}
-
-	virtual void init() {
-		// register handlers
-		this->registerHandlers();
-
-		// init works
-		for (int i = 0; i < this->thread_number; i++) {
-			ServerReceiverBase *worker = new ServerReceiverBase(this->packet_transfer_manager, this->packet_handler_factory);
-			this->addWorker(worker);
-			worker->kick();
-		}
-	}
-};
-
-class PacketServer_OnRecvHandler : public UDP_OnRecvHandlerBase {
+class PacketTransfer_OnRecvHandler : public UDP_OnRecvHandlerBase {
 private:
 	PacketSerializer packet_serializer;
-	Event_UDPServer &udp_server;
-	ServerReceiverManager *recevier_manager;
+	ReceiverManager *recevier_manager;
 
 public:
-	PacketServer_OnRecvHandler(Event_UDPServer &udp_server, ServerReceiverManager *recevier_manager) :
-	udp_server(udp_server), recevier_manager(recevier_manager) {
-	};
+	PacketTransfer_OnRecvHandler(ReceiverManager *recevier_manager) : recevier_manager(recevier_manager) {};
 
 	virtual void operator() (PacketBuffer *buffer, const EndPoint *ep) {
-		TransferDataBuffer *recv_data = new TransferDataBuffer();
-		recv_data->data = buffer;
-		recv_data->ep = ep;
+		TransferDataBuffer *recv_data = new TransferDataBuffer(buffer, ep);
 		this->recevier_manager->deliverTask(recv_data);
 	}
 };
 
 class PacketTransfer_ThreadHandler : public ThreadHandlerBase {
 private:
-	Event_UDPServer &peer;
+	Event_UDP &peer;
 public:
-	PacketTransfer_ThreadHandler(Event_UDPServer &peer) : peer(peer) {}
+	PacketTransfer_ThreadHandler(Event_UDP &peer) : peer(peer) {}
 	virtual void setArg(void *arg) {}
 	virtual void operator()() {
 		this->peer.start();
@@ -112,6 +57,42 @@ public:
 };
 
 typedef ThreadTemplate<PacketTransfer_ThreadHandler> PacketTransfer_Thread;
+
+static SequenceGenerator *sg = SequenceGeneratorFactory::GetInstance()->createGenerator();
+class Event_UDPClient : public Event_UDP {
+private:
+	EndPoint current_server;
+	PacketTransferManager *packet_transfer_manager;
+
+	void sendStartPingCheck(uint8_t ping_id) {
+		PacketBase *packet = PacketFactory::GetInstance()->createPacket(StartPingCheck_ID);
+		StartPingCheckPacket *start_ping_packet = dynamic_cast<StartPingCheckPacket *> (packet);
+		if (start_ping_packet == NULL) {
+			FatalException::throw_exception(EXP_TEST, EXP_PRE_MSG,"wrong implementation" );
+		}
+		start_ping_packet->PingID.PingID = ping_id;
+		start_ping_packet->setSequence(sg->next());
+		TransferDataPacket *transfer_packet = new TransferDataPacket(start_ping_packet, &this->current_server);
+		this->packet_transfer_manager->deliverTask(transfer_packet);
+	};
+
+public:
+	Event_UDPClient(int thread_number) : Event_UDP(){
+		this->packet_transfer_manager = new PacketTransferManager(thread_number, this->socket);
+		this->packet_transfer_manager->init();
+	}
+
+	int connect(const EndPoint &ep) {
+		this->current_server = ep;
+		return 0;
+	}
+
+	void test() {
+		for(int i=0; i<100; i++) {
+			this->sendStartPingCheck(i);
+		}
+	}
+};
 
 }
 }
@@ -126,25 +107,46 @@ int main(int argc, char **argv) {
 	bool server_mode = false;
 	if (argc == 2) {
 		string arg(argv[1]);
-		if (arg == "server")
-			server_mode = true;
+		if (arg == "server") server_mode = true;
 	}
 	try {
-		Event_UDPServer peer(::DEFAULT_ADDR, ::DEFAULT_PORT);
+		if (server_mode) {
+			DEBUG_LOG("enter Server mode");
+			Event_UDP peer(DEFAULT_ADDR, DEFAULT_PORT);
+			// set UDP server handlers
+			PacketTransferManager *packet_transfer_manager = new PacketTransferManager(thread_number, peer.getSocket());
+			packet_transfer_manager->init();
+			ReceiverManager *recevier_manager = new ReceiverManager(thread_number, packet_transfer_manager);
+			recevier_manager->init();
+			// register packet handlers
+			recevier_manager->registerHandler(StartPingCheck_ID, new StartPingCheckPacketHandler());
+			peer.setOnRecvHandler(new PacketTransfer_OnRecvHandler(recevier_manager));
+			// start UDP server
+			PacketTransfer_ThreadHandler thread_handler(peer);
+			PacketTransfer_Thread thread(thread_handler);
+			thread.kick();
+			thread.join();
+		} else {
+			DEBUG_LOG("enter Client mode");
+			Event_UDPClient peer(thread_number);
+			// set UDP client handlers
+			ReceiverManager *recevier_manager = new ReceiverManager(thread_number, NULL);
+			recevier_manager->init();
+			// register packet handlers
+			recevier_manager->registerHandler(CompletePingCheck_ID, new CompletePingCheckPacketHandler());
+			peer.setOnRecvHandler(new PacketTransfer_OnRecvHandler(recevier_manager));
+			// start UDP client
+			PacketTransfer_ThreadHandler thread_handler(peer);
+			PacketTransfer_Thread thread(thread_handler);
+			thread.kick();
 
-		PacketTransferManager *packet_transfer_manager = new PacketTransferManager(thread_number, peer.getSocket());
-		packet_transfer_manager->init();
+			sleep(1);
+			EndPoint server_ep(::DEFAULT_ADDR, ::DEFAULT_PORT);
+			peer.connect(server_ep);
+			peer.test();
 
-		ServerReceiverManager *server_recevier_manager = new ServerReceiverManager(thread_number, packet_transfer_manager);
-		server_recevier_manager->init();
-
-		peer.setOnRecvHandler(new PacketServer_OnRecvHandler(peer, server_recevier_manager));
-
-		PacketTransfer_ThreadHandler thread_handler(peer);
-		PacketTransfer_Thread thread(thread_handler);
-		thread.kick();
-		thread.join();
-
+			thread.join();
+		}
 	} catch (ErrorException &e) {
 		ERROR_LOG("ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
 	}

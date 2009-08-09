@@ -2,7 +2,7 @@ Import("env")
 
 files = [
 	"FanniSock.cpp",
-	"Event_UDPServer.cpp",
+	"Event_UDP.cpp",
 	]
 
 env.SharedLibrary("../../lib/framework_network", files,

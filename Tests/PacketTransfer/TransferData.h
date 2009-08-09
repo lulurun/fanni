@@ -21,7 +21,7 @@ public:
 	PacketBuffer *data;
 	const EndPoint *ep;
 
-	// TODO @@@ need a copy construct
+	TransferDataBuffer(PacketBuffer *data, const EndPoint *ep) : data(data), ep(ep) {};
 };
 
 class TransferDataPacket : public ThreadTask {
@@ -29,7 +29,7 @@ public:
 	PacketBase *data;
 	const EndPoint *ep;
 
-	// TODO @@@ need a copy construct
+	TransferDataPacket(PacketBase *data, const EndPoint *ep) : data(data), ep(ep) {};
 };
 
 }
