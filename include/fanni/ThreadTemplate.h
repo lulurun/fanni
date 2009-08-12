@@ -10,6 +10,7 @@
 
 #include <pthread.h>
 #include "fanni/Exception.h"
+#include "fanni/Logger.h"
 
 namespace Fanni {
 
