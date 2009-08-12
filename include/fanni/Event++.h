@@ -2,6 +2,7 @@
 #define FANNI_EVENT_H_
 
 #include <sys/time.h>
+#include <sys/types.h>
 #include <event.h>
 #include <stdio.h>
 #include "fanni/Exception.h"
