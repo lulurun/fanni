@@ -15,6 +15,7 @@ public:
 
 	void init();
 	PacketBase *createPacket(PacketHeader::PACKET_ID_TYPE packet_id) const;
+	PacketBase *createPacketCopy(PacketHeader::PACKET_ID_TYPE packet_id, const PacketBase *packet) const;
 	static PacketFactory *GetInstance();
 };
 

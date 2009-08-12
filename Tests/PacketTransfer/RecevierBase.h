@@ -25,11 +25,6 @@ private:
 	const PacketHandlerFactory &packet_handler_factory;
 	PacketTransferManager *packet_transfer_manager;
 
-	void processIncomingPacket(PacketBase *packet, const EndPoint *ep) {
-		const PacketHandlerBase *packet_handler = this->packet_handler_factory.getPacketHandler(packet->header.getPacketID());
-		packet_handler->operator()(packet, ep, this->packet_transfer_manager);
-	}
-
 public:
 	ReceiverBase(PacketHandlerFactory &phf, PacketTransferManager *ptm = NULL) :
 		packet_handler_factory(phf), packet_transfer_manager(ptm) {}
@@ -42,22 +37,26 @@ public:
 				FatalException::throw_exception(EXP_TEST, EXP_PRE_MSG,"unexpected queue data type" );
 			}
 
-			auto_ptr<const TransferDataBuffer> auto_queue_data(const_queue_data);
-			PacketBase *packet = this->packet_serializer.deserialize(*(const_queue_data->data));
+			try {
+				auto_ptr<const TransferDataBuffer> auto_queue_data(const_queue_data);
+				PacketBase *packet = this->packet_serializer.deserialize(*(const_queue_data->data));
 
-			/*
-			DEBUG_LOG("incoming packet " <<
-					"FROM: " << ep->getAddrStr() << ":" << ep->getPort() << "\n" <<
-					" [id]: " << hex << packet_base->header.getPacketID() << dec <<
-					" [seq] " << packet_base->header.getSequenceNumber() <<
-					" [reliable] " << packet_base->header.isReliable() <<
-					" [resent] " << packet_base->header.isResent() <<
-					" [ack] " << packet_base->header.isAppendedAcks()
-			);
-			*/
-
-			processIncomingPacket(packet, const_queue_data->ep);
+				// resending, ack management
+				this->packet_transfer_manager->processIncomingPacket(packet, const_queue_data->ep);
+				// dispatch packet handler
+				const PacketHandlerBase *packet_handler = this->packet_handler_factory.getPacketHandler(packet->header.getPacketID());
+				// MEMO @@@ (inside getPacketHandler:) packet_handler can not be null;
+				packet_handler->operator()(packet, const_queue_data->ep, this->packet_transfer_manager);
+			} catch (ErrorException &e) {
+				ERROR_LOG("packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
+			} catch (WarnException &e) {
+				WARN_LOG("packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
+			} catch (FatalException &e) {
+				FATAL_LOG("receiver loop terminated. FATAL ERROR: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
+				break;
+			}
 		}
+		DEBUG_LOG("exit receiver loop");
 	}
 
 	virtual void stop() {

@@ -15,3 +15,9 @@ Import("test_env")
 #		LIBPATH = ["../../lib"],
 #		)
 #
+test_env.Program("simple_packet_transfer",
+		["simple_packet_transfer.cpp"],
+		LIBS = ["framework_network", "basic", "event", "framework_threads", "pthread", "packets", "log4cxx"],
+		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
+		LIBPATH = ["../../lib"],
+		)

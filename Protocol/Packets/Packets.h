@@ -1,6 +1,8 @@
 #ifndef PACKET_IMPL_H_
 #define PACKET_IMPL_H_
 
+#include "fanni/Exception.h"
+
 #include "PacketBaseTypes.h"
 #include "PacketBase.h"
 
@@ -542,7 +544,14 @@ public:
         NeighborBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TestMessagePacket();
+        return new TestMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TestMessagePacket *TestMessagePacket_packet = dynamic_cast<const TestMessagePacket *>(packet);
+        if (TestMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TestMessagePacket(*TestMessagePacket_packet);
     }
 };
 
@@ -581,7 +590,14 @@ public:
         Packets.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new PacketAckPacket();
+        return new PacketAckPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const PacketAckPacket *PacketAckPacket_packet = dynamic_cast<const PacketAckPacket *>(packet);
+        if (PacketAckPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new PacketAckPacket(*PacketAckPacket_packet);
     }
 };
 
@@ -623,7 +639,14 @@ public:
         CircuitInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new OpenCircuitPacket();
+        return new OpenCircuitPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const OpenCircuitPacket *OpenCircuitPacket_packet = dynamic_cast<const OpenCircuitPacket *>(packet);
+        if (OpenCircuitPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new OpenCircuitPacket(*OpenCircuitPacket_packet);
     }
 };
 
@@ -643,7 +666,14 @@ public:
     virtual void serialize(PacketBuffer &buffer) const {}
     virtual void deserialize(PacketBuffer &buffer) {}
     virtual PacketBase *clone() const {
-        return new CloseCircuitPacket();
+        return new CloseCircuitPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CloseCircuitPacket *CloseCircuitPacket_packet = dynamic_cast<const CloseCircuitPacket *>(packet);
+        if (CloseCircuitPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CloseCircuitPacket(*CloseCircuitPacket_packet);
     }
 };
 
@@ -685,7 +715,14 @@ public:
         PingID.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new StartPingCheckPacket();
+        return new StartPingCheckPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const StartPingCheckPacket *StartPingCheckPacket_packet = dynamic_cast<const StartPingCheckPacket *>(packet);
+        if (StartPingCheckPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new StartPingCheckPacket(*StartPingCheckPacket_packet);
     }
 };
 
@@ -724,7 +761,14 @@ public:
         PingID.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CompletePingCheckPacket();
+        return new CompletePingCheckPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CompletePingCheckPacket *CompletePingCheckPacket_packet = dynamic_cast<const CompletePingCheckPacket *>(packet);
+        if (CompletePingCheckPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CompletePingCheckPacket(*CompletePingCheckPacket_packet);
     }
 };
 
@@ -770,7 +814,14 @@ public:
         CircuitCode.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AddCircuitCodePacket();
+        return new AddCircuitCodePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AddCircuitCodePacket *AddCircuitCodePacket_packet = dynamic_cast<const AddCircuitCodePacket *>(packet);
+        if (AddCircuitCodePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AddCircuitCodePacket(*AddCircuitCodePacket_packet);
     }
 };
 
@@ -815,7 +866,14 @@ public:
         CircuitCode.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UseCircuitCodePacket();
+        return new UseCircuitCodePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UseCircuitCodePacket *UseCircuitCodePacket_packet = dynamic_cast<const UseCircuitCodePacket *>(packet);
+        if (UseCircuitCodePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UseCircuitCodePacket(*UseCircuitCodePacket_packet);
     }
 };
 
@@ -873,7 +931,14 @@ public:
         NeighborBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new NeighborListPacket();
+        return new NeighborListPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const NeighborListPacket *NeighborListPacket_packet = dynamic_cast<const NeighborListPacket *>(packet);
+        if (NeighborListPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new NeighborListPacket(*NeighborListPacket_packet);
     }
 };
 
@@ -956,7 +1021,14 @@ public:
         TextureData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarTextureUpdatePacket();
+        return new AvatarTextureUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarTextureUpdatePacket *AvatarTextureUpdatePacket_packet = dynamic_cast<const AvatarTextureUpdatePacket *>(packet);
+        if (AvatarTextureUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarTextureUpdatePacket(*AvatarTextureUpdatePacket_packet);
     }
 };
 
@@ -996,7 +1068,14 @@ public:
         MapData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SimulatorMapUpdatePacket();
+        return new SimulatorMapUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SimulatorMapUpdatePacket *SimulatorMapUpdatePacket_packet = dynamic_cast<const SimulatorMapUpdatePacket *>(packet);
+        if (SimulatorMapUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SimulatorMapUpdatePacket(*SimulatorMapUpdatePacket_packet);
     }
 };
 
@@ -1042,7 +1121,14 @@ public:
         MapData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SimulatorSetMapPacket();
+        return new SimulatorSetMapPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SimulatorSetMapPacket *SimulatorSetMapPacket_packet = dynamic_cast<const SimulatorSetMapPacket *>(packet);
+        if (SimulatorSetMapPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SimulatorSetMapPacket(*SimulatorSetMapPacket_packet);
     }
 };
 
@@ -1063,7 +1149,14 @@ public:
     virtual void serialize(PacketBuffer &buffer) const {}
     virtual void deserialize(PacketBuffer &buffer) {}
     virtual PacketBase *clone() const {
-        return new SubscribeLoadPacket();
+        return new SubscribeLoadPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SubscribeLoadPacket *SubscribeLoadPacket_packet = dynamic_cast<const SubscribeLoadPacket *>(packet);
+        if (SubscribeLoadPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SubscribeLoadPacket(*SubscribeLoadPacket_packet);
     }
 };
 
@@ -1084,7 +1177,14 @@ public:
     virtual void serialize(PacketBuffer &buffer) const {}
     virtual void deserialize(PacketBuffer &buffer) {}
     virtual PacketBase *clone() const {
-        return new UnsubscribeLoadPacket();
+        return new UnsubscribeLoadPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UnsubscribeLoadPacket *UnsubscribeLoadPacket_packet = dynamic_cast<const UnsubscribeLoadPacket *>(packet);
+        if (UnsubscribeLoadPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UnsubscribeLoadPacket(*UnsubscribeLoadPacket_packet);
     }
 };
 
@@ -1159,7 +1259,14 @@ public:
         TelehubBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SimulatorReadyPacket();
+        return new SimulatorReadyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SimulatorReadyPacket *SimulatorReadyPacket_packet = dynamic_cast<const SimulatorReadyPacket *>(packet);
+        if (SimulatorReadyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SimulatorReadyPacket(*SimulatorReadyPacket_packet);
     }
 };
 
@@ -1225,7 +1332,14 @@ public:
         SpawnPointBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TelehubInfoPacket();
+        return new TelehubInfoPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TelehubInfoPacket *TelehubInfoPacket_packet = dynamic_cast<const TelehubInfoPacket *>(packet);
+        if (TelehubInfoPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TelehubInfoPacket(*TelehubInfoPacket_packet);
     }
 };
 
@@ -1346,7 +1460,14 @@ public:
         TelehubBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SimulatorPresentAtLocationPacket();
+        return new SimulatorPresentAtLocationPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SimulatorPresentAtLocationPacket *SimulatorPresentAtLocationPacket_packet = dynamic_cast<const SimulatorPresentAtLocationPacket *>(packet);
+        if (SimulatorPresentAtLocationPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SimulatorPresentAtLocationPacket(*SimulatorPresentAtLocationPacket_packet);
     }
 };
 
@@ -1415,7 +1536,14 @@ public:
         AgentList.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SimulatorLoadPacket();
+        return new SimulatorLoadPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SimulatorLoadPacket *SimulatorLoadPacket_packet = dynamic_cast<const SimulatorLoadPacket *>(packet);
+        if (SimulatorLoadPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SimulatorLoadPacket(*SimulatorLoadPacket_packet);
     }
 };
 
@@ -1436,7 +1564,14 @@ public:
     virtual void serialize(PacketBuffer &buffer) const {}
     virtual void deserialize(PacketBuffer &buffer) {}
     virtual PacketBase *clone() const {
-        return new SimulatorShutdownRequestPacket();
+        return new SimulatorShutdownRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SimulatorShutdownRequestPacket *SimulatorShutdownRequestPacket_packet = dynamic_cast<const SimulatorShutdownRequestPacket *>(packet);
+        if (SimulatorShutdownRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SimulatorShutdownRequestPacket(*SimulatorShutdownRequestPacket_packet);
     }
 };
 
@@ -1476,7 +1611,14 @@ public:
         RegionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RegionPresenceRequestByRegionIDPacket();
+        return new RegionPresenceRequestByRegionIDPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RegionPresenceRequestByRegionIDPacket *RegionPresenceRequestByRegionIDPacket_packet = dynamic_cast<const RegionPresenceRequestByRegionIDPacket *>(packet);
+        if (RegionPresenceRequestByRegionIDPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RegionPresenceRequestByRegionIDPacket(*RegionPresenceRequestByRegionIDPacket_packet);
     }
 };
 
@@ -1516,7 +1658,14 @@ public:
         RegionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RegionPresenceRequestByHandlePacket();
+        return new RegionPresenceRequestByHandlePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RegionPresenceRequestByHandlePacket *RegionPresenceRequestByHandlePacket_packet = dynamic_cast<const RegionPresenceRequestByHandlePacket *>(packet);
+        if (RegionPresenceRequestByHandlePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RegionPresenceRequestByHandlePacket(*RegionPresenceRequestByHandlePacket_packet);
     }
 };
 
@@ -1574,7 +1723,14 @@ public:
         RegionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RegionPresenceResponsePacket();
+        return new RegionPresenceResponsePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RegionPresenceResponsePacket *RegionPresenceResponsePacket_packet = dynamic_cast<const RegionPresenceResponsePacket *>(packet);
+        if (RegionPresenceResponsePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RegionPresenceResponsePacket(*RegionPresenceResponsePacket_packet);
     }
 };
 
@@ -1623,7 +1779,14 @@ public:
         SimulatorInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UpdateSimulatorPacket();
+        return new UpdateSimulatorPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UpdateSimulatorPacket *UpdateSimulatorPacket_packet = dynamic_cast<const UpdateSimulatorPacket *>(packet);
+        if (UpdateSimulatorPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UpdateSimulatorPacket(*UpdateSimulatorPacket_packet);
     }
 };
 
@@ -1684,7 +1847,14 @@ public:
         DwellInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LogDwellTimePacket();
+        return new LogDwellTimePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LogDwellTimePacket *LogDwellTimePacket_packet = dynamic_cast<const LogDwellTimePacket *>(packet);
+        if (LogDwellTimePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LogDwellTimePacket(*LogDwellTimePacket_packet);
     }
 };
 
@@ -1730,7 +1900,14 @@ public:
         FailureInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new FeatureDisabledPacket();
+        return new FeatureDisabledPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const FeatureDisabledPacket *FeatureDisabledPacket_packet = dynamic_cast<const FeatureDisabledPacket *>(packet);
+        if (FeatureDisabledPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new FeatureDisabledPacket(*FeatureDisabledPacket_packet);
     }
 };
 
@@ -1800,7 +1977,14 @@ public:
         TransactionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LogFailedMoneyTransactionPacket();
+        return new LogFailedMoneyTransactionPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LogFailedMoneyTransactionPacket *LogFailedMoneyTransactionPacket_packet = dynamic_cast<const LogFailedMoneyTransactionPacket *>(packet);
+        if (LogFailedMoneyTransactionPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LogFailedMoneyTransactionPacket(*LogFailedMoneyTransactionPacket_packet);
     }
 };
 
@@ -1888,7 +2072,14 @@ public:
         ReportData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UserReportInternalPacket();
+        return new UserReportInternalPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UserReportInternalPacket *UserReportInternalPacket_packet = dynamic_cast<const UserReportInternalPacket *>(packet);
+        if (UserReportInternalPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UserReportInternalPacket(*UserReportInternalPacket_packet);
     }
 };
 
@@ -1949,7 +2140,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SetSimStatusInDatabasePacket();
+        return new SetSimStatusInDatabasePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SetSimStatusInDatabasePacket *SetSimStatusInDatabasePacket_packet = dynamic_cast<const SetSimStatusInDatabasePacket *>(packet);
+        if (SetSimStatusInDatabasePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SetSimStatusInDatabasePacket(*SetSimStatusInDatabasePacket_packet);
     }
 };
 
@@ -2010,7 +2208,14 @@ public:
         SimData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SetSimPresenceInDatabasePacket();
+        return new SetSimPresenceInDatabasePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SetSimPresenceInDatabasePacket *SetSimPresenceInDatabasePacket_packet = dynamic_cast<const SetSimPresenceInDatabasePacket *>(packet);
+        if (SetSimPresenceInDatabasePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SetSimPresenceInDatabasePacket(*SetSimPresenceInDatabasePacket_packet);
     }
 };
 
@@ -2030,7 +2235,14 @@ public:
     virtual void serialize(PacketBuffer &buffer) const {}
     virtual void deserialize(PacketBuffer &buffer) {}
     virtual PacketBase *clone() const {
-        return new EconomyDataRequestPacket();
+        return new EconomyDataRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EconomyDataRequestPacket *EconomyDataRequestPacket_packet = dynamic_cast<const EconomyDataRequestPacket *>(packet);
+        if (EconomyDataRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EconomyDataRequestPacket(*EconomyDataRequestPacket_packet);
     }
 };
 
@@ -2118,7 +2330,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EconomyDataPacket();
+        return new EconomyDataPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EconomyDataPacket *EconomyDataPacket_packet = dynamic_cast<const EconomyDataPacket *>(packet);
+        if (EconomyDataPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EconomyDataPacket(*EconomyDataPacket_packet);
     }
 };
 
@@ -2180,7 +2399,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarPickerRequestPacket();
+        return new AvatarPickerRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarPickerRequestPacket *AvatarPickerRequestPacket_packet = dynamic_cast<const AvatarPickerRequestPacket *>(packet);
+        if (AvatarPickerRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarPickerRequestPacket(*AvatarPickerRequestPacket_packet);
     }
 };
 
@@ -2246,7 +2472,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarPickerRequestBackendPacket();
+        return new AvatarPickerRequestBackendPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarPickerRequestBackendPacket *AvatarPickerRequestBackendPacket_packet = dynamic_cast<const AvatarPickerRequestBackendPacket *>(packet);
+        if (AvatarPickerRequestBackendPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarPickerRequestBackendPacket(*AvatarPickerRequestBackendPacket_packet);
     }
 };
 
@@ -2312,7 +2545,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarPickerReplyPacket();
+        return new AvatarPickerReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarPickerReplyPacket *AvatarPickerReplyPacket_packet = dynamic_cast<const AvatarPickerReplyPacket *>(packet);
+        if (AvatarPickerReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarPickerReplyPacket(*AvatarPickerReplyPacket_packet);
     }
 };
 
@@ -2401,7 +2641,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new PlacesQueryPacket();
+        return new PlacesQueryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const PlacesQueryPacket *PlacesQueryPacket_packet = dynamic_cast<const PlacesQueryPacket *>(packet);
+        if (PlacesQueryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new PlacesQueryPacket(*PlacesQueryPacket_packet);
     }
 };
 
@@ -2514,7 +2761,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new PlacesReplyPacket();
+        return new PlacesReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const PlacesReplyPacket *PlacesReplyPacket_packet = dynamic_cast<const PlacesReplyPacket *>(packet);
+        if (PlacesReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new PlacesReplyPacket(*PlacesReplyPacket_packet);
     }
 };
 
@@ -2583,7 +2837,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirFindQueryPacket();
+        return new DirFindQueryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirFindQueryPacket *DirFindQueryPacket_packet = dynamic_cast<const DirFindQueryPacket *>(packet);
+        if (DirFindQueryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirFindQueryPacket(*DirFindQueryPacket_packet);
     }
 };
 
@@ -2655,7 +2916,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirFindQueryBackendPacket();
+        return new DirFindQueryBackendPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirFindQueryBackendPacket *DirFindQueryBackendPacket_packet = dynamic_cast<const DirFindQueryBackendPacket *>(packet);
+        if (DirFindQueryBackendPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirFindQueryBackendPacket(*DirFindQueryBackendPacket_packet);
     }
 };
 
@@ -2730,7 +2998,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirPlacesQueryPacket();
+        return new DirPlacesQueryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirPlacesQueryPacket *DirPlacesQueryPacket_packet = dynamic_cast<const DirPlacesQueryPacket *>(packet);
+        if (DirPlacesQueryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirPlacesQueryPacket(*DirPlacesQueryPacket_packet);
     }
 };
 
@@ -2808,7 +3083,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirPlacesQueryBackendPacket();
+        return new DirPlacesQueryBackendPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirPlacesQueryBackendPacket *DirPlacesQueryBackendPacket_packet = dynamic_cast<const DirPlacesQueryBackendPacket *>(packet);
+        if (DirPlacesQueryBackendPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirPlacesQueryBackendPacket(*DirPlacesQueryBackendPacket_packet);
     }
 };
 
@@ -2894,7 +3176,14 @@ public:
         QueryReplies.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirPlacesReplyPacket();
+        return new DirPlacesReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirPlacesReplyPacket *DirPlacesReplyPacket_packet = dynamic_cast<const DirPlacesReplyPacket *>(packet);
+        if (DirPlacesReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirPlacesReplyPacket(*DirPlacesReplyPacket_packet);
     }
 };
 
@@ -2983,7 +3272,14 @@ public:
         QueryReplies.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirPeopleReplyPacket();
+        return new DirPeopleReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirPeopleReplyPacket *DirPeopleReplyPacket_packet = dynamic_cast<const DirPeopleReplyPacket *>(packet);
+        if (DirPeopleReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirPeopleReplyPacket(*DirPeopleReplyPacket_packet);
     }
 };
 
@@ -3072,7 +3368,14 @@ public:
         QueryReplies.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirEventsReplyPacket();
+        return new DirEventsReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirEventsReplyPacket *DirEventsReplyPacket_packet = dynamic_cast<const DirEventsReplyPacket *>(packet);
+        if (DirEventsReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirEventsReplyPacket(*DirEventsReplyPacket_packet);
     }
 };
 
@@ -3155,7 +3458,14 @@ public:
         QueryReplies.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirGroupsReplyPacket();
+        return new DirGroupsReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirGroupsReplyPacket *DirGroupsReplyPacket_packet = dynamic_cast<const DirGroupsReplyPacket *>(packet);
+        if (DirGroupsReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirGroupsReplyPacket(*DirGroupsReplyPacket_packet);
     }
 };
 
@@ -3227,7 +3537,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirClassifiedQueryPacket();
+        return new DirClassifiedQueryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirClassifiedQueryPacket *DirClassifiedQueryPacket_packet = dynamic_cast<const DirClassifiedQueryPacket *>(packet);
+        if (DirClassifiedQueryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirClassifiedQueryPacket(*DirClassifiedQueryPacket_packet);
     }
 };
 
@@ -3302,7 +3619,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirClassifiedQueryBackendPacket();
+        return new DirClassifiedQueryBackendPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirClassifiedQueryBackendPacket *DirClassifiedQueryBackendPacket_packet = dynamic_cast<const DirClassifiedQueryBackendPacket *>(packet);
+        if (DirClassifiedQueryBackendPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirClassifiedQueryBackendPacket(*DirClassifiedQueryBackendPacket_packet);
     }
 };
 
@@ -3391,7 +3715,14 @@ public:
         QueryReplies.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirClassifiedReplyPacket();
+        return new DirClassifiedReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirClassifiedReplyPacket *DirClassifiedReplyPacket_packet = dynamic_cast<const DirClassifiedReplyPacket *>(packet);
+        if (DirClassifiedReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirClassifiedReplyPacket(*DirClassifiedReplyPacket_packet);
     }
 };
 
@@ -3454,7 +3785,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarClassifiedReplyPacket();
+        return new AvatarClassifiedReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarClassifiedReplyPacket *AvatarClassifiedReplyPacket_packet = dynamic_cast<const AvatarClassifiedReplyPacket *>(packet);
+        if (AvatarClassifiedReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarClassifiedReplyPacket(*AvatarClassifiedReplyPacket_packet);
     }
 };
 
@@ -3514,7 +3852,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ClassifiedInfoRequestPacket();
+        return new ClassifiedInfoRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ClassifiedInfoRequestPacket *ClassifiedInfoRequestPacket_packet = dynamic_cast<const ClassifiedInfoRequestPacket *>(packet);
+        if (ClassifiedInfoRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ClassifiedInfoRequestPacket(*ClassifiedInfoRequestPacket_packet);
     }
 };
 
@@ -3613,7 +3958,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ClassifiedInfoReplyPacket();
+        return new ClassifiedInfoReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ClassifiedInfoReplyPacket *ClassifiedInfoReplyPacket_packet = dynamic_cast<const ClassifiedInfoReplyPacket *>(packet);
+        if (ClassifiedInfoReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ClassifiedInfoReplyPacket(*ClassifiedInfoReplyPacket_packet);
     }
 };
 
@@ -3699,7 +4051,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ClassifiedInfoUpdatePacket();
+        return new ClassifiedInfoUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ClassifiedInfoUpdatePacket *ClassifiedInfoUpdatePacket_packet = dynamic_cast<const ClassifiedInfoUpdatePacket *>(packet);
+        if (ClassifiedInfoUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ClassifiedInfoUpdatePacket(*ClassifiedInfoUpdatePacket_packet);
     }
 };
 
@@ -3758,7 +4117,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ClassifiedDeletePacket();
+        return new ClassifiedDeletePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ClassifiedDeletePacket *ClassifiedDeletePacket_packet = dynamic_cast<const ClassifiedDeletePacket *>(packet);
+        if (ClassifiedDeletePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ClassifiedDeletePacket(*ClassifiedDeletePacket_packet);
     }
 };
 
@@ -3820,7 +4186,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ClassifiedGodDeletePacket();
+        return new ClassifiedGodDeletePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ClassifiedGodDeletePacket *ClassifiedGodDeletePacket_packet = dynamic_cast<const ClassifiedGodDeletePacket *>(packet);
+        if (ClassifiedGodDeletePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ClassifiedGodDeletePacket(*ClassifiedGodDeletePacket_packet);
     }
 };
 
@@ -3895,7 +4268,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirLandQueryPacket();
+        return new DirLandQueryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirLandQueryPacket *DirLandQueryPacket_packet = dynamic_cast<const DirLandQueryPacket *>(packet);
+        if (DirLandQueryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirLandQueryPacket(*DirLandQueryPacket_packet);
     }
 };
 
@@ -3973,7 +4353,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirLandQueryBackendPacket();
+        return new DirLandQueryBackendPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirLandQueryBackendPacket *DirLandQueryBackendPacket_packet = dynamic_cast<const DirLandQueryBackendPacket *>(packet);
+        if (DirLandQueryBackendPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirLandQueryBackendPacket(*DirLandQueryBackendPacket_packet);
     }
 };
 
@@ -4062,7 +4449,14 @@ public:
         QueryReplies.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirLandReplyPacket();
+        return new DirLandReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirLandReplyPacket *DirLandReplyPacket_packet = dynamic_cast<const DirLandReplyPacket *>(packet);
+        if (DirLandReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirLandReplyPacket(*DirLandReplyPacket_packet);
     }
 };
 
@@ -4125,7 +4519,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirPopularQueryPacket();
+        return new DirPopularQueryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirPopularQueryPacket *DirPopularQueryPacket_packet = dynamic_cast<const DirPopularQueryPacket *>(packet);
+        if (DirPopularQueryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirPopularQueryPacket(*DirPopularQueryPacket_packet);
     }
 };
 
@@ -4191,7 +4592,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirPopularQueryBackendPacket();
+        return new DirPopularQueryBackendPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirPopularQueryBackendPacket *DirPopularQueryBackendPacket_packet = dynamic_cast<const DirPopularQueryBackendPacket *>(packet);
+        if (DirPopularQueryBackendPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirPopularQueryBackendPacket(*DirPopularQueryBackendPacket_packet);
     }
 };
 
@@ -4271,7 +4679,14 @@ public:
         QueryReplies.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DirPopularReplyPacket();
+        return new DirPopularReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DirPopularReplyPacket *DirPopularReplyPacket_packet = dynamic_cast<const DirPopularReplyPacket *>(packet);
+        if (DirPopularReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DirPopularReplyPacket(*DirPopularReplyPacket_packet);
     }
 };
 
@@ -4330,7 +4745,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelInfoRequestPacket();
+        return new ParcelInfoRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelInfoRequestPacket *ParcelInfoRequestPacket_packet = dynamic_cast<const ParcelInfoRequestPacket *>(packet);
+        if (ParcelInfoRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelInfoRequestPacket(*ParcelInfoRequestPacket_packet);
     }
 };
 
@@ -4429,7 +4851,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelInfoReplyPacket();
+        return new ParcelInfoReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelInfoReplyPacket *ParcelInfoReplyPacket_packet = dynamic_cast<const ParcelInfoReplyPacket *>(packet);
+        if (ParcelInfoReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelInfoReplyPacket(*ParcelInfoReplyPacket_packet);
     }
 };
 
@@ -4488,7 +4917,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelObjectOwnersRequestPacket();
+        return new ParcelObjectOwnersRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelObjectOwnersRequestPacket *ParcelObjectOwnersRequestPacket_packet = dynamic_cast<const ParcelObjectOwnersRequestPacket *>(packet);
+        if (ParcelObjectOwnersRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelObjectOwnersRequestPacket(*ParcelObjectOwnersRequestPacket_packet);
     }
 };
 
@@ -4537,7 +4973,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelObjectOwnersReplyPacket();
+        return new ParcelObjectOwnersReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelObjectOwnersReplyPacket *ParcelObjectOwnersReplyPacket_packet = dynamic_cast<const ParcelObjectOwnersReplyPacket *>(packet);
+        if (ParcelObjectOwnersReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelObjectOwnersReplyPacket(*ParcelObjectOwnersReplyPacket_packet);
     }
 };
 
@@ -4596,7 +5039,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupNoticesListRequestPacket();
+        return new GroupNoticesListRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupNoticesListRequestPacket *GroupNoticesListRequestPacket_packet = dynamic_cast<const GroupNoticesListRequestPacket *>(packet);
+        if (GroupNoticesListRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupNoticesListRequestPacket(*GroupNoticesListRequestPacket_packet);
     }
 };
 
@@ -4671,7 +5121,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupNoticesListReplyPacket();
+        return new GroupNoticesListReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupNoticesListReplyPacket *GroupNoticesListReplyPacket_packet = dynamic_cast<const GroupNoticesListReplyPacket *>(packet);
+        if (GroupNoticesListReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupNoticesListReplyPacket(*GroupNoticesListReplyPacket_packet);
     }
 };
 
@@ -4730,7 +5187,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupNoticeRequestPacket();
+        return new GroupNoticeRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupNoticeRequestPacket *GroupNoticeRequestPacket_packet = dynamic_cast<const GroupNoticeRequestPacket *>(packet);
+        if (GroupNoticeRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupNoticeRequestPacket(*GroupNoticeRequestPacket_packet);
     }
 };
 
@@ -4802,7 +5266,14 @@ public:
         MessageBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupNoticeAddPacket();
+        return new GroupNoticeAddPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupNoticeAddPacket *GroupNoticeAddPacket_packet = dynamic_cast<const GroupNoticeAddPacket *>(packet);
+        if (GroupNoticeAddPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupNoticeAddPacket(*GroupNoticeAddPacket_packet);
     }
 };
 
@@ -4867,7 +5338,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TeleportRequestPacket();
+        return new TeleportRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TeleportRequestPacket *TeleportRequestPacket_packet = dynamic_cast<const TeleportRequestPacket *>(packet);
+        if (TeleportRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TeleportRequestPacket(*TeleportRequestPacket_packet);
     }
 };
 
@@ -4932,7 +5410,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TeleportLocationRequestPacket();
+        return new TeleportLocationRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TeleportLocationRequestPacket *TeleportLocationRequestPacket_packet = dynamic_cast<const TeleportLocationRequestPacket *>(packet);
+        if (TeleportLocationRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TeleportLocationRequestPacket(*TeleportLocationRequestPacket_packet);
     }
 };
 
@@ -4984,7 +5469,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TeleportLocalPacket();
+        return new TeleportLocalPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TeleportLocalPacket *TeleportLocalPacket_packet = dynamic_cast<const TeleportLocalPacket *>(packet);
+        if (TeleportLocalPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TeleportLocalPacket(*TeleportLocalPacket_packet);
     }
 };
 
@@ -5030,7 +5522,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TeleportLandmarkRequestPacket();
+        return new TeleportLandmarkRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TeleportLandmarkRequestPacket *TeleportLandmarkRequestPacket_packet = dynamic_cast<const TeleportLandmarkRequestPacket *>(packet);
+        if (TeleportLandmarkRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TeleportLandmarkRequestPacket(*TeleportLandmarkRequestPacket_packet);
     }
 };
 
@@ -5090,7 +5589,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TeleportProgressPacket();
+        return new TeleportProgressPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TeleportProgressPacket *TeleportProgressPacket_packet = dynamic_cast<const TeleportProgressPacket *>(packet);
+        if (TeleportProgressPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TeleportProgressPacket(*TeleportProgressPacket_packet);
     }
 };
 
@@ -5133,7 +5639,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DataHomeLocationRequestPacket();
+        return new DataHomeLocationRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DataHomeLocationRequestPacket *DataHomeLocationRequestPacket_packet = dynamic_cast<const DataHomeLocationRequestPacket *>(packet);
+        if (DataHomeLocationRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DataHomeLocationRequestPacket(*DataHomeLocationRequestPacket_packet);
     }
 };
 
@@ -5182,7 +5695,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DataHomeLocationReplyPacket();
+        return new DataHomeLocationReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DataHomeLocationReplyPacket *DataHomeLocationReplyPacket_packet = dynamic_cast<const DataHomeLocationReplyPacket *>(packet);
+        if (DataHomeLocationReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DataHomeLocationReplyPacket(*DataHomeLocationReplyPacket_packet);
     }
 };
 
@@ -5243,7 +5763,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TeleportFinishPacket();
+        return new TeleportFinishPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TeleportFinishPacket *TeleportFinishPacket_packet = dynamic_cast<const TeleportFinishPacket *>(packet);
+        if (TeleportFinishPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TeleportFinishPacket(*TeleportFinishPacket_packet);
     }
 };
 
@@ -5322,7 +5849,14 @@ public:
         TargetData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new StartLurePacket();
+        return new StartLurePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const StartLurePacket *StartLurePacket_packet = dynamic_cast<const StartLurePacket *>(packet);
+        if (StartLurePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new StartLurePacket(*StartLurePacket_packet);
     }
 };
 
@@ -5370,7 +5904,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TeleportLureRequestPacket();
+        return new TeleportLureRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TeleportLureRequestPacket *TeleportLureRequestPacket_packet = dynamic_cast<const TeleportLureRequestPacket *>(packet);
+        if (TeleportLureRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TeleportLureRequestPacket(*TeleportLureRequestPacket_packet);
     }
 };
 
@@ -5412,7 +5953,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TeleportCancelPacket();
+        return new TeleportCancelPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TeleportCancelPacket *TeleportCancelPacket_packet = dynamic_cast<const TeleportCancelPacket *>(packet);
+        if (TeleportCancelPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TeleportCancelPacket(*TeleportCancelPacket_packet);
     }
 };
 
@@ -5452,7 +6000,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TeleportStartPacket();
+        return new TeleportStartPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TeleportStartPacket *TeleportStartPacket_packet = dynamic_cast<const TeleportStartPacket *>(packet);
+        if (TeleportStartPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TeleportStartPacket(*TeleportStartPacket_packet);
     }
 };
 
@@ -5495,7 +6050,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TeleportFailedPacket();
+        return new TeleportFailedPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TeleportFailedPacket *TeleportFailedPacket_packet = dynamic_cast<const TeleportFailedPacket *>(packet);
+        if (TeleportFailedPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TeleportFailedPacket(*TeleportFailedPacket_packet);
     }
 };
 
@@ -5557,7 +6119,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UndoPacket();
+        return new UndoPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UndoPacket *UndoPacket_packet = dynamic_cast<const UndoPacket *>(packet);
+        if (UndoPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UndoPacket(*UndoPacket_packet);
     }
 };
 
@@ -5619,7 +6188,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RedoPacket();
+        return new RedoPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RedoPacket *RedoPacket_packet = dynamic_cast<const RedoPacket *>(packet);
+        if (RedoPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RedoPacket(*RedoPacket_packet);
     }
 };
 
@@ -5661,7 +6237,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UndoLandPacket();
+        return new UndoLandPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UndoLandPacket *UndoLandPacket_packet = dynamic_cast<const UndoLandPacket *>(packet);
+        if (UndoLandPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UndoLandPacket(*UndoLandPacket_packet);
     }
 };
 
@@ -5706,7 +6289,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentPausePacket();
+        return new AgentPausePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentPausePacket *AgentPausePacket_packet = dynamic_cast<const AgentPausePacket *>(packet);
+        if (AgentPausePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentPausePacket(*AgentPausePacket_packet);
     }
 };
 
@@ -5751,7 +6341,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentResumePacket();
+        return new AgentResumePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentResumePacket *AgentResumePacket_packet = dynamic_cast<const AgentResumePacket *>(packet);
+        if (AgentResumePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentResumePacket(*AgentResumePacket_packet);
     }
 };
 
@@ -5824,7 +6421,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentUpdatePacket();
+        return new AgentUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentUpdatePacket *AgentUpdatePacket_packet = dynamic_cast<const AgentUpdatePacket *>(packet);
+        if (AgentUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentUpdatePacket(*AgentUpdatePacket_packet);
     }
 };
 
@@ -5890,7 +6494,14 @@ public:
         ChatData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ChatFromViewerPacket();
+        return new ChatFromViewerPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ChatFromViewerPacket *ChatFromViewerPacket_packet = dynamic_cast<const ChatFromViewerPacket *>(packet);
+        if (ChatFromViewerPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ChatFromViewerPacket(*ChatFromViewerPacket_packet);
     }
 };
 
@@ -5956,7 +6567,14 @@ public:
         Throttle.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentThrottlePacket();
+        return new AgentThrottlePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentThrottlePacket *AgentThrottlePacket_packet = dynamic_cast<const AgentThrottlePacket *>(packet);
+        if (AgentThrottlePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentThrottlePacket(*AgentThrottlePacket_packet);
     }
 };
 
@@ -6021,7 +6639,14 @@ public:
         FOVBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentFOVPacket();
+        return new AgentFOVPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentFOVPacket *AgentFOVPacket_packet = dynamic_cast<const AgentFOVPacket *>(packet);
+        if (AgentFOVPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentFOVPacket(*AgentFOVPacket_packet);
     }
 };
 
@@ -6089,7 +6714,14 @@ public:
         HeightWidthBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentHeightWidthPacket();
+        return new AgentHeightWidthPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentHeightWidthPacket *AgentHeightWidthPacket_packet = dynamic_cast<const AgentHeightWidthPacket *>(packet);
+        if (AgentHeightWidthPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentHeightWidthPacket(*AgentHeightWidthPacket_packet);
     }
 };
 
@@ -6192,7 +6824,14 @@ public:
         VisualParam.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentSetAppearancePacket();
+        return new AgentSetAppearancePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentSetAppearancePacket *AgentSetAppearancePacket_packet = dynamic_cast<const AgentSetAppearancePacket *>(packet);
+        if (AgentSetAppearancePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentSetAppearancePacket(*AgentSetAppearancePacket_packet);
     }
 };
 
@@ -6271,7 +6910,14 @@ public:
         PhysicalAvatarEventList.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentAnimationPacket();
+        return new AgentAnimationPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentAnimationPacket *AgentAnimationPacket_packet = dynamic_cast<const AgentAnimationPacket *>(packet);
+        if (AgentAnimationPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentAnimationPacket(*AgentAnimationPacket_packet);
     }
 };
 
@@ -6334,7 +6980,14 @@ public:
         TargetObject.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentRequestSitPacket();
+        return new AgentRequestSitPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentRequestSitPacket *AgentRequestSitPacket_packet = dynamic_cast<const AgentRequestSitPacket *>(packet);
+        if (AgentRequestSitPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentRequestSitPacket(*AgentRequestSitPacket_packet);
     }
 };
 
@@ -6376,7 +7029,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentSitPacket();
+        return new AgentSitPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentSitPacket *AgentSitPacket_packet = dynamic_cast<const AgentSitPacket *>(packet);
+        if (AgentSitPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentSitPacket(*AgentSitPacket_packet);
     }
 };
 
@@ -6435,7 +7095,14 @@ public:
         FuseBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentQuitCopyPacket();
+        return new AgentQuitCopyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentQuitCopyPacket *AgentQuitCopyPacket_packet = dynamic_cast<const AgentQuitCopyPacket *>(packet);
+        if (AgentQuitCopyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentQuitCopyPacket(*AgentQuitCopyPacket_packet);
     }
 };
 
@@ -6506,7 +7173,14 @@ public:
         RequestImage.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RequestImagePacket();
+        return new RequestImagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RequestImagePacket *RequestImagePacket_packet = dynamic_cast<const RequestImagePacket *>(packet);
+        if (RequestImagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RequestImagePacket(*RequestImagePacket_packet);
     }
 };
 
@@ -6546,7 +7220,14 @@ public:
         ImageID.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ImageNotInDatabasePacket();
+        return new ImageNotInDatabasePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ImageNotInDatabasePacket *ImageNotInDatabasePacket_packet = dynamic_cast<const ImageNotInDatabasePacket *>(packet);
+        if (ImageNotInDatabasePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ImageNotInDatabasePacket(*ImageNotInDatabasePacket_packet);
     }
 };
 
@@ -6586,7 +7267,14 @@ public:
         TextureData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RebakeAvatarTexturesPacket();
+        return new RebakeAvatarTexturesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RebakeAvatarTexturesPacket *RebakeAvatarTexturesPacket_packet = dynamic_cast<const RebakeAvatarTexturesPacket *>(packet);
+        if (RebakeAvatarTexturesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RebakeAvatarTexturesPacket(*RebakeAvatarTexturesPacket_packet);
     }
 };
 
@@ -6631,7 +7319,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SetAlwaysRunPacket();
+        return new SetAlwaysRunPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SetAlwaysRunPacket *SetAlwaysRunPacket_packet = dynamic_cast<const SetAlwaysRunPacket *>(packet);
+        if (SetAlwaysRunPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SetAlwaysRunPacket(*SetAlwaysRunPacket_packet);
     }
 };
 
@@ -6778,7 +7473,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectAddPacket();
+        return new ObjectAddPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectAddPacket *ObjectAddPacket_packet = dynamic_cast<const ObjectAddPacket *>(packet);
+        if (ObjectAddPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectAddPacket(*ObjectAddPacket_packet);
     }
 };
 
@@ -6841,7 +7543,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectDeletePacket();
+        return new ObjectDeletePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectDeletePacket *ObjectDeletePacket_packet = dynamic_cast<const ObjectDeletePacket *>(packet);
+        if (ObjectDeletePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectDeletePacket(*ObjectDeletePacket_packet);
     }
 };
 
@@ -6924,7 +7633,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectDuplicatePacket();
+        return new ObjectDuplicatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectDuplicatePacket *ObjectDuplicatePacket_packet = dynamic_cast<const ObjectDuplicatePacket *>(packet);
+        if (ObjectDuplicatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectDuplicatePacket(*ObjectDuplicatePacket_packet);
     }
 };
 
@@ -7011,7 +7727,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectDuplicateOnRayPacket();
+        return new ObjectDuplicateOnRayPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectDuplicateOnRayPacket *ObjectDuplicateOnRayPacket_packet = dynamic_cast<const ObjectDuplicateOnRayPacket *>(packet);
+        if (ObjectDuplicateOnRayPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectDuplicateOnRayPacket(*ObjectDuplicateOnRayPacket_packet);
     }
 };
 
@@ -7077,7 +7800,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MultipleObjectUpdatePacket();
+        return new MultipleObjectUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MultipleObjectUpdatePacket *MultipleObjectUpdatePacket_packet = dynamic_cast<const MultipleObjectUpdatePacket *>(packet);
+        if (MultipleObjectUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MultipleObjectUpdatePacket(*MultipleObjectUpdatePacket_packet);
     }
 };
 
@@ -7140,7 +7870,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RequestMultipleObjectsPacket();
+        return new RequestMultipleObjectsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RequestMultipleObjectsPacket *RequestMultipleObjectsPacket_packet = dynamic_cast<const RequestMultipleObjectsPacket *>(packet);
+        if (RequestMultipleObjectsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RequestMultipleObjectsPacket(*RequestMultipleObjectsPacket_packet);
     }
 };
 
@@ -7203,7 +7940,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectPositionPacket();
+        return new ObjectPositionPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectPositionPacket *ObjectPositionPacket_packet = dynamic_cast<const ObjectPositionPacket *>(packet);
+        if (ObjectPositionPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectPositionPacket(*ObjectPositionPacket_packet);
     }
 };
 
@@ -7266,7 +8010,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectScalePacket();
+        return new ObjectScalePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectScalePacket *ObjectScalePacket_packet = dynamic_cast<const ObjectScalePacket *>(packet);
+        if (ObjectScalePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectScalePacket(*ObjectScalePacket_packet);
     }
 };
 
@@ -7329,7 +8080,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectRotationPacket();
+        return new ObjectRotationPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectRotationPacket *ObjectRotationPacket_packet = dynamic_cast<const ObjectRotationPacket *>(packet);
+        if (ObjectRotationPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectRotationPacket(*ObjectRotationPacket_packet);
     }
 };
 
@@ -7387,7 +8145,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectFlagUpdatePacket();
+        return new ObjectFlagUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectFlagUpdatePacket *ObjectFlagUpdatePacket_packet = dynamic_cast<const ObjectFlagUpdatePacket *>(packet);
+        if (ObjectFlagUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectFlagUpdatePacket(*ObjectFlagUpdatePacket_packet);
     }
 };
 
@@ -7450,7 +8215,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectClickActionPacket();
+        return new ObjectClickActionPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectClickActionPacket *ObjectClickActionPacket_packet = dynamic_cast<const ObjectClickActionPacket *>(packet);
+        if (ObjectClickActionPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectClickActionPacket(*ObjectClickActionPacket_packet);
     }
 };
 
@@ -7516,7 +8288,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectImagePacket();
+        return new ObjectImagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectImagePacket *ObjectImagePacket_packet = dynamic_cast<const ObjectImagePacket *>(packet);
+        if (ObjectImagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectImagePacket(*ObjectImagePacket_packet);
     }
 };
 
@@ -7579,7 +8358,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectMaterialPacket();
+        return new ObjectMaterialPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectMaterialPacket *ObjectMaterialPacket_packet = dynamic_cast<const ObjectMaterialPacket *>(packet);
+        if (ObjectMaterialPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectMaterialPacket(*ObjectMaterialPacket_packet);
     }
 };
 
@@ -7693,7 +8479,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectShapePacket();
+        return new ObjectShapePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectShapePacket *ObjectShapePacket_packet = dynamic_cast<const ObjectShapePacket *>(packet);
+        if (ObjectShapePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectShapePacket(*ObjectShapePacket_packet);
     }
 };
 
@@ -7765,7 +8558,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectExtraParamsPacket();
+        return new ObjectExtraParamsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectExtraParamsPacket *ObjectExtraParamsPacket_packet = dynamic_cast<const ObjectExtraParamsPacket *>(packet);
+        if (ObjectExtraParamsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectExtraParamsPacket(*ObjectExtraParamsPacket_packet);
     }
 };
 
@@ -7848,7 +8648,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectOwnerPacket();
+        return new ObjectOwnerPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectOwnerPacket *ObjectOwnerPacket_packet = dynamic_cast<const ObjectOwnerPacket *>(packet);
+        if (ObjectOwnerPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectOwnerPacket(*ObjectOwnerPacket_packet);
     }
 };
 
@@ -7911,7 +8718,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectGroupPacket();
+        return new ObjectGroupPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectGroupPacket *ObjectGroupPacket_packet = dynamic_cast<const ObjectGroupPacket *>(packet);
+        if (ObjectGroupPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectGroupPacket(*ObjectGroupPacket_packet);
     }
 };
 
@@ -7983,7 +8797,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectBuyPacket();
+        return new ObjectBuyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectBuyPacket *ObjectBuyPacket_packet = dynamic_cast<const ObjectBuyPacket *>(packet);
+        if (ObjectBuyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectBuyPacket(*ObjectBuyPacket_packet);
     }
 };
 
@@ -8049,7 +8870,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new BuyObjectInventoryPacket();
+        return new BuyObjectInventoryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const BuyObjectInventoryPacket *BuyObjectInventoryPacket_packet = dynamic_cast<const BuyObjectInventoryPacket *>(packet);
+        if (BuyObjectInventoryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new BuyObjectInventoryPacket(*BuyObjectInventoryPacket_packet);
     }
 };
 
@@ -8092,7 +8920,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DerezContainerPacket();
+        return new DerezContainerPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DerezContainerPacket *DerezContainerPacket_packet = dynamic_cast<const DerezContainerPacket *>(packet);
+        if (DerezContainerPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DerezContainerPacket(*DerezContainerPacket_packet);
     }
 };
 
@@ -8178,7 +9013,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectPermissionsPacket();
+        return new ObjectPermissionsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectPermissionsPacket *ObjectPermissionsPacket_packet = dynamic_cast<const ObjectPermissionsPacket *>(packet);
+        if (ObjectPermissionsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectPermissionsPacket(*ObjectPermissionsPacket_packet);
     }
 };
 
@@ -8244,7 +9086,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectSaleInfoPacket();
+        return new ObjectSaleInfoPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectSaleInfoPacket *ObjectSaleInfoPacket_packet = dynamic_cast<const ObjectSaleInfoPacket *>(packet);
+        if (ObjectSaleInfoPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectSaleInfoPacket(*ObjectSaleInfoPacket_packet);
     }
 };
 
@@ -8307,7 +9156,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectNamePacket();
+        return new ObjectNamePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectNamePacket *ObjectNamePacket_packet = dynamic_cast<const ObjectNamePacket *>(packet);
+        if (ObjectNamePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectNamePacket(*ObjectNamePacket_packet);
     }
 };
 
@@ -8370,7 +9226,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectDescriptionPacket();
+        return new ObjectDescriptionPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectDescriptionPacket *ObjectDescriptionPacket_packet = dynamic_cast<const ObjectDescriptionPacket *>(packet);
+        if (ObjectDescriptionPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectDescriptionPacket(*ObjectDescriptionPacket_packet);
     }
 };
 
@@ -8433,7 +9296,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectCategoryPacket();
+        return new ObjectCategoryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectCategoryPacket *ObjectCategoryPacket_packet = dynamic_cast<const ObjectCategoryPacket *>(packet);
+        if (ObjectCategoryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectCategoryPacket(*ObjectCategoryPacket_packet);
     }
 };
 
@@ -8493,7 +9363,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectSelectPacket();
+        return new ObjectSelectPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectSelectPacket *ObjectSelectPacket_packet = dynamic_cast<const ObjectSelectPacket *>(packet);
+        if (ObjectSelectPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectSelectPacket(*ObjectSelectPacket_packet);
     }
 };
 
@@ -8553,7 +9430,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectDeselectPacket();
+        return new ObjectDeselectPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectDeselectPacket *ObjectDeselectPacket_packet = dynamic_cast<const ObjectDeselectPacket *>(packet);
+        if (ObjectDeselectPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectDeselectPacket(*ObjectDeselectPacket_packet);
     }
 };
 
@@ -8619,7 +9503,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectAttachPacket();
+        return new ObjectAttachPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectAttachPacket *ObjectAttachPacket_packet = dynamic_cast<const ObjectAttachPacket *>(packet);
+        if (ObjectAttachPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectAttachPacket(*ObjectAttachPacket_packet);
     }
 };
 
@@ -8678,7 +9569,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectDetachPacket();
+        return new ObjectDetachPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectDetachPacket *ObjectDetachPacket_packet = dynamic_cast<const ObjectDetachPacket *>(packet);
+        if (ObjectDetachPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectDetachPacket(*ObjectDetachPacket_packet);
     }
 };
 
@@ -8737,7 +9635,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectDropPacket();
+        return new ObjectDropPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectDropPacket *ObjectDropPacket_packet = dynamic_cast<const ObjectDropPacket *>(packet);
+        if (ObjectDropPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectDropPacket(*ObjectDropPacket_packet);
     }
 };
 
@@ -8796,7 +9701,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectLinkPacket();
+        return new ObjectLinkPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectLinkPacket *ObjectLinkPacket_packet = dynamic_cast<const ObjectLinkPacket *>(packet);
+        if (ObjectLinkPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectLinkPacket(*ObjectLinkPacket_packet);
     }
 };
 
@@ -8855,7 +9767,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectDelinkPacket();
+        return new ObjectDelinkPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectDelinkPacket *ObjectDelinkPacket_packet = dynamic_cast<const ObjectDelinkPacket *>(packet);
+        if (ObjectDelinkPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectDelinkPacket(*ObjectDelinkPacket_packet);
     }
 };
 
@@ -8950,7 +9869,14 @@ public:
         SurfaceInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectGrabPacket();
+        return new ObjectGrabPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectGrabPacket *ObjectGrabPacket_packet = dynamic_cast<const ObjectGrabPacket *>(packet);
+        if (ObjectGrabPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectGrabPacket(*ObjectGrabPacket_packet);
     }
 };
 
@@ -9051,7 +9977,14 @@ public:
         SurfaceInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectGrabUpdatePacket();
+        return new ObjectGrabUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectGrabUpdatePacket *ObjectGrabUpdatePacket_packet = dynamic_cast<const ObjectGrabUpdatePacket *>(packet);
+        if (ObjectGrabUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectGrabUpdatePacket(*ObjectGrabUpdatePacket_packet);
     }
 };
 
@@ -9142,7 +10075,14 @@ public:
         SurfaceInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectDeGrabPacket();
+        return new ObjectDeGrabPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectDeGrabPacket *ObjectDeGrabPacket_packet = dynamic_cast<const ObjectDeGrabPacket *>(packet);
+        if (ObjectDeGrabPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectDeGrabPacket(*ObjectDeGrabPacket_packet);
     }
 };
 
@@ -9202,7 +10142,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectSpinStartPacket();
+        return new ObjectSpinStartPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectSpinStartPacket *ObjectSpinStartPacket_packet = dynamic_cast<const ObjectSpinStartPacket *>(packet);
+        if (ObjectSpinStartPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectSpinStartPacket(*ObjectSpinStartPacket_packet);
     }
 };
 
@@ -9265,7 +10212,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectSpinUpdatePacket();
+        return new ObjectSpinUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectSpinUpdatePacket *ObjectSpinUpdatePacket_packet = dynamic_cast<const ObjectSpinUpdatePacket *>(packet);
+        if (ObjectSpinUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectSpinUpdatePacket(*ObjectSpinUpdatePacket_packet);
     }
 };
 
@@ -9325,7 +10279,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectSpinStopPacket();
+        return new ObjectSpinStopPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectSpinStopPacket *ObjectSpinStopPacket_packet = dynamic_cast<const ObjectSpinStopPacket *>(packet);
+        if (ObjectSpinStopPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectSpinStopPacket(*ObjectSpinStopPacket_packet);
     }
 };
 
@@ -9388,7 +10349,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectExportSelectedPacket();
+        return new ObjectExportSelectedPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectExportSelectedPacket *ObjectExportSelectedPacket_packet = dynamic_cast<const ObjectExportSelectedPacket *>(packet);
+        if (ObjectExportSelectedPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectExportSelectedPacket(*ObjectExportSelectedPacket_packet);
     }
 };
 
@@ -9486,7 +10454,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ModifyLandPacket();
+        return new ModifyLandPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ModifyLandPacket *ModifyLandPacket_packet = dynamic_cast<const ModifyLandPacket *>(packet);
+        if (ModifyLandPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ModifyLandPacket(*ModifyLandPacket_packet);
     }
 };
 
@@ -9528,7 +10503,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new VelocityInterpolateOnPacket();
+        return new VelocityInterpolateOnPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const VelocityInterpolateOnPacket *VelocityInterpolateOnPacket_packet = dynamic_cast<const VelocityInterpolateOnPacket *>(packet);
+        if (VelocityInterpolateOnPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new VelocityInterpolateOnPacket(*VelocityInterpolateOnPacket_packet);
     }
 };
 
@@ -9570,7 +10552,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new VelocityInterpolateOffPacket();
+        return new VelocityInterpolateOffPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const VelocityInterpolateOffPacket *VelocityInterpolateOffPacket_packet = dynamic_cast<const VelocityInterpolateOffPacket *>(packet);
+        if (VelocityInterpolateOffPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new VelocityInterpolateOffPacket(*VelocityInterpolateOffPacket_packet);
     }
 };
 
@@ -9629,7 +10618,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new StateSavePacket();
+        return new StateSavePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const StateSavePacket *StateSavePacket_packet = dynamic_cast<const StateSavePacket *>(packet);
+        if (StateSavePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new StateSavePacket(*StateSavePacket_packet);
     }
 };
 
@@ -9671,7 +10667,14 @@ public:
         AutosaveData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ReportAutosaveCrashPacket();
+        return new ReportAutosaveCrashPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ReportAutosaveCrashPacket *ReportAutosaveCrashPacket_packet = dynamic_cast<const ReportAutosaveCrashPacket *>(packet);
+        if (ReportAutosaveCrashPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ReportAutosaveCrashPacket(*ReportAutosaveCrashPacket_packet);
     }
 };
 
@@ -9733,7 +10736,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SimWideDeletesPacket();
+        return new SimWideDeletesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SimWideDeletesPacket *SimWideDeletesPacket_packet = dynamic_cast<const SimWideDeletesPacket *>(packet);
+        if (SimWideDeletesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SimWideDeletesPacket(*SimWideDeletesPacket_packet);
     }
 };
 
@@ -9796,7 +10806,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RequestObjectPropertiesFamilyPacket();
+        return new RequestObjectPropertiesFamilyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RequestObjectPropertiesFamilyPacket *RequestObjectPropertiesFamilyPacket_packet = dynamic_cast<const RequestObjectPropertiesFamilyPacket *>(packet);
+        if (RequestObjectPropertiesFamilyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RequestObjectPropertiesFamilyPacket(*RequestObjectPropertiesFamilyPacket_packet);
     }
 };
 
@@ -9855,7 +10872,14 @@ public:
         TargetData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TrackAgentPacket();
+        return new TrackAgentPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TrackAgentPacket *TrackAgentPacket_packet = dynamic_cast<const TrackAgentPacket *>(packet);
+        if (TrackAgentPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TrackAgentPacket(*TrackAgentPacket_packet);
     }
 };
 
@@ -10038,7 +11062,14 @@ public:
         MiscStats.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ViewerStatsPacket();
+        return new ViewerStatsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ViewerStatsPacket *ViewerStatsPacket_packet = dynamic_cast<const ViewerStatsPacket *>(packet);
+        if (ViewerStatsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ViewerStatsPacket(*ViewerStatsPacket_packet);
     }
 };
 
@@ -10103,7 +11134,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptAnswerYesPacket();
+        return new ScriptAnswerYesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptAnswerYesPacket *ScriptAnswerYesPacket_packet = dynamic_cast<const ScriptAnswerYesPacket *>(packet);
+        if (ScriptAnswerYesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptAnswerYesPacket(*ScriptAnswerYesPacket_packet);
     }
 };
 
@@ -10196,7 +11234,14 @@ public:
         ReportData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UserReportPacket();
+        return new UserReportPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UserReportPacket *UserReportPacket_packet = dynamic_cast<const UserReportPacket *>(packet);
+        if (UserReportPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UserReportPacket(*UserReportPacket_packet);
     }
 };
 
@@ -10236,7 +11281,14 @@ public:
         AlertData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AlertMessagePacket();
+        return new AlertMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AlertMessagePacket *AlertMessagePacket_packet = dynamic_cast<const AlertMessagePacket *>(packet);
+        if (AlertMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AlertMessagePacket(*AlertMessagePacket_packet);
     }
 };
 
@@ -10296,7 +11348,14 @@ public:
         AlertData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentAlertMessagePacket();
+        return new AgentAlertMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentAlertMessagePacket *AgentAlertMessagePacket_packet = dynamic_cast<const AgentAlertMessagePacket *>(packet);
+        if (AgentAlertMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentAlertMessagePacket(*AgentAlertMessagePacket_packet);
     }
 };
 
@@ -10348,7 +11407,14 @@ public:
         MeanCollision.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MeanCollisionAlertPacket();
+        return new MeanCollisionAlertPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MeanCollisionAlertPacket *MeanCollisionAlertPacket_packet = dynamic_cast<const MeanCollisionAlertPacket *>(packet);
+        if (MeanCollisionAlertPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MeanCollisionAlertPacket(*MeanCollisionAlertPacket_packet);
     }
 };
 
@@ -10388,7 +11454,14 @@ public:
         FrozenData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ViewerFrozenMessagePacket();
+        return new ViewerFrozenMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ViewerFrozenMessagePacket *ViewerFrozenMessagePacket_packet = dynamic_cast<const ViewerFrozenMessagePacket *>(packet);
+        if (ViewerFrozenMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ViewerFrozenMessagePacket(*ViewerFrozenMessagePacket_packet);
     }
 };
 
@@ -10428,7 +11501,14 @@ public:
         HealthData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new HealthMessagePacket();
+        return new HealthMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const HealthMessagePacket *HealthMessagePacket_packet = dynamic_cast<const HealthMessagePacket *>(packet);
+        if (HealthMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new HealthMessagePacket(*HealthMessagePacket_packet);
     }
 };
 
@@ -10489,7 +11569,14 @@ public:
         ChatData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ChatFromSimulatorPacket();
+        return new ChatFromSimulatorPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ChatFromSimulatorPacket *ChatFromSimulatorPacket_packet = dynamic_cast<const ChatFromSimulatorPacket *>(packet);
+        if (ChatFromSimulatorPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ChatFromSimulatorPacket(*ChatFromSimulatorPacket_packet);
     }
 };
 
@@ -10575,7 +11662,14 @@ public:
         PidStat.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SimStatsPacket();
+        return new SimStatsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SimStatsPacket *SimStatsPacket_packet = dynamic_cast<const SimStatsPacket *>(packet);
+        if (SimStatsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SimStatsPacket(*SimStatsPacket_packet);
     }
 };
 
@@ -10617,7 +11711,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RequestRegionInfoPacket();
+        return new RequestRegionInfoPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RequestRegionInfoPacket *RequestRegionInfoPacket_packet = dynamic_cast<const RequestRegionInfoPacket *>(packet);
+        if (RequestRegionInfoPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RequestRegionInfoPacket(*RequestRegionInfoPacket_packet);
     }
 };
 
@@ -10722,7 +11823,14 @@ public:
         RegionInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RegionInfoPacket();
+        return new RegionInfoPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RegionInfoPacket *RegionInfoPacket_packet = dynamic_cast<const RegionInfoPacket *>(packet);
+        if (RegionInfoPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RegionInfoPacket(*RegionInfoPacket_packet);
     }
 };
 
@@ -10803,7 +11911,14 @@ public:
         RegionInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GodUpdateRegionInfoPacket();
+        return new GodUpdateRegionInfoPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GodUpdateRegionInfoPacket *GodUpdateRegionInfoPacket_packet = dynamic_cast<const GodUpdateRegionInfoPacket *>(packet);
+        if (GodUpdateRegionInfoPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GodUpdateRegionInfoPacket(*GodUpdateRegionInfoPacket_packet);
     }
 };
 
@@ -10843,7 +11958,14 @@ public:
         RequestingRegionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new NearestLandingRegionRequestPacket();
+        return new NearestLandingRegionRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const NearestLandingRegionRequestPacket *NearestLandingRegionRequestPacket_packet = dynamic_cast<const NearestLandingRegionRequestPacket *>(packet);
+        if (NearestLandingRegionRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new NearestLandingRegionRequestPacket(*NearestLandingRegionRequestPacket_packet);
     }
 };
 
@@ -10883,7 +12005,14 @@ public:
         LandingRegionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new NearestLandingRegionReplyPacket();
+        return new NearestLandingRegionReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const NearestLandingRegionReplyPacket *NearestLandingRegionReplyPacket_packet = dynamic_cast<const NearestLandingRegionReplyPacket *>(packet);
+        if (NearestLandingRegionReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new NearestLandingRegionReplyPacket(*NearestLandingRegionReplyPacket_packet);
     }
 };
 
@@ -10923,7 +12052,14 @@ public:
         RegionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new NearestLandingRegionUpdatedPacket();
+        return new NearestLandingRegionUpdatedPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const NearestLandingRegionUpdatedPacket *NearestLandingRegionUpdatedPacket_packet = dynamic_cast<const NearestLandingRegionUpdatedPacket *>(packet);
+        if (NearestLandingRegionUpdatedPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new NearestLandingRegionUpdatedPacket(*NearestLandingRegionUpdatedPacket_packet);
     }
 };
 
@@ -10963,7 +12099,14 @@ public:
         RegionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TeleportLandingStatusChangedPacket();
+        return new TeleportLandingStatusChangedPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TeleportLandingStatusChangedPacket *TeleportLandingStatusChangedPacket_packet = dynamic_cast<const TeleportLandingStatusChangedPacket *>(packet);
+        if (TeleportLandingStatusChangedPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TeleportLandingStatusChangedPacket(*TeleportLandingStatusChangedPacket_packet);
     }
 };
 
@@ -11089,7 +12232,14 @@ public:
         RegionInfo2.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RegionHandshakePacket();
+        return new RegionHandshakePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RegionHandshakePacket *RegionHandshakePacket_packet = dynamic_cast<const RegionHandshakePacket *>(packet);
+        if (RegionHandshakePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RegionHandshakePacket(*RegionHandshakePacket_packet);
     }
 };
 
@@ -11149,7 +12299,14 @@ public:
         RegionInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RegionHandshakeReplyPacket();
+        return new RegionHandshakeReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RegionHandshakeReplyPacket *RegionHandshakeReplyPacket_packet = dynamic_cast<const RegionHandshakeReplyPacket *>(packet);
+        if (RegionHandshakeReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RegionHandshakeReplyPacket(*RegionHandshakeReplyPacket_packet);
     }
 };
 
@@ -11232,7 +12389,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CoarseLocationUpdatePacket();
+        return new CoarseLocationUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CoarseLocationUpdatePacket *CoarseLocationUpdatePacket_packet = dynamic_cast<const CoarseLocationUpdatePacket *>(packet);
+        if (CoarseLocationUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CoarseLocationUpdatePacket(*CoarseLocationUpdatePacket_packet);
     }
 };
 
@@ -11298,7 +12462,14 @@ public:
         ImageData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ImageDataPacket();
+        return new ImageDataPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ImageDataPacket *ImageDataPacket_packet = dynamic_cast<const ImageDataPacket *>(packet);
+        if (ImageDataPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ImageDataPacket(*ImageDataPacket_packet);
     }
 };
 
@@ -11358,7 +12529,14 @@ public:
         ImageData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ImagePacketPacket();
+        return new ImagePacketPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ImagePacketPacket *ImagePacketPacket_packet = dynamic_cast<const ImagePacketPacket *>(packet);
+        if (ImagePacketPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ImagePacketPacket(*ImagePacketPacket_packet);
     }
 };
 
@@ -11415,7 +12593,14 @@ public:
         LayerData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LayerDataPacket();
+        return new LayerDataPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LayerDataPacket *LayerDataPacket_packet = dynamic_cast<const LayerDataPacket *>(packet);
+        if (LayerDataPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LayerDataPacket(*LayerDataPacket_packet);
     }
 };
 
@@ -11610,7 +12795,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectUpdatePacket();
+        return new ObjectUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectUpdatePacket *ObjectUpdatePacket_packet = dynamic_cast<const ObjectUpdatePacket *>(packet);
+        if (ObjectUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectUpdatePacket(*ObjectUpdatePacket_packet);
     }
 };
 
@@ -11673,7 +12865,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectUpdateCompressedPacket();
+        return new ObjectUpdateCompressedPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectUpdateCompressedPacket *ObjectUpdateCompressedPacket_packet = dynamic_cast<const ObjectUpdateCompressedPacket *>(packet);
+        if (ObjectUpdateCompressedPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectUpdateCompressedPacket(*ObjectUpdateCompressedPacket_packet);
     }
 };
 
@@ -11739,7 +12938,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectUpdateCachedPacket();
+        return new ObjectUpdateCachedPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectUpdateCachedPacket *ObjectUpdateCachedPacket_packet = dynamic_cast<const ObjectUpdateCachedPacket *>(packet);
+        if (ObjectUpdateCachedPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectUpdateCachedPacket(*ObjectUpdateCachedPacket_packet);
     }
 };
 
@@ -11802,7 +13008,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ImprovedTerseObjectUpdatePacket();
+        return new ImprovedTerseObjectUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ImprovedTerseObjectUpdatePacket *ImprovedTerseObjectUpdatePacket_packet = dynamic_cast<const ImprovedTerseObjectUpdatePacket *>(packet);
+        if (ImprovedTerseObjectUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ImprovedTerseObjectUpdatePacket(*ImprovedTerseObjectUpdatePacket_packet);
     }
 };
 
@@ -11842,7 +13055,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new KillObjectPacket();
+        return new KillObjectPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const KillObjectPacket *KillObjectPacket_packet = dynamic_cast<const KillObjectPacket *>(packet);
+        if (KillObjectPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new KillObjectPacket(*KillObjectPacket_packet);
     }
 };
 
@@ -11931,7 +13151,14 @@ public:
         Info.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CrossedRegionPacket();
+        return new CrossedRegionPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CrossedRegionPacket *CrossedRegionPacket_packet = dynamic_cast<const CrossedRegionPacket *>(packet);
+        if (CrossedRegionPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CrossedRegionPacket(*CrossedRegionPacket_packet);
     }
 };
 
@@ -11986,7 +13213,14 @@ public:
         TimeInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SimulatorViewerTimeMessagePacket();
+        return new SimulatorViewerTimeMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SimulatorViewerTimeMessagePacket *SimulatorViewerTimeMessagePacket_packet = dynamic_cast<const SimulatorViewerTimeMessagePacket *>(packet);
+        if (SimulatorViewerTimeMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SimulatorViewerTimeMessagePacket(*SimulatorViewerTimeMessagePacket_packet);
     }
 };
 
@@ -12032,7 +13266,14 @@ public:
         SimulatorInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EnableSimulatorPacket();
+        return new EnableSimulatorPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EnableSimulatorPacket *EnableSimulatorPacket_packet = dynamic_cast<const EnableSimulatorPacket *>(packet);
+        if (EnableSimulatorPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EnableSimulatorPacket(*EnableSimulatorPacket_packet);
     }
 };
 
@@ -12053,7 +13294,14 @@ public:
     virtual void serialize(PacketBuffer &buffer) const {}
     virtual void deserialize(PacketBuffer &buffer) {}
     virtual PacketBase *clone() const {
-        return new DisableSimulatorPacket();
+        return new DisableSimulatorPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DisableSimulatorPacket *DisableSimulatorPacket_packet = dynamic_cast<const DisableSimulatorPacket *>(packet);
+        if (DisableSimulatorPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DisableSimulatorPacket(*DisableSimulatorPacket_packet);
     }
 };
 
@@ -12096,7 +13344,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ConfirmEnableSimulatorPacket();
+        return new ConfirmEnableSimulatorPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ConfirmEnableSimulatorPacket *ConfirmEnableSimulatorPacket_packet = dynamic_cast<const ConfirmEnableSimulatorPacket *>(packet);
+        if (ConfirmEnableSimulatorPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ConfirmEnableSimulatorPacket(*ConfirmEnableSimulatorPacket_packet);
     }
 };
 
@@ -12148,7 +13403,14 @@ public:
         TransferInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TransferRequestPacket();
+        return new TransferRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TransferRequestPacket *TransferRequestPacket_packet = dynamic_cast<const TransferRequestPacket *>(packet);
+        if (TransferRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TransferRequestPacket(*TransferRequestPacket_packet);
     }
 };
 
@@ -12203,7 +13465,14 @@ public:
         TransferInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TransferInfoPacket();
+        return new TransferInfoPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TransferInfoPacket *TransferInfoPacket_packet = dynamic_cast<const TransferInfoPacket *>(packet);
+        if (TransferInfoPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TransferInfoPacket(*TransferInfoPacket_packet);
     }
 };
 
@@ -12254,7 +13523,14 @@ public:
         TransferData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TransferPacketPacket();
+        return new TransferPacketPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TransferPacketPacket *TransferPacketPacket_packet = dynamic_cast<const TransferPacketPacket *>(packet);
+        if (TransferPacketPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TransferPacketPacket(*TransferPacketPacket_packet);
     }
 };
 
@@ -12297,7 +13573,14 @@ public:
         TransferInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TransferAbortPacket();
+        return new TransferAbortPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TransferAbortPacket *TransferAbortPacket_packet = dynamic_cast<const TransferAbortPacket *>(packet);
+        if (TransferAbortPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TransferAbortPacket(*TransferAbortPacket_packet);
     }
 };
 
@@ -12355,7 +13638,14 @@ public:
         XferID.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RequestXferPacket();
+        return new RequestXferPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RequestXferPacket *RequestXferPacket_packet = dynamic_cast<const RequestXferPacket *>(packet);
+        if (RequestXferPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RequestXferPacket(*RequestXferPacket_packet);
     }
 };
 
@@ -12414,7 +13704,14 @@ public:
         DataPacket.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SendXferPacketPacket();
+        return new SendXferPacketPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SendXferPacketPacket *SendXferPacketPacket_packet = dynamic_cast<const SendXferPacketPacket *>(packet);
+        if (SendXferPacketPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SendXferPacketPacket(*SendXferPacketPacket_packet);
     }
 };
 
@@ -12456,7 +13753,14 @@ public:
         XferID.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ConfirmXferPacketPacket();
+        return new ConfirmXferPacketPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ConfirmXferPacketPacket *ConfirmXferPacketPacket_packet = dynamic_cast<const ConfirmXferPacketPacket *>(packet);
+        if (ConfirmXferPacketPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ConfirmXferPacketPacket(*ConfirmXferPacketPacket_packet);
     }
 };
 
@@ -12498,7 +13802,14 @@ public:
         XferID.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AbortXferPacket();
+        return new AbortXferPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AbortXferPacket *AbortXferPacket_packet = dynamic_cast<const AbortXferPacket *>(packet);
+        if (AbortXferPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AbortXferPacket(*AbortXferPacket_packet);
     }
 };
 
@@ -12592,7 +13903,14 @@ public:
         PhysicalAvatarEventList.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarAnimationPacket();
+        return new AvatarAnimationPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarAnimationPacket *AvatarAnimationPacket_packet = dynamic_cast<const AvatarAnimationPacket *>(packet);
+        if (AvatarAnimationPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarAnimationPacket(*AvatarAnimationPacket_packet);
     }
 };
 
@@ -12669,7 +13987,14 @@ public:
         VisualParam.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarAppearancePacket();
+        return new AvatarAppearancePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarAppearancePacket *AvatarAppearancePacket_packet = dynamic_cast<const AvatarAppearancePacket *>(packet);
+        if (AvatarAppearancePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarAppearancePacket(*AvatarAppearancePacket_packet);
     }
 };
 
@@ -12741,7 +14066,14 @@ public:
         SitTransform.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarSitResponsePacket();
+        return new AvatarSitResponsePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarSitResponsePacket *AvatarSitResponsePacket_packet = dynamic_cast<const AvatarSitResponsePacket *>(packet);
+        if (AvatarSitResponsePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarSitResponsePacket(*AvatarSitResponsePacket_packet);
     }
 };
 
@@ -12801,7 +14133,14 @@ public:
         CameraProperty.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SetFollowCamPropertiesPacket();
+        return new SetFollowCamPropertiesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SetFollowCamPropertiesPacket *SetFollowCamPropertiesPacket_packet = dynamic_cast<const SetFollowCamPropertiesPacket *>(packet);
+        if (SetFollowCamPropertiesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SetFollowCamPropertiesPacket(*SetFollowCamPropertiesPacket_packet);
     }
 };
 
@@ -12841,7 +14180,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ClearFollowCamPropertiesPacket();
+        return new ClearFollowCamPropertiesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ClearFollowCamPropertiesPacket *ClearFollowCamPropertiesPacket_packet = dynamic_cast<const ClearFollowCamPropertiesPacket *>(packet);
+        if (ClearFollowCamPropertiesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ClearFollowCamPropertiesPacket(*ClearFollowCamPropertiesPacket_packet);
     }
 };
 
@@ -12881,7 +14227,14 @@ public:
         CameraCollidePlane.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CameraConstraintPacket();
+        return new CameraConstraintPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CameraConstraintPacket *CameraConstraintPacket_packet = dynamic_cast<const CameraConstraintPacket *>(packet);
+        if (CameraConstraintPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CameraConstraintPacket(*CameraConstraintPacket_packet);
     }
 };
 
@@ -12999,7 +14352,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectPropertiesPacket();
+        return new ObjectPropertiesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectPropertiesPacket *ObjectPropertiesPacket_packet = dynamic_cast<const ObjectPropertiesPacket *>(packet);
+        if (ObjectPropertiesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectPropertiesPacket(*ObjectPropertiesPacket_packet);
     }
 };
 
@@ -13084,7 +14444,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectPropertiesFamilyPacket();
+        return new ObjectPropertiesFamilyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectPropertiesFamilyPacket *ObjectPropertiesFamilyPacket_packet = dynamic_cast<const ObjectPropertiesFamilyPacket *>(packet);
+        if (ObjectPropertiesFamilyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectPropertiesFamilyPacket(*ObjectPropertiesFamilyPacket_packet);
     }
 };
 
@@ -13123,7 +14490,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RequestPayPricePacket();
+        return new RequestPayPricePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RequestPayPricePacket *RequestPayPricePacket_packet = dynamic_cast<const RequestPayPricePacket *>(packet);
+        if (RequestPayPricePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RequestPayPricePacket(*RequestPayPricePacket_packet);
     }
 };
 
@@ -13183,7 +14557,14 @@ public:
         ButtonData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new PayPriceReplyPacket();
+        return new PayPriceReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const PayPriceReplyPacket *PayPriceReplyPacket_packet = dynamic_cast<const PayPriceReplyPacket *>(packet);
+        if (PayPriceReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new PayPriceReplyPacket(*PayPriceReplyPacket_packet);
     }
 };
 
@@ -13249,7 +14630,14 @@ public:
         UserInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new KickUserPacket();
+        return new KickUserPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const KickUserPacket *KickUserPacket_packet = dynamic_cast<const KickUserPacket *>(packet);
+        if (KickUserPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new KickUserPacket(*KickUserPacket_packet);
     }
 };
 
@@ -13292,7 +14680,14 @@ public:
         UserInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new KickUserAckPacket();
+        return new KickUserAckPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const KickUserAckPacket *KickUserAckPacket_packet = dynamic_cast<const KickUserAckPacket *>(packet);
+        if (KickUserAckPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new KickUserAckPacket(*KickUserAckPacket_packet);
     }
 };
 
@@ -13343,7 +14738,14 @@ public:
         UserInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GodKickUserPacket();
+        return new GodKickUserPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GodKickUserPacket *GodKickUserPacket_packet = dynamic_cast<const GodKickUserPacket *>(packet);
+        if (GodKickUserPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GodKickUserPacket(*GodKickUserPacket_packet);
     }
 };
 
@@ -13383,7 +14785,14 @@ public:
         AgentInfo.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SystemKickUserPacket();
+        return new SystemKickUserPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SystemKickUserPacket *SystemKickUserPacket_packet = dynamic_cast<const SystemKickUserPacket *>(packet);
+        if (SystemKickUserPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SystemKickUserPacket(*SystemKickUserPacket_packet);
     }
 };
 
@@ -13445,7 +14854,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EjectUserPacket();
+        return new EjectUserPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EjectUserPacket *EjectUserPacket_packet = dynamic_cast<const EjectUserPacket *>(packet);
+        if (EjectUserPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EjectUserPacket(*EjectUserPacket_packet);
     }
 };
 
@@ -13507,7 +14923,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new FreezeUserPacket();
+        return new FreezeUserPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const FreezeUserPacket *FreezeUserPacket_packet = dynamic_cast<const FreezeUserPacket *>(packet);
+        if (FreezeUserPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new FreezeUserPacket(*FreezeUserPacket_packet);
     }
 };
 
@@ -13552,7 +14975,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarPropertiesRequestPacket();
+        return new AvatarPropertiesRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarPropertiesRequestPacket *AvatarPropertiesRequestPacket_packet = dynamic_cast<const AvatarPropertiesRequestPacket *>(packet);
+        if (AvatarPropertiesRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarPropertiesRequestPacket(*AvatarPropertiesRequestPacket_packet);
     }
 };
 
@@ -13601,7 +15031,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarPropertiesRequestBackendPacket();
+        return new AvatarPropertiesRequestBackendPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarPropertiesRequestBackendPacket *AvatarPropertiesRequestBackendPacket_packet = dynamic_cast<const AvatarPropertiesRequestBackendPacket *>(packet);
+        if (AvatarPropertiesRequestBackendPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarPropertiesRequestBackendPacket(*AvatarPropertiesRequestBackendPacket_packet);
     }
 };
 
@@ -13685,7 +15122,14 @@ public:
         PropertiesData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarPropertiesReplyPacket();
+        return new AvatarPropertiesReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarPropertiesReplyPacket *AvatarPropertiesReplyPacket_packet = dynamic_cast<const AvatarPropertiesReplyPacket *>(packet);
+        if (AvatarPropertiesReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarPropertiesReplyPacket(*AvatarPropertiesReplyPacket_packet);
     }
 };
 
@@ -13757,7 +15201,14 @@ public:
         PropertiesData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarInterestsReplyPacket();
+        return new AvatarInterestsReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarInterestsReplyPacket *AvatarInterestsReplyPacket_packet = dynamic_cast<const AvatarInterestsReplyPacket *>(packet);
+        if (AvatarInterestsReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarInterestsReplyPacket(*AvatarInterestsReplyPacket_packet);
     }
 };
 
@@ -13849,7 +15300,14 @@ public:
         NewGroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarGroupsReplyPacket();
+        return new AvatarGroupsReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarGroupsReplyPacket *AvatarGroupsReplyPacket_packet = dynamic_cast<const AvatarGroupsReplyPacket *>(packet);
+        if (AvatarGroupsReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarGroupsReplyPacket(*AvatarGroupsReplyPacket_packet);
     }
 };
 
@@ -13927,7 +15385,14 @@ public:
         PropertiesData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarPropertiesUpdatePacket();
+        return new AvatarPropertiesUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarPropertiesUpdatePacket *AvatarPropertiesUpdatePacket_packet = dynamic_cast<const AvatarPropertiesUpdatePacket *>(packet);
+        if (AvatarPropertiesUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarPropertiesUpdatePacket(*AvatarPropertiesUpdatePacket_packet);
     }
 };
 
@@ -13999,7 +15464,14 @@ public:
         PropertiesData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarInterestsUpdatePacket();
+        return new AvatarInterestsUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarInterestsUpdatePacket *AvatarInterestsUpdatePacket_packet = dynamic_cast<const AvatarInterestsUpdatePacket *>(packet);
+        if (AvatarInterestsUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarInterestsUpdatePacket(*AvatarInterestsUpdatePacket_packet);
     }
 };
 
@@ -14059,7 +15531,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarNotesReplyPacket();
+        return new AvatarNotesReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarNotesReplyPacket *AvatarNotesReplyPacket_packet = dynamic_cast<const AvatarNotesReplyPacket *>(packet);
+        if (AvatarNotesReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarNotesReplyPacket(*AvatarNotesReplyPacket_packet);
     }
 };
 
@@ -14121,7 +15600,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarNotesUpdatePacket();
+        return new AvatarNotesUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarNotesUpdatePacket *AvatarNotesUpdatePacket_packet = dynamic_cast<const AvatarNotesUpdatePacket *>(packet);
+        if (AvatarNotesUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarNotesUpdatePacket(*AvatarNotesUpdatePacket_packet);
     }
 };
 
@@ -14184,7 +15670,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AvatarPicksReplyPacket();
+        return new AvatarPicksReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AvatarPicksReplyPacket *AvatarPicksReplyPacket_packet = dynamic_cast<const AvatarPicksReplyPacket *>(packet);
+        if (AvatarPicksReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AvatarPicksReplyPacket(*AvatarPicksReplyPacket_packet);
     }
 };
 
@@ -14243,7 +15736,14 @@ public:
         EventData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EventInfoRequestPacket();
+        return new EventInfoRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EventInfoRequestPacket *EventInfoRequestPacket_packet = dynamic_cast<const EventInfoRequestPacket *>(packet);
+        if (EventInfoRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EventInfoRequestPacket(*EventInfoRequestPacket_packet);
     }
 };
 
@@ -14336,7 +15836,14 @@ public:
         EventData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EventInfoReplyPacket();
+        return new EventInfoReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EventInfoReplyPacket *EventInfoReplyPacket_packet = dynamic_cast<const EventInfoReplyPacket *>(packet);
+        if (EventInfoReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EventInfoReplyPacket(*EventInfoReplyPacket_packet);
     }
 };
 
@@ -14395,7 +15902,14 @@ public:
         EventData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EventNotificationAddRequestPacket();
+        return new EventNotificationAddRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EventNotificationAddRequestPacket *EventNotificationAddRequestPacket_packet = dynamic_cast<const EventNotificationAddRequestPacket *>(packet);
+        if (EventNotificationAddRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EventNotificationAddRequestPacket(*EventNotificationAddRequestPacket_packet);
     }
 };
 
@@ -14454,7 +15968,14 @@ public:
         EventData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EventNotificationRemoveRequestPacket();
+        return new EventNotificationRemoveRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EventNotificationRemoveRequestPacket *EventNotificationRemoveRequestPacket_packet = dynamic_cast<const EventNotificationRemoveRequestPacket *>(packet);
+        if (EventNotificationRemoveRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EventNotificationRemoveRequestPacket(*EventNotificationRemoveRequestPacket_packet);
     }
 };
 
@@ -14539,7 +16060,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EventGodDeletePacket();
+        return new EventGodDeletePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EventGodDeletePacket *EventGodDeletePacket_packet = dynamic_cast<const EventGodDeletePacket *>(packet);
+        if (EventGodDeletePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EventGodDeletePacket(*EventGodDeletePacket_packet);
     }
 };
 
@@ -14632,7 +16160,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new PickInfoReplyPacket();
+        return new PickInfoReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const PickInfoReplyPacket *PickInfoReplyPacket_packet = dynamic_cast<const PickInfoReplyPacket *>(packet);
+        if (PickInfoReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new PickInfoReplyPacket(*PickInfoReplyPacket_packet);
     }
 };
 
@@ -14718,7 +16253,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new PickInfoUpdatePacket();
+        return new PickInfoUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const PickInfoUpdatePacket *PickInfoUpdatePacket_packet = dynamic_cast<const PickInfoUpdatePacket *>(packet);
+        if (PickInfoUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new PickInfoUpdatePacket(*PickInfoUpdatePacket_packet);
     }
 };
 
@@ -14777,7 +16319,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new PickDeletePacket();
+        return new PickDeletePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const PickDeletePacket *PickDeletePacket_packet = dynamic_cast<const PickDeletePacket *>(packet);
+        if (PickDeletePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new PickDeletePacket(*PickDeletePacket_packet);
     }
 };
 
@@ -14839,7 +16388,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new PickGodDeletePacket();
+        return new PickGodDeletePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const PickGodDeletePacket *PickGodDeletePacket_packet = dynamic_cast<const PickGodDeletePacket *>(packet);
+        if (PickGodDeletePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new PickGodDeletePacket(*PickGodDeletePacket_packet);
     }
 };
 
@@ -14891,7 +16447,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptQuestionPacket();
+        return new ScriptQuestionPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptQuestionPacket *ScriptQuestionPacket_packet = dynamic_cast<const ScriptQuestionPacket *>(packet);
+        if (ScriptQuestionPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptQuestionPacket(*ScriptQuestionPacket_packet);
     }
 };
 
@@ -14937,7 +16500,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptControlChangePacket();
+        return new ScriptControlChangePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptControlChangePacket *ScriptControlChangePacket_packet = dynamic_cast<const ScriptControlChangePacket *>(packet);
+        if (ScriptControlChangePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptControlChangePacket(*ScriptControlChangePacket_packet);
     }
 };
 
@@ -15012,7 +16582,14 @@ public:
         Buttons.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptDialogPacket();
+        return new ScriptDialogPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptDialogPacket *ScriptDialogPacket_packet = dynamic_cast<const ScriptDialogPacket *>(packet);
+        if (ScriptDialogPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptDialogPacket(*ScriptDialogPacket_packet);
     }
 };
 
@@ -15081,7 +16658,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptDialogReplyPacket();
+        return new ScriptDialogReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptDialogReplyPacket *ScriptDialogReplyPacket_packet = dynamic_cast<const ScriptDialogReplyPacket *>(packet);
+        if (ScriptDialogReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptDialogReplyPacket(*ScriptDialogReplyPacket_packet);
     }
 };
 
@@ -15123,7 +16707,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ForceScriptControlReleasePacket();
+        return new ForceScriptControlReleasePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ForceScriptControlReleasePacket *ForceScriptControlReleasePacket_packet = dynamic_cast<const ForceScriptControlReleasePacket *>(packet);
+        if (ForceScriptControlReleasePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ForceScriptControlReleasePacket(*ForceScriptControlReleasePacket_packet);
     }
 };
 
@@ -15185,7 +16776,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RevokePermissionsPacket();
+        return new RevokePermissionsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RevokePermissionsPacket *RevokePermissionsPacket_packet = dynamic_cast<const RevokePermissionsPacket *>(packet);
+        if (RevokePermissionsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RevokePermissionsPacket(*RevokePermissionsPacket_packet);
     }
 };
 
@@ -15240,7 +16838,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LoadURLPacket();
+        return new LoadURLPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LoadURLPacket *LoadURLPacket_packet = dynamic_cast<const LoadURLPacket *>(packet);
+        if (LoadURLPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LoadURLPacket(*LoadURLPacket_packet);
     }
 };
 
@@ -15289,7 +16894,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptTeleportRequestPacket();
+        return new ScriptTeleportRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptTeleportRequestPacket *ScriptTeleportRequestPacket_packet = dynamic_cast<const ScriptTeleportRequestPacket *>(packet);
+        if (ScriptTeleportRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptTeleportRequestPacket(*ScriptTeleportRequestPacket_packet);
     }
 };
 
@@ -15332,7 +16944,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelOverlayPacket();
+        return new ParcelOverlayPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelOverlayPacket *ParcelOverlayPacket_packet = dynamic_cast<const ParcelOverlayPacket *>(packet);
+        if (ParcelOverlayPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelOverlayPacket(*ParcelOverlayPacket_packet);
     }
 };
 
@@ -15407,7 +17026,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelPropertiesRequestPacket();
+        return new ParcelPropertiesRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelPropertiesRequestPacket *ParcelPropertiesRequestPacket_packet = dynamic_cast<const ParcelPropertiesRequestPacket *>(packet);
+        if (ParcelPropertiesRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelPropertiesRequestPacket(*ParcelPropertiesRequestPacket_packet);
     }
 };
 
@@ -15470,7 +17096,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelPropertiesRequestByIDPacket();
+        return new ParcelPropertiesRequestByIDPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelPropertiesRequestByIDPacket *ParcelPropertiesRequestByIDPacket_packet = dynamic_cast<const ParcelPropertiesRequestByIDPacket *>(packet);
+        if (ParcelPropertiesRequestByIDPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelPropertiesRequestByIDPacket(*ParcelPropertiesRequestByIDPacket_packet);
     }
 };
 
@@ -15671,7 +17304,14 @@ public:
         AgeVerificationBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelPropertiesPacket();
+        return new ParcelPropertiesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelPropertiesPacket *ParcelPropertiesPacket_packet = dynamic_cast<const ParcelPropertiesPacket *>(packet);
+        if (ParcelPropertiesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelPropertiesPacket(*ParcelPropertiesPacket_packet);
     }
 };
 
@@ -15785,7 +17425,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelPropertiesUpdatePacket();
+        return new ParcelPropertiesUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelPropertiesUpdatePacket *ParcelPropertiesUpdatePacket_packet = dynamic_cast<const ParcelPropertiesUpdatePacket *>(packet);
+        if (ParcelPropertiesUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelPropertiesUpdatePacket(*ParcelPropertiesUpdatePacket_packet);
     }
 };
 
@@ -15882,7 +17529,14 @@ public:
         OwnerIDs.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelReturnObjectsPacket();
+        return new ParcelReturnObjectsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelReturnObjectsPacket *ParcelReturnObjectsPacket_packet = dynamic_cast<const ParcelReturnObjectsPacket *>(packet);
+        if (ParcelReturnObjectsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelReturnObjectsPacket(*ParcelReturnObjectsPacket_packet);
     }
 };
 
@@ -15945,7 +17599,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelSetOtherCleanTimePacket();
+        return new ParcelSetOtherCleanTimePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelSetOtherCleanTimePacket *ParcelSetOtherCleanTimePacket_packet = dynamic_cast<const ParcelSetOtherCleanTimePacket *>(packet);
+        if (ParcelSetOtherCleanTimePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelSetOtherCleanTimePacket(*ParcelSetOtherCleanTimePacket_packet);
     }
 };
 
@@ -16042,7 +17703,14 @@ public:
         OwnerIDs.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelDisableObjectsPacket();
+        return new ParcelDisableObjectsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelDisableObjectsPacket *ParcelDisableObjectsPacket_packet = dynamic_cast<const ParcelDisableObjectsPacket *>(packet);
+        if (ParcelDisableObjectsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelDisableObjectsPacket(*ParcelDisableObjectsPacket_packet);
     }
 };
 
@@ -16122,7 +17790,14 @@ public:
         ReturnIDs.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelSelectObjectsPacket();
+        return new ParcelSelectObjectsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelSelectObjectsPacket *ParcelSelectObjectsPacket_packet = dynamic_cast<const ParcelSelectObjectsPacket *>(packet);
+        if (ParcelSelectObjectsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelSelectObjectsPacket(*ParcelSelectObjectsPacket_packet);
     }
 };
 
@@ -16164,7 +17839,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EstateCovenantRequestPacket();
+        return new EstateCovenantRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EstateCovenantRequestPacket *EstateCovenantRequestPacket_packet = dynamic_cast<const EstateCovenantRequestPacket *>(packet);
+        if (EstateCovenantRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EstateCovenantRequestPacket(*EstateCovenantRequestPacket_packet);
     }
 };
 
@@ -16213,7 +17895,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EstateCovenantReplyPacket();
+        return new EstateCovenantReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EstateCovenantReplyPacket *EstateCovenantReplyPacket_packet = dynamic_cast<const EstateCovenantReplyPacket *>(packet);
+        if (EstateCovenantReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EstateCovenantReplyPacket(*EstateCovenantReplyPacket_packet);
     }
 };
 
@@ -16270,7 +17959,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ForceObjectSelectPacket();
+        return new ForceObjectSelectPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ForceObjectSelectPacket *ForceObjectSelectPacket_packet = dynamic_cast<const ForceObjectSelectPacket *>(packet);
+        if (ForceObjectSelectPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ForceObjectSelectPacket(*ForceObjectSelectPacket_packet);
     }
 };
 
@@ -16329,7 +18025,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelBuyPassPacket();
+        return new ParcelBuyPassPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelBuyPassPacket *ParcelBuyPassPacket_packet = dynamic_cast<const ParcelBuyPassPacket *>(packet);
+        if (ParcelBuyPassPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelBuyPassPacket(*ParcelBuyPassPacket_packet);
     }
 };
 
@@ -16391,7 +18094,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelDeedToGroupPacket();
+        return new ParcelDeedToGroupPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelDeedToGroupPacket *ParcelDeedToGroupPacket_packet = dynamic_cast<const ParcelDeedToGroupPacket *>(packet);
+        if (ParcelDeedToGroupPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelDeedToGroupPacket(*ParcelDeedToGroupPacket_packet);
     }
 };
 
@@ -16450,7 +18160,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelReclaimPacket();
+        return new ParcelReclaimPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelReclaimPacket *ParcelReclaimPacket_packet = dynamic_cast<const ParcelReclaimPacket *>(packet);
+        if (ParcelReclaimPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelReclaimPacket(*ParcelReclaimPacket_packet);
     }
 };
 
@@ -16542,7 +18259,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelClaimPacket();
+        return new ParcelClaimPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelClaimPacket *ParcelClaimPacket_packet = dynamic_cast<const ParcelClaimPacket *>(packet);
+        if (ParcelClaimPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelClaimPacket(*ParcelClaimPacket_packet);
     }
 };
 
@@ -16610,7 +18334,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelJoinPacket();
+        return new ParcelJoinPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelJoinPacket *ParcelJoinPacket_packet = dynamic_cast<const ParcelJoinPacket *>(packet);
+        if (ParcelJoinPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelJoinPacket(*ParcelJoinPacket_packet);
     }
 };
 
@@ -16678,7 +18409,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelDividePacket();
+        return new ParcelDividePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelDividePacket *ParcelDividePacket_packet = dynamic_cast<const ParcelDividePacket *>(packet);
+        if (ParcelDividePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelDividePacket(*ParcelDividePacket_packet);
     }
 };
 
@@ -16737,7 +18475,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelReleasePacket();
+        return new ParcelReleasePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelReleasePacket *ParcelReleasePacket_packet = dynamic_cast<const ParcelReleasePacket *>(packet);
+        if (ParcelReleasePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelReleasePacket(*ParcelReleasePacket_packet);
     }
 };
 
@@ -16829,7 +18574,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelBuyPacket();
+        return new ParcelBuyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelBuyPacket *ParcelBuyPacket_packet = dynamic_cast<const ParcelBuyPacket *>(packet);
+        if (ParcelBuyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelBuyPacket(*ParcelBuyPacket_packet);
     }
 };
 
@@ -16892,7 +18644,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelGodForceOwnerPacket();
+        return new ParcelGodForceOwnerPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelGodForceOwnerPacket *ParcelGodForceOwnerPacket_packet = dynamic_cast<const ParcelGodForceOwnerPacket *>(packet);
+        if (ParcelGodForceOwnerPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelGodForceOwnerPacket(*ParcelGodForceOwnerPacket_packet);
     }
 };
 
@@ -16958,7 +18717,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelAccessListRequestPacket();
+        return new ParcelAccessListRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelAccessListRequestPacket *ParcelAccessListRequestPacket_packet = dynamic_cast<const ParcelAccessListRequestPacket *>(packet);
+        if (ParcelAccessListRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelAccessListRequestPacket(*ParcelAccessListRequestPacket_packet);
     }
 };
 
@@ -17030,7 +18796,14 @@ public:
         List.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelAccessListReplyPacket();
+        return new ParcelAccessListReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelAccessListReplyPacket *ParcelAccessListReplyPacket_packet = dynamic_cast<const ParcelAccessListReplyPacket *>(packet);
+        if (ParcelAccessListReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelAccessListReplyPacket(*ParcelAccessListReplyPacket_packet);
     }
 };
 
@@ -17125,7 +18898,14 @@ public:
         List.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelAccessListUpdatePacket();
+        return new ParcelAccessListUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelAccessListUpdatePacket *ParcelAccessListUpdatePacket_packet = dynamic_cast<const ParcelAccessListUpdatePacket *>(packet);
+        if (ParcelAccessListUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelAccessListUpdatePacket(*ParcelAccessListUpdatePacket_packet);
     }
 };
 
@@ -17187,7 +18967,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelDwellRequestPacket();
+        return new ParcelDwellRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelDwellRequestPacket *ParcelDwellRequestPacket_packet = dynamic_cast<const ParcelDwellRequestPacket *>(packet);
+        if (ParcelDwellRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelDwellRequestPacket(*ParcelDwellRequestPacket_packet);
     }
 };
 
@@ -17250,7 +19037,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelDwellReplyPacket();
+        return new ParcelDwellReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelDwellReplyPacket *ParcelDwellReplyPacket_packet = dynamic_cast<const ParcelDwellReplyPacket *>(packet);
+        if (ParcelDwellReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelDwellReplyPacket(*ParcelDwellReplyPacket_packet);
     }
 };
 
@@ -17320,7 +19114,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RequestParcelTransferPacket();
+        return new RequestParcelTransferPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RequestParcelTransferPacket *RequestParcelTransferPacket_packet = dynamic_cast<const RequestParcelTransferPacket *>(packet);
+        if (RequestParcelTransferPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RequestParcelTransferPacket(*RequestParcelTransferPacket_packet);
     }
 };
 
@@ -17420,7 +19221,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UpdateParcelPacket();
+        return new UpdateParcelPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UpdateParcelPacket *UpdateParcelPacket_packet = dynamic_cast<const UpdateParcelPacket *>(packet);
+        if (UpdateParcelPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UpdateParcelPacket(*UpdateParcelPacket_packet);
     }
 };
 
@@ -17460,7 +19268,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RemoveParcelPacket();
+        return new RemoveParcelPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RemoveParcelPacket *RemoveParcelPacket_packet = dynamic_cast<const RemoveParcelPacket *>(packet);
+        if (RemoveParcelPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RemoveParcelPacket(*RemoveParcelPacket_packet);
     }
 };
 
@@ -17517,7 +19332,14 @@ public:
         SlaveParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MergeParcelPacket();
+        return new MergeParcelPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MergeParcelPacket *MergeParcelPacket_packet = dynamic_cast<const MergeParcelPacket *>(packet);
+        if (MergeParcelPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MergeParcelPacket(*MergeParcelPacket_packet);
     }
 };
 
@@ -17606,7 +19428,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LogParcelChangesPacket();
+        return new LogParcelChangesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LogParcelChangesPacket *LogParcelChangesPacket_packet = dynamic_cast<const LogParcelChangesPacket *>(packet);
+        if (LogParcelChangesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LogParcelChangesPacket(*LogParcelChangesPacket_packet);
     }
 };
 
@@ -17646,7 +19475,14 @@ public:
         RegionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CheckParcelSalesPacket();
+        return new CheckParcelSalesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CheckParcelSalesPacket *CheckParcelSalesPacket_packet = dynamic_cast<const CheckParcelSalesPacket *>(packet);
+        if (CheckParcelSalesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CheckParcelSalesPacket(*CheckParcelSalesPacket_packet);
     }
 };
 
@@ -17689,7 +19525,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelSalesPacket();
+        return new ParcelSalesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelSalesPacket *ParcelSalesPacket_packet = dynamic_cast<const ParcelSalesPacket *>(packet);
+        if (ParcelSalesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelSalesPacket(*ParcelSalesPacket_packet);
     }
 };
 
@@ -17748,7 +19591,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelGodMarkAsContentPacket();
+        return new ParcelGodMarkAsContentPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelGodMarkAsContentPacket *ParcelGodMarkAsContentPacket_packet = dynamic_cast<const ParcelGodMarkAsContentPacket *>(packet);
+        if (ParcelGodMarkAsContentPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelGodMarkAsContentPacket(*ParcelGodMarkAsContentPacket_packet);
     }
 };
 
@@ -17810,7 +19660,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ViewerStartAuctionPacket();
+        return new ViewerStartAuctionPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ViewerStartAuctionPacket *ViewerStartAuctionPacket_packet = dynamic_cast<const ViewerStartAuctionPacket *>(packet);
+        if (ViewerStartAuctionPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ViewerStartAuctionPacket(*ViewerStartAuctionPacket_packet);
     }
 };
 
@@ -17873,7 +19730,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new StartAuctionPacket();
+        return new StartAuctionPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const StartAuctionPacket *StartAuctionPacket_packet = dynamic_cast<const StartAuctionPacket *>(packet);
+        if (StartAuctionPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new StartAuctionPacket(*StartAuctionPacket_packet);
     }
 };
 
@@ -17916,7 +19780,14 @@ public:
         AuctionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ConfirmAuctionStartPacket();
+        return new ConfirmAuctionStartPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ConfirmAuctionStartPacket *ConfirmAuctionStartPacket_packet = dynamic_cast<const ConfirmAuctionStartPacket *>(packet);
+        if (ConfirmAuctionStartPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ConfirmAuctionStartPacket(*ConfirmAuctionStartPacket_packet);
     }
 };
 
@@ -17956,7 +19827,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CompleteAuctionPacket();
+        return new CompleteAuctionPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CompleteAuctionPacket *CompleteAuctionPacket_packet = dynamic_cast<const CompleteAuctionPacket *>(packet);
+        if (CompleteAuctionPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CompleteAuctionPacket(*CompleteAuctionPacket_packet);
     }
 };
 
@@ -17996,7 +19874,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CancelAuctionPacket();
+        return new CancelAuctionPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CancelAuctionPacket *CancelAuctionPacket_packet = dynamic_cast<const CancelAuctionPacket *>(packet);
+        if (CancelAuctionPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CancelAuctionPacket(*CancelAuctionPacket_packet);
     }
 };
 
@@ -18036,7 +19921,14 @@ public:
         RegionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CheckParcelAuctionsPacket();
+        return new CheckParcelAuctionsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CheckParcelAuctionsPacket *CheckParcelAuctionsPacket_packet = dynamic_cast<const CheckParcelAuctionsPacket *>(packet);
+        if (CheckParcelAuctionsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CheckParcelAuctionsPacket(*CheckParcelAuctionsPacket_packet);
     }
 };
 
@@ -18079,7 +19971,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelAuctionsPacket();
+        return new ParcelAuctionsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelAuctionsPacket *ParcelAuctionsPacket_packet = dynamic_cast<const ParcelAuctionsPacket *>(packet);
+        if (ParcelAuctionsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelAuctionsPacket(*ParcelAuctionsPacket_packet);
     }
 };
 
@@ -18118,7 +20017,14 @@ public:
         UUIDNameBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UUIDNameRequestPacket();
+        return new UUIDNameRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UUIDNameRequestPacket *UUIDNameRequestPacket_packet = dynamic_cast<const UUIDNameRequestPacket *>(packet);
+        if (UUIDNameRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UUIDNameRequestPacket(*UUIDNameRequestPacket_packet);
     }
 };
 
@@ -18164,7 +20070,14 @@ public:
         UUIDNameBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UUIDNameReplyPacket();
+        return new UUIDNameReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UUIDNameReplyPacket *UUIDNameReplyPacket_packet = dynamic_cast<const UUIDNameReplyPacket *>(packet);
+        if (UUIDNameReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UUIDNameReplyPacket(*UUIDNameReplyPacket_packet);
     }
 };
 
@@ -18203,7 +20116,14 @@ public:
         UUIDNameBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UUIDGroupNameRequestPacket();
+        return new UUIDGroupNameRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UUIDGroupNameRequestPacket *UUIDGroupNameRequestPacket_packet = dynamic_cast<const UUIDGroupNameRequestPacket *>(packet);
+        if (UUIDGroupNameRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UUIDGroupNameRequestPacket(*UUIDGroupNameRequestPacket_packet);
     }
 };
 
@@ -18246,7 +20166,14 @@ public:
         UUIDNameBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UUIDGroupNameReplyPacket();
+        return new UUIDGroupNameReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UUIDGroupNameReplyPacket *UUIDGroupNameReplyPacket_packet = dynamic_cast<const UUIDGroupNameReplyPacket *>(packet);
+        if (UUIDGroupNameReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UUIDGroupNameReplyPacket(*UUIDGroupNameReplyPacket_packet);
     }
 };
 
@@ -18313,7 +20240,14 @@ public:
         ChatData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ChatPassPacket();
+        return new ChatPassPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ChatPassPacket *ChatPassPacket_packet = dynamic_cast<const ChatPassPacket *>(packet);
+        if (ChatPassPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ChatPassPacket(*ChatPassPacket_packet);
     }
 };
 
@@ -18359,7 +20293,14 @@ public:
         EdgeData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EdgeDataPacketPacket();
+        return new EdgeDataPacketPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EdgeDataPacketPacket *EdgeDataPacketPacket_packet = dynamic_cast<const EdgeDataPacketPacket *>(packet);
+        if (EdgeDataPacketPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EdgeDataPacketPacket(*EdgeDataPacketPacket_packet);
     }
 };
 
@@ -18402,7 +20343,14 @@ public:
         SimStatus.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SimStatusPacket();
+        return new SimStatusPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SimStatusPacket *SimStatusPacket_packet = dynamic_cast<const SimStatusPacket *>(packet);
+        if (SimStatusPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SimStatusPacket(*SimStatusPacket_packet);
     }
 };
 
@@ -18611,7 +20559,14 @@ public:
         VisualParam.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ChildAgentUpdatePacket();
+        return new ChildAgentUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ChildAgentUpdatePacket *ChildAgentUpdatePacket_packet = dynamic_cast<const ChildAgentUpdatePacket *>(packet);
+        if (ChildAgentUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ChildAgentUpdatePacket(*ChildAgentUpdatePacket_packet);
     }
 };
 
@@ -18660,7 +20615,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ChildAgentAlivePacket();
+        return new ChildAgentAlivePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ChildAgentAlivePacket *ChildAgentAlivePacket_packet = dynamic_cast<const ChildAgentAlivePacket *>(packet);
+        if (ChildAgentAlivePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ChildAgentAlivePacket(*ChildAgentAlivePacket_packet);
     }
 };
 
@@ -18733,7 +20695,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ChildAgentPositionUpdatePacket();
+        return new ChildAgentPositionUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ChildAgentPositionUpdatePacket *ChildAgentPositionUpdatePacket_packet = dynamic_cast<const ChildAgentPositionUpdatePacket *>(packet);
+        if (ChildAgentPositionUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ChildAgentPositionUpdatePacket(*ChildAgentPositionUpdatePacket_packet);
     }
 };
 
@@ -18776,7 +20745,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ChildAgentDyingPacket();
+        return new ChildAgentDyingPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ChildAgentDyingPacket *ChildAgentDyingPacket_packet = dynamic_cast<const ChildAgentDyingPacket *>(packet);
+        if (ChildAgentDyingPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ChildAgentDyingPacket(*ChildAgentDyingPacket_packet);
     }
 };
 
@@ -18819,7 +20795,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ChildAgentUnknownPacket();
+        return new ChildAgentUnknownPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ChildAgentUnknownPacket *ChildAgentUnknownPacket_packet = dynamic_cast<const ChildAgentUnknownPacket *>(packet);
+        if (ChildAgentUnknownPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ChildAgentUnknownPacket(*ChildAgentUnknownPacket_packet);
     }
 };
 
@@ -18862,7 +20845,14 @@ public:
         TaskData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AtomicPassObjectPacket();
+        return new AtomicPassObjectPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AtomicPassObjectPacket *AtomicPassObjectPacket_packet = dynamic_cast<const AtomicPassObjectPacket *>(packet);
+        if (AtomicPassObjectPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AtomicPassObjectPacket(*AtomicPassObjectPacket_packet);
     }
 };
 
@@ -18902,7 +20892,14 @@ public:
         IDBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new KillChildAgentsPacket();
+        return new KillChildAgentsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const KillChildAgentsPacket *KillChildAgentsPacket_packet = dynamic_cast<const KillChildAgentsPacket *>(packet);
+        if (KillChildAgentsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new KillChildAgentsPacket(*KillChildAgentsPacket_packet);
     }
 };
 
@@ -18944,7 +20941,14 @@ public:
         Script.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GetScriptRunningPacket();
+        return new GetScriptRunningPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GetScriptRunningPacket *GetScriptRunningPacket_packet = dynamic_cast<const GetScriptRunningPacket *>(packet);
+        if (GetScriptRunningPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GetScriptRunningPacket(*GetScriptRunningPacket_packet);
     }
 };
 
@@ -18989,7 +20993,14 @@ public:
         Script.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptRunningReplyPacket();
+        return new ScriptRunningReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptRunningReplyPacket *ScriptRunningReplyPacket_packet = dynamic_cast<const ScriptRunningReplyPacket *>(packet);
+        if (ScriptRunningReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptRunningReplyPacket(*ScriptRunningReplyPacket_packet);
     }
 };
 
@@ -19054,7 +21065,14 @@ public:
         Script.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SetScriptRunningPacket();
+        return new SetScriptRunningPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SetScriptRunningPacket *SetScriptRunningPacket_packet = dynamic_cast<const SetScriptRunningPacket *>(packet);
+        if (SetScriptRunningPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SetScriptRunningPacket(*SetScriptRunningPacket_packet);
     }
 };
 
@@ -19116,7 +21134,14 @@ public:
         Script.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptResetPacket();
+        return new ScriptResetPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptResetPacket *ScriptResetPacket_packet = dynamic_cast<const ScriptResetPacket *>(packet);
+        if (ScriptResetPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptResetPacket(*ScriptResetPacket_packet);
     }
 };
 
@@ -19186,7 +21211,14 @@ public:
         Requester.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptSensorRequestPacket();
+        return new ScriptSensorRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptSensorRequestPacket *ScriptSensorRequestPacket_packet = dynamic_cast<const ScriptSensorRequestPacket *>(packet);
+        if (ScriptSensorRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptSensorRequestPacket(*ScriptSensorRequestPacket_packet);
     }
 };
 
@@ -19267,7 +21299,14 @@ public:
         SensedData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptSensorReplyPacket();
+        return new ScriptSensorReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptSensorReplyPacket *ScriptSensorReplyPacket_packet = dynamic_cast<const ScriptSensorReplyPacket *>(packet);
+        if (ScriptSensorReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptSensorReplyPacket(*ScriptSensorReplyPacket_packet);
     }
 };
 
@@ -19312,7 +21351,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CompleteAgentMovementPacket();
+        return new CompleteAgentMovementPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CompleteAgentMovementPacket *CompleteAgentMovementPacket_packet = dynamic_cast<const CompleteAgentMovementPacket *>(packet);
+        if (CompleteAgentMovementPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CompleteAgentMovementPacket(*CompleteAgentMovementPacket_packet);
     }
 };
 
@@ -19397,7 +21443,14 @@ public:
         SimData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentMovementCompletePacket();
+        return new AgentMovementCompletePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentMovementCompletePacket *AgentMovementCompletePacket_packet = dynamic_cast<const AgentMovementCompletePacket *>(packet);
+        if (AgentMovementCompletePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentMovementCompletePacket(*AgentMovementCompletePacket_packet);
     }
 };
 
@@ -19446,7 +21499,14 @@ public:
         UserData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DataServerLogoutPacket();
+        return new DataServerLogoutPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DataServerLogoutPacket *DataServerLogoutPacket_packet = dynamic_cast<const DataServerLogoutPacket *>(packet);
+        if (DataServerLogoutPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DataServerLogoutPacket(*DataServerLogoutPacket_packet);
     }
 };
 
@@ -19488,7 +21548,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LogoutRequestPacket();
+        return new LogoutRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LogoutRequestPacket *LogoutRequestPacket_packet = dynamic_cast<const LogoutRequestPacket *>(packet);
+        if (LogoutRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LogoutRequestPacket(*LogoutRequestPacket_packet);
     }
 };
 
@@ -19548,7 +21615,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LogoutReplyPacket();
+        return new LogoutReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LogoutReplyPacket *LogoutReplyPacket_packet = dynamic_cast<const LogoutReplyPacket *>(packet);
+        if (LogoutReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LogoutReplyPacket(*LogoutReplyPacket_packet);
     }
 };
 
@@ -19641,7 +21715,14 @@ public:
         MessageBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ImprovedInstantMessagePacket();
+        return new ImprovedInstantMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ImprovedInstantMessagePacket *ImprovedInstantMessagePacket_packet = dynamic_cast<const ImprovedInstantMessagePacket *>(packet);
+        if (ImprovedInstantMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ImprovedInstantMessagePacket(*ImprovedInstantMessagePacket_packet);
     }
 };
 
@@ -19683,7 +21764,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RetrieveInstantMessagesPacket();
+        return new RetrieveInstantMessagesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RetrieveInstantMessagesPacket *RetrieveInstantMessagesPacket_packet = dynamic_cast<const RetrieveInstantMessagesPacket *>(packet);
+        if (RetrieveInstantMessagesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RetrieveInstantMessagesPacket(*RetrieveInstantMessagesPacket_packet);
     }
 };
 
@@ -19748,7 +21836,14 @@ public:
         LocationBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new FindAgentPacket();
+        return new FindAgentPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const FindAgentPacket *FindAgentPacket_packet = dynamic_cast<const FindAgentPacket *>(packet);
+        if (FindAgentPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new FindAgentPacket(*FindAgentPacket_packet);
     }
 };
 
@@ -19810,7 +21905,14 @@ public:
         RequestBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RequestGodlikePowersPacket();
+        return new RequestGodlikePowersPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RequestGodlikePowersPacket *RequestGodlikePowersPacket_packet = dynamic_cast<const RequestGodlikePowersPacket *>(packet);
+        if (RequestGodlikePowersPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RequestGodlikePowersPacket(*RequestGodlikePowersPacket_packet);
     }
 };
 
@@ -19873,7 +21975,14 @@ public:
         GrantData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GrantGodlikePowersPacket();
+        return new GrantGodlikePowersPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GrantGodlikePowersPacket *GrantGodlikePowersPacket_packet = dynamic_cast<const GrantGodlikePowersPacket *>(packet);
+        if (GrantGodlikePowersPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GrantGodlikePowersPacket(*GrantGodlikePowersPacket_packet);
     }
 };
 
@@ -19956,7 +22065,14 @@ public:
         ParamList.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GodlikeMessagePacket();
+        return new GodlikeMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GodlikeMessagePacket *GodlikeMessagePacket_packet = dynamic_cast<const GodlikeMessagePacket *>(packet);
+        if (GodlikeMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GodlikeMessagePacket(*GodlikeMessagePacket_packet);
     }
 };
 
@@ -20039,7 +22155,14 @@ public:
         ParamList.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EstateOwnerMessagePacket();
+        return new EstateOwnerMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EstateOwnerMessagePacket *EstateOwnerMessagePacket_packet = dynamic_cast<const EstateOwnerMessagePacket *>(packet);
+        if (EstateOwnerMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EstateOwnerMessagePacket(*EstateOwnerMessagePacket_packet);
     }
 };
 
@@ -20122,7 +22245,14 @@ public:
         ParamList.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GenericMessagePacket();
+        return new GenericMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GenericMessagePacket *GenericMessagePacket_packet = dynamic_cast<const GenericMessagePacket *>(packet);
+        if (GenericMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GenericMessagePacket(*GenericMessagePacket_packet);
     }
 };
 
@@ -20181,7 +22311,14 @@ public:
         MuteData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MuteListRequestPacket();
+        return new MuteListRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MuteListRequestPacket *MuteListRequestPacket_packet = dynamic_cast<const MuteListRequestPacket *>(packet);
+        if (MuteListRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MuteListRequestPacket(*MuteListRequestPacket_packet);
     }
 };
 
@@ -20249,7 +22386,14 @@ public:
         MuteData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UpdateMuteListEntryPacket();
+        return new UpdateMuteListEntryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UpdateMuteListEntryPacket *UpdateMuteListEntryPacket_packet = dynamic_cast<const UpdateMuteListEntryPacket *>(packet);
+        if (UpdateMuteListEntryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UpdateMuteListEntryPacket(*UpdateMuteListEntryPacket_packet);
     }
 };
 
@@ -20311,7 +22455,14 @@ public:
         MuteData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RemoveMuteListEntryPacket();
+        return new RemoveMuteListEntryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RemoveMuteListEntryPacket *RemoveMuteListEntryPacket_packet = dynamic_cast<const RemoveMuteListEntryPacket *>(packet);
+        if (RemoveMuteListEntryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RemoveMuteListEntryPacket(*RemoveMuteListEntryPacket_packet);
     }
 };
 
@@ -20394,7 +22545,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CopyInventoryFromNotecardPacket();
+        return new CopyInventoryFromNotecardPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CopyInventoryFromNotecardPacket *CopyInventoryFromNotecardPacket_packet = dynamic_cast<const CopyInventoryFromNotecardPacket *>(packet);
+        if (CopyInventoryFromNotecardPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CopyInventoryFromNotecardPacket(*CopyInventoryFromNotecardPacket_packet);
     }
 };
 
@@ -20520,7 +22678,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UpdateInventoryItemPacket();
+        return new UpdateInventoryItemPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UpdateInventoryItemPacket *UpdateInventoryItemPacket_packet = dynamic_cast<const UpdateInventoryItemPacket *>(packet);
+        if (UpdateInventoryItemPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UpdateInventoryItemPacket(*UpdateInventoryItemPacket_packet);
     }
 };
 
@@ -20646,7 +22811,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UpdateCreateInventoryItemPacket();
+        return new UpdateCreateInventoryItemPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UpdateCreateInventoryItemPacket *UpdateCreateInventoryItemPacket_packet = dynamic_cast<const UpdateCreateInventoryItemPacket *>(packet);
+        if (UpdateCreateInventoryItemPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UpdateCreateInventoryItemPacket(*UpdateCreateInventoryItemPacket_packet);
     }
 };
 
@@ -20715,7 +22887,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MoveInventoryItemPacket();
+        return new MoveInventoryItemPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MoveInventoryItemPacket *MoveInventoryItemPacket_packet = dynamic_cast<const MoveInventoryItemPacket *>(packet);
+        if (MoveInventoryItemPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MoveInventoryItemPacket(*MoveInventoryItemPacket_packet);
     }
 };
 
@@ -20787,7 +22966,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CopyInventoryItemPacket();
+        return new CopyInventoryItemPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CopyInventoryItemPacket *CopyInventoryItemPacket_packet = dynamic_cast<const CopyInventoryItemPacket *>(packet);
+        if (CopyInventoryItemPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CopyInventoryItemPacket(*CopyInventoryItemPacket_packet);
     }
 };
 
@@ -20846,7 +23032,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RemoveInventoryItemPacket();
+        return new RemoveInventoryItemPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RemoveInventoryItemPacket *RemoveInventoryItemPacket_packet = dynamic_cast<const RemoveInventoryItemPacket *>(packet);
+        if (RemoveInventoryItemPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RemoveInventoryItemPacket(*RemoveInventoryItemPacket_packet);
     }
 };
 
@@ -20908,7 +23101,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ChangeInventoryItemFlagsPacket();
+        return new ChangeInventoryItemFlagsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ChangeInventoryItemFlagsPacket *ChangeInventoryItemFlagsPacket_packet = dynamic_cast<const ChangeInventoryItemFlagsPacket *>(packet);
+        if (ChangeInventoryItemFlagsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ChangeInventoryItemFlagsPacket(*ChangeInventoryItemFlagsPacket_packet);
     }
 };
 
@@ -20968,7 +23168,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SaveAssetIntoInventoryPacket();
+        return new SaveAssetIntoInventoryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SaveAssetIntoInventoryPacket *SaveAssetIntoInventoryPacket_packet = dynamic_cast<const SaveAssetIntoInventoryPacket *>(packet);
+        if (SaveAssetIntoInventoryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SaveAssetIntoInventoryPacket(*SaveAssetIntoInventoryPacket_packet);
     }
 };
 
@@ -21036,7 +23243,14 @@ public:
         FolderData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CreateInventoryFolderPacket();
+        return new CreateInventoryFolderPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CreateInventoryFolderPacket *CreateInventoryFolderPacket_packet = dynamic_cast<const CreateInventoryFolderPacket *>(packet);
+        if (CreateInventoryFolderPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CreateInventoryFolderPacket(*CreateInventoryFolderPacket_packet);
     }
 };
 
@@ -21104,7 +23318,14 @@ public:
         FolderData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UpdateInventoryFolderPacket();
+        return new UpdateInventoryFolderPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UpdateInventoryFolderPacket *UpdateInventoryFolderPacket_packet = dynamic_cast<const UpdateInventoryFolderPacket *>(packet);
+        if (UpdateInventoryFolderPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UpdateInventoryFolderPacket(*UpdateInventoryFolderPacket_packet);
     }
 };
 
@@ -21170,7 +23391,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MoveInventoryFolderPacket();
+        return new MoveInventoryFolderPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MoveInventoryFolderPacket *MoveInventoryFolderPacket_packet = dynamic_cast<const MoveInventoryFolderPacket *>(packet);
+        if (MoveInventoryFolderPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MoveInventoryFolderPacket(*MoveInventoryFolderPacket_packet);
     }
 };
 
@@ -21229,7 +23457,14 @@ public:
         FolderData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RemoveInventoryFolderPacket();
+        return new RemoveInventoryFolderPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RemoveInventoryFolderPacket *RemoveInventoryFolderPacket_packet = dynamic_cast<const RemoveInventoryFolderPacket *>(packet);
+        if (RemoveInventoryFolderPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RemoveInventoryFolderPacket(*RemoveInventoryFolderPacket_packet);
     }
 };
 
@@ -21301,7 +23536,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new FetchInventoryDescendentsPacket();
+        return new FetchInventoryDescendentsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const FetchInventoryDescendentsPacket *FetchInventoryDescendentsPacket_packet = dynamic_cast<const FetchInventoryDescendentsPacket *>(packet);
+        if (FetchInventoryDescendentsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new FetchInventoryDescendentsPacket(*FetchInventoryDescendentsPacket_packet);
     }
 };
 
@@ -21456,7 +23698,14 @@ public:
         ItemData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new InventoryDescendentsPacket();
+        return new InventoryDescendentsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const InventoryDescendentsPacket *InventoryDescendentsPacket_packet = dynamic_cast<const InventoryDescendentsPacket *>(packet);
+        if (InventoryDescendentsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new InventoryDescendentsPacket(*InventoryDescendentsPacket_packet);
     }
 };
 
@@ -21519,7 +23768,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new FetchInventoryPacket();
+        return new FetchInventoryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const FetchInventoryPacket *FetchInventoryPacket_packet = dynamic_cast<const FetchInventoryPacket *>(packet);
+        if (FetchInventoryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new FetchInventoryPacket(*FetchInventoryPacket_packet);
     }
 };
 
@@ -21636,7 +23892,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new FetchInventoryReplyPacket();
+        return new FetchInventoryReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const FetchInventoryReplyPacket *FetchInventoryReplyPacket_packet = dynamic_cast<const FetchInventoryReplyPacket *>(packet);
+        if (FetchInventoryReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new FetchInventoryReplyPacket(*FetchInventoryReplyPacket_packet);
     }
 };
 
@@ -21785,7 +24048,14 @@ public:
         ItemData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new BulkUpdateInventoryPacket();
+        return new BulkUpdateInventoryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const BulkUpdateInventoryPacket *BulkUpdateInventoryPacket_packet = dynamic_cast<const BulkUpdateInventoryPacket *>(packet);
+        if (BulkUpdateInventoryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new BulkUpdateInventoryPacket(*BulkUpdateInventoryPacket_packet);
     }
 };
 
@@ -21834,7 +24104,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RequestInventoryAssetPacket();
+        return new RequestInventoryAssetPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RequestInventoryAssetPacket *RequestInventoryAssetPacket_packet = dynamic_cast<const RequestInventoryAssetPacket *>(packet);
+        if (RequestInventoryAssetPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RequestInventoryAssetPacket(*RequestInventoryAssetPacket_packet);
     }
 };
 
@@ -21880,7 +24157,14 @@ public:
         QueryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new InventoryAssetResponsePacket();
+        return new InventoryAssetResponsePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const InventoryAssetResponsePacket *InventoryAssetResponsePacket_packet = dynamic_cast<const InventoryAssetResponsePacket *>(packet);
+        if (InventoryAssetResponsePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new InventoryAssetResponsePacket(*InventoryAssetResponsePacket_packet);
     }
 };
 
@@ -21956,7 +24240,14 @@ public:
         ItemData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RemoveInventoryObjectsPacket();
+        return new RemoveInventoryObjectsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RemoveInventoryObjectsPacket *RemoveInventoryObjectsPacket_packet = dynamic_cast<const RemoveInventoryObjectsPacket *>(packet);
+        if (RemoveInventoryObjectsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RemoveInventoryObjectsPacket(*RemoveInventoryObjectsPacket_packet);
     }
 };
 
@@ -22016,7 +24307,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new PurgeInventoryDescendentsPacket();
+        return new PurgeInventoryDescendentsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const PurgeInventoryDescendentsPacket *PurgeInventoryDescendentsPacket_packet = dynamic_cast<const PurgeInventoryDescendentsPacket *>(packet);
+        if (PurgeInventoryDescendentsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new PurgeInventoryDescendentsPacket(*PurgeInventoryDescendentsPacket_packet);
     }
 };
 
@@ -22156,7 +24454,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UpdateTaskInventoryPacket();
+        return new UpdateTaskInventoryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UpdateTaskInventoryPacket *UpdateTaskInventoryPacket_packet = dynamic_cast<const UpdateTaskInventoryPacket *>(packet);
+        if (UpdateTaskInventoryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UpdateTaskInventoryPacket(*UpdateTaskInventoryPacket_packet);
     }
 };
 
@@ -22219,7 +24524,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RemoveTaskInventoryPacket();
+        return new RemoveTaskInventoryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RemoveTaskInventoryPacket *RemoveTaskInventoryPacket_packet = dynamic_cast<const RemoveTaskInventoryPacket *>(packet);
+        if (RemoveTaskInventoryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RemoveTaskInventoryPacket(*RemoveTaskInventoryPacket_packet);
     }
 };
 
@@ -22284,7 +24596,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MoveTaskInventoryPacket();
+        return new MoveTaskInventoryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MoveTaskInventoryPacket *MoveTaskInventoryPacket_packet = dynamic_cast<const MoveTaskInventoryPacket *>(packet);
+        if (MoveTaskInventoryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MoveTaskInventoryPacket(*MoveTaskInventoryPacket_packet);
     }
 };
 
@@ -22343,7 +24662,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RequestTaskInventoryPacket();
+        return new RequestTaskInventoryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RequestTaskInventoryPacket *RequestTaskInventoryPacket_packet = dynamic_cast<const RequestTaskInventoryPacket *>(packet);
+        if (RequestTaskInventoryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RequestTaskInventoryPacket(*RequestTaskInventoryPacket_packet);
     }
 };
 
@@ -22389,7 +24715,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ReplyTaskInventoryPacket();
+        return new ReplyTaskInventoryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ReplyTaskInventoryPacket *ReplyTaskInventoryPacket_packet = dynamic_cast<const ReplyTaskInventoryPacket *>(packet);
+        if (ReplyTaskInventoryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ReplyTaskInventoryPacket(*ReplyTaskInventoryPacket_packet);
     }
 };
 
@@ -22481,7 +24814,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DeRezObjectPacket();
+        return new DeRezObjectPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DeRezObjectPacket *DeRezObjectPacket_packet = dynamic_cast<const DeRezObjectPacket *>(packet);
+        if (DeRezObjectPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DeRezObjectPacket(*DeRezObjectPacket_packet);
     }
 };
 
@@ -22524,7 +24864,14 @@ public:
         TransactionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DeRezAckPacket();
+        return new DeRezAckPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DeRezAckPacket *DeRezAckPacket_packet = dynamic_cast<const DeRezAckPacket *>(packet);
+        if (DeRezAckPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DeRezAckPacket(*DeRezAckPacket_packet);
     }
 };
 
@@ -22697,7 +25044,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RezObjectPacket();
+        return new RezObjectPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RezObjectPacket *RezObjectPacket_packet = dynamic_cast<const RezObjectPacket *>(packet);
+        if (RezObjectPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RezObjectPacket(*RezObjectPacket_packet);
     }
 };
 
@@ -22830,7 +25184,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RezObjectFromNotecardPacket();
+        return new RezObjectFromNotecardPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RezObjectFromNotecardPacket *RezObjectFromNotecardPacket_packet = dynamic_cast<const RezObjectFromNotecardPacket *>(packet);
+        if (RezObjectFromNotecardPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RezObjectFromNotecardPacket(*RezObjectFromNotecardPacket_packet);
     }
 };
 
@@ -22896,7 +25257,14 @@ public:
         InventoryBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TransferInventoryPacket();
+        return new TransferInventoryPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TransferInventoryPacket *TransferInventoryPacket_packet = dynamic_cast<const TransferInventoryPacket *>(packet);
+        if (TransferInventoryPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TransferInventoryPacket(*TransferInventoryPacket_packet);
     }
 };
 
@@ -22939,7 +25307,14 @@ public:
         InfoBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TransferInventoryAckPacket();
+        return new TransferInventoryAckPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TransferInventoryAckPacket *TransferInventoryAckPacket_packet = dynamic_cast<const TransferInventoryAckPacket *>(packet);
+        if (TransferInventoryAckPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TransferInventoryAckPacket(*TransferInventoryAckPacket_packet);
     }
 };
 
@@ -23015,7 +25390,14 @@ public:
         FolderData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AcceptFriendshipPacket();
+        return new AcceptFriendshipPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AcceptFriendshipPacket *AcceptFriendshipPacket_packet = dynamic_cast<const AcceptFriendshipPacket *>(packet);
+        if (AcceptFriendshipPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AcceptFriendshipPacket(*AcceptFriendshipPacket_packet);
     }
 };
 
@@ -23074,7 +25456,14 @@ public:
         TransactionBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DeclineFriendshipPacket();
+        return new DeclineFriendshipPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DeclineFriendshipPacket *DeclineFriendshipPacket_packet = dynamic_cast<const DeclineFriendshipPacket *>(packet);
+        if (DeclineFriendshipPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DeclineFriendshipPacket(*DeclineFriendshipPacket_packet);
     }
 };
 
@@ -23117,7 +25506,14 @@ public:
         AgentBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new FormFriendshipPacket();
+        return new FormFriendshipPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const FormFriendshipPacket *FormFriendshipPacket_packet = dynamic_cast<const FormFriendshipPacket *>(packet);
+        if (FormFriendshipPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new FormFriendshipPacket(*FormFriendshipPacket_packet);
     }
 };
 
@@ -23176,7 +25572,14 @@ public:
         ExBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new TerminateFriendshipPacket();
+        return new TerminateFriendshipPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TerminateFriendshipPacket *TerminateFriendshipPacket_packet = dynamic_cast<const TerminateFriendshipPacket *>(packet);
+        if (TerminateFriendshipPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TerminateFriendshipPacket(*TerminateFriendshipPacket_packet);
     }
 };
 
@@ -23238,7 +25641,14 @@ public:
         AgentBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new OfferCallingCardPacket();
+        return new OfferCallingCardPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const OfferCallingCardPacket *OfferCallingCardPacket_packet = dynamic_cast<const OfferCallingCardPacket *>(packet);
+        if (OfferCallingCardPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new OfferCallingCardPacket(*OfferCallingCardPacket_packet);
     }
 };
 
@@ -23314,7 +25724,14 @@ public:
         FolderData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AcceptCallingCardPacket();
+        return new AcceptCallingCardPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AcceptCallingCardPacket *AcceptCallingCardPacket_packet = dynamic_cast<const AcceptCallingCardPacket *>(packet);
+        if (AcceptCallingCardPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AcceptCallingCardPacket(*AcceptCallingCardPacket_packet);
     }
 };
 
@@ -23373,7 +25790,14 @@ public:
         TransactionBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DeclineCallingCardPacket();
+        return new DeclineCallingCardPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DeclineCallingCardPacket *DeclineCallingCardPacket_packet = dynamic_cast<const DeclineCallingCardPacket *>(packet);
+        if (DeclineCallingCardPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DeclineCallingCardPacket(*DeclineCallingCardPacket_packet);
     }
 };
 
@@ -23516,7 +25940,14 @@ public:
         InventoryBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RezScriptPacket();
+        return new RezScriptPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RezScriptPacket *RezScriptPacket_packet = dynamic_cast<const RezScriptPacket *>(packet);
+        if (RezScriptPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RezScriptPacket(*RezScriptPacket_packet);
     }
 };
 
@@ -23600,7 +26031,14 @@ public:
         InventoryBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CreateInventoryItemPacket();
+        return new CreateInventoryItemPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CreateInventoryItemPacket *CreateInventoryItemPacket_packet = dynamic_cast<const CreateInventoryItemPacket *>(packet);
+        if (CreateInventoryItemPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CreateInventoryItemPacket(*CreateInventoryItemPacket_packet);
     }
 };
 
@@ -23680,7 +26118,14 @@ public:
         InventoryBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CreateLandmarkForEventPacket();
+        return new CreateLandmarkForEventPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CreateLandmarkForEventPacket *CreateLandmarkForEventPacket_packet = dynamic_cast<const CreateLandmarkForEventPacket *>(packet);
+        if (CreateLandmarkForEventPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CreateLandmarkForEventPacket(*CreateLandmarkForEventPacket_packet);
     }
 };
 
@@ -23737,7 +26182,14 @@ public:
         EventData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EventLocationRequestPacket();
+        return new EventLocationRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EventLocationRequestPacket *EventLocationRequestPacket_packet = dynamic_cast<const EventLocationRequestPacket *>(packet);
+        if (EventLocationRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EventLocationRequestPacket(*EventLocationRequestPacket_packet);
     }
 };
 
@@ -23800,7 +26252,14 @@ public:
         EventData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EventLocationReplyPacket();
+        return new EventLocationReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EventLocationReplyPacket *EventLocationReplyPacket_packet = dynamic_cast<const EventLocationReplyPacket *>(packet);
+        if (EventLocationReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EventLocationReplyPacket(*EventLocationReplyPacket_packet);
     }
 };
 
@@ -23839,7 +26298,14 @@ public:
         RequestBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RegionHandleRequestPacket();
+        return new RegionHandleRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RegionHandleRequestPacket *RegionHandleRequestPacket_packet = dynamic_cast<const RegionHandleRequestPacket *>(packet);
+        if (RegionHandleRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RegionHandleRequestPacket(*RegionHandleRequestPacket_packet);
     }
 };
 
@@ -23882,7 +26348,14 @@ public:
         ReplyBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RegionIDAndHandleReplyPacket();
+        return new RegionIDAndHandleReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RegionIDAndHandleReplyPacket *RegionIDAndHandleReplyPacket_packet = dynamic_cast<const RegionIDAndHandleReplyPacket *>(packet);
+        if (RegionIDAndHandleReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RegionIDAndHandleReplyPacket(*RegionIDAndHandleReplyPacket_packet);
     }
 };
 
@@ -23963,7 +26436,14 @@ public:
         MoneyData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MoneyTransferRequestPacket();
+        return new MoneyTransferRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MoneyTransferRequestPacket *MoneyTransferRequestPacket_packet = dynamic_cast<const MoneyTransferRequestPacket *>(packet);
+        if (MoneyTransferRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MoneyTransferRequestPacket(*MoneyTransferRequestPacket_packet);
     }
 };
 
@@ -24039,7 +26519,14 @@ public:
         MoneyData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MoneyTransferBackendPacket();
+        return new MoneyTransferBackendPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MoneyTransferBackendPacket *MoneyTransferBackendPacket_packet = dynamic_cast<const MoneyTransferBackendPacket *>(packet);
+        if (MoneyTransferBackendPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MoneyTransferBackendPacket(*MoneyTransferBackendPacket_packet);
     }
 };
 
@@ -24099,7 +26586,14 @@ public:
         MoneyData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MoneyBalanceRequestPacket();
+        return new MoneyBalanceRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MoneyBalanceRequestPacket *MoneyBalanceRequestPacket_packet = dynamic_cast<const MoneyBalanceRequestPacket *>(packet);
+        if (MoneyBalanceRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MoneyBalanceRequestPacket(*MoneyBalanceRequestPacket_packet);
     }
 };
 
@@ -24157,7 +26651,14 @@ public:
         MoneyData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MoneyBalanceReplyPacket();
+        return new MoneyBalanceReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MoneyBalanceReplyPacket *MoneyBalanceReplyPacket_packet = dynamic_cast<const MoneyBalanceReplyPacket *>(packet);
+        if (MoneyBalanceReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MoneyBalanceReplyPacket(*MoneyBalanceReplyPacket_packet);
     }
 };
 
@@ -24235,7 +26736,14 @@ public:
         MoneyData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RoutedMoneyBalanceReplyPacket();
+        return new RoutedMoneyBalanceReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RoutedMoneyBalanceReplyPacket *RoutedMoneyBalanceReplyPacket_packet = dynamic_cast<const RoutedMoneyBalanceReplyPacket *>(packet);
+        if (RoutedMoneyBalanceReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RoutedMoneyBalanceReplyPacket(*RoutedMoneyBalanceReplyPacket_packet);
     }
 };
 
@@ -24303,7 +26811,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ActivateGesturesPacket();
+        return new ActivateGesturesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ActivateGesturesPacket *ActivateGesturesPacket_packet = dynamic_cast<const ActivateGesturesPacket *>(packet);
+        if (ActivateGesturesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ActivateGesturesPacket(*ActivateGesturesPacket_packet);
     }
 };
 
@@ -24368,7 +26883,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DeactivateGesturesPacket();
+        return new DeactivateGesturesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DeactivateGesturesPacket *DeactivateGesturesPacket_packet = dynamic_cast<const DeactivateGesturesPacket *>(packet);
+        if (DeactivateGesturesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DeactivateGesturesPacket(*DeactivateGesturesPacket_packet);
     }
 };
 
@@ -24411,7 +26933,14 @@ public:
         MuteData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MuteListUpdatePacket();
+        return new MuteListUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MuteListUpdatePacket *MuteListUpdatePacket_packet = dynamic_cast<const MuteListUpdatePacket *>(packet);
+        if (MuteListUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MuteListUpdatePacket(*MuteListUpdatePacket_packet);
     }
 };
 
@@ -24450,7 +26979,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UseCachedMuteListPacket();
+        return new UseCachedMuteListPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UseCachedMuteListPacket *UseCachedMuteListPacket_packet = dynamic_cast<const UseCachedMuteListPacket *>(packet);
+        if (UseCachedMuteListPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UseCachedMuteListPacket(*UseCachedMuteListPacket_packet);
     }
 };
 
@@ -24512,7 +27048,14 @@ public:
         Rights.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GrantUserRightsPacket();
+        return new GrantUserRightsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GrantUserRightsPacket *GrantUserRightsPacket_packet = dynamic_cast<const GrantUserRightsPacket *>(packet);
+        if (GrantUserRightsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GrantUserRightsPacket(*GrantUserRightsPacket_packet);
     }
 };
 
@@ -24572,7 +27115,14 @@ public:
         Rights.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ChangeUserRightsPacket();
+        return new ChangeUserRightsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ChangeUserRightsPacket *ChangeUserRightsPacket_packet = dynamic_cast<const ChangeUserRightsPacket *>(packet);
+        if (ChangeUserRightsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ChangeUserRightsPacket(*ChangeUserRightsPacket_packet);
     }
 };
 
@@ -24612,7 +27162,14 @@ public:
         AgentBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new OnlineNotificationPacket();
+        return new OnlineNotificationPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const OnlineNotificationPacket *OnlineNotificationPacket_packet = dynamic_cast<const OnlineNotificationPacket *>(packet);
+        if (OnlineNotificationPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new OnlineNotificationPacket(*OnlineNotificationPacket_packet);
     }
 };
 
@@ -24652,7 +27209,14 @@ public:
         AgentBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new OfflineNotificationPacket();
+        return new OfflineNotificationPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const OfflineNotificationPacket *OfflineNotificationPacket_packet = dynamic_cast<const OfflineNotificationPacket *>(packet);
+        if (OfflineNotificationPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new OfflineNotificationPacket(*OfflineNotificationPacket_packet);
     }
 };
 
@@ -24721,7 +27285,14 @@ public:
         StartLocationData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SetStartLocationRequestPacket();
+        return new SetStartLocationRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SetStartLocationRequestPacket *SetStartLocationRequestPacket_packet = dynamic_cast<const SetStartLocationRequestPacket *>(packet);
+        if (SetStartLocationRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SetStartLocationRequestPacket(*SetStartLocationRequestPacket_packet);
     }
 };
 
@@ -24776,7 +27347,14 @@ public:
         StartLocationData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SetStartLocationPacket();
+        return new SetStartLocationPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SetStartLocationPacket *SetStartLocationPacket_packet = dynamic_cast<const SetStartLocationPacket *>(packet);
+        if (SetStartLocationPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SetStartLocationPacket(*SetStartLocationPacket_packet);
     }
 };
 
@@ -24815,7 +27393,14 @@ public:
         NetBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new NetTestPacket();
+        return new NetTestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const NetTestPacket *NetTestPacket_packet = dynamic_cast<const NetTestPacket *>(packet);
+        if (NetTestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new NetTestPacket(*NetTestPacket_packet);
     }
 };
 
@@ -24854,7 +27439,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SetCPURatioPacket();
+        return new SetCPURatioPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SetCPURatioPacket *SetCPURatioPacket_packet = dynamic_cast<const SetCPURatioPacket *>(packet);
+        if (SetCPURatioPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SetCPURatioPacket(*SetCPURatioPacket_packet);
     }
 };
 
@@ -24913,7 +27505,14 @@ public:
         Users.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SimCrashedPacket();
+        return new SimCrashedPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SimCrashedPacket *SimCrashedPacket_packet = dynamic_cast<const SimCrashedPacket *>(packet);
+        if (SimCrashedPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SimCrashedPacket(*SimCrashedPacket_packet);
     }
 };
 
@@ -24970,7 +27569,14 @@ public:
         NameValueData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new NameValuePairPacket();
+        return new NameValuePairPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const NameValuePairPacket *NameValuePairPacket_packet = dynamic_cast<const NameValuePairPacket *>(packet);
+        if (NameValuePairPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new NameValuePairPacket(*NameValuePairPacket_packet);
     }
 };
 
@@ -25027,7 +27633,14 @@ public:
         NameValueData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RemoveNameValuePairPacket();
+        return new RemoveNameValuePairPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RemoveNameValuePairPacket *RemoveNameValuePairPacket_packet = dynamic_cast<const RemoveNameValuePairPacket *>(packet);
+        if (RemoveNameValuePairPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RemoveNameValuePairPacket(*RemoveNameValuePairPacket_packet);
     }
 };
 
@@ -25184,7 +27797,14 @@ public:
         InventoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UpdateAttachmentPacket();
+        return new UpdateAttachmentPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UpdateAttachmentPacket *UpdateAttachmentPacket_packet = dynamic_cast<const UpdateAttachmentPacket *>(packet);
+        if (UpdateAttachmentPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UpdateAttachmentPacket(*UpdateAttachmentPacket_packet);
     }
 };
 
@@ -25246,7 +27866,14 @@ public:
         AttachmentBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RemoveAttachmentPacket();
+        return new RemoveAttachmentPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RemoveAttachmentPacket *RemoveAttachmentPacket_packet = dynamic_cast<const RemoveAttachmentPacket *>(packet);
+        if (RemoveAttachmentPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RemoveAttachmentPacket(*RemoveAttachmentPacket_packet);
     }
 };
 
@@ -25303,7 +27930,14 @@ public:
         SoundData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SoundTriggerPacket();
+        return new SoundTriggerPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SoundTriggerPacket *SoundTriggerPacket_packet = dynamic_cast<const SoundTriggerPacket *>(packet);
+        if (SoundTriggerPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SoundTriggerPacket(*SoundTriggerPacket_packet);
     }
 };
 
@@ -25355,7 +27989,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AttachedSoundPacket();
+        return new AttachedSoundPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AttachedSoundPacket *AttachedSoundPacket_packet = dynamic_cast<const AttachedSoundPacket *>(packet);
+        if (AttachedSoundPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AttachedSoundPacket(*AttachedSoundPacket_packet);
     }
 };
 
@@ -25398,7 +28039,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AttachedSoundGainChangePacket();
+        return new AttachedSoundGainChangePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AttachedSoundGainChangePacket *AttachedSoundGainChangePacket_packet = dynamic_cast<const AttachedSoundGainChangePacket *>(packet);
+        if (AttachedSoundGainChangePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AttachedSoundGainChangePacket(*AttachedSoundGainChangePacket_packet);
     }
 };
 
@@ -25444,7 +28092,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new PreloadSoundPacket();
+        return new PreloadSoundPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const PreloadSoundPacket *PreloadSoundPacket_packet = dynamic_cast<const PreloadSoundPacket *>(packet);
+        if (PreloadSoundPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new PreloadSoundPacket(*PreloadSoundPacket_packet);
     }
 };
 
@@ -25495,7 +28150,14 @@ public:
         AssetBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AssetUploadRequestPacket();
+        return new AssetUploadRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AssetUploadRequestPacket *AssetUploadRequestPacket_packet = dynamic_cast<const AssetUploadRequestPacket *>(packet);
+        if (AssetUploadRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AssetUploadRequestPacket(*AssetUploadRequestPacket_packet);
     }
 };
 
@@ -25540,7 +28202,14 @@ public:
         AssetBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AssetUploadCompletePacket();
+        return new AssetUploadCompletePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AssetUploadCompletePacket *AssetUploadCompletePacket_packet = dynamic_cast<const AssetUploadCompletePacket *>(packet);
+        if (AssetUploadCompletePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AssetUploadCompletePacket(*AssetUploadCompletePacket_packet);
     }
 };
 
@@ -25586,7 +28255,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EmailMessageRequestPacket();
+        return new EmailMessageRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EmailMessageRequestPacket *EmailMessageRequestPacket_packet = dynamic_cast<const EmailMessageRequestPacket *>(packet);
+        if (EmailMessageRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EmailMessageRequestPacket(*EmailMessageRequestPacket_packet);
     }
 };
 
@@ -25644,7 +28320,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EmailMessageReplyPacket();
+        return new EmailMessageReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EmailMessageReplyPacket *EmailMessageReplyPacket_packet = dynamic_cast<const EmailMessageReplyPacket *>(packet);
+        if (EmailMessageReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EmailMessageReplyPacket(*EmailMessageReplyPacket_packet);
     }
 };
 
@@ -25693,7 +28376,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new InternalScriptMailPacket();
+        return new InternalScriptMailPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const InternalScriptMailPacket *InternalScriptMailPacket_packet = dynamic_cast<const InternalScriptMailPacket *>(packet);
+        if (InternalScriptMailPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new InternalScriptMailPacket(*InternalScriptMailPacket_packet);
     }
 };
 
@@ -25739,7 +28429,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptDataRequestPacket();
+        return new ScriptDataRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptDataRequestPacket *ScriptDataRequestPacket_packet = dynamic_cast<const ScriptDataRequestPacket *>(packet);
+        if (ScriptDataRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptDataRequestPacket(*ScriptDataRequestPacket_packet);
     }
 };
 
@@ -25782,7 +28479,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptDataReplyPacket();
+        return new ScriptDataReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptDataReplyPacket *ScriptDataReplyPacket_packet = dynamic_cast<const ScriptDataReplyPacket *>(packet);
+        if (ScriptDataReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptDataReplyPacket(*ScriptDataReplyPacket_packet);
     }
 };
 
@@ -25863,7 +28567,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CreateGroupRequestPacket();
+        return new CreateGroupRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CreateGroupRequestPacket *CreateGroupRequestPacket_packet = dynamic_cast<const CreateGroupRequestPacket *>(packet);
+        if (CreateGroupRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CreateGroupRequestPacket(*CreateGroupRequestPacket_packet);
     }
 };
 
@@ -25926,7 +28637,14 @@ public:
         ReplyData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CreateGroupReplyPacket();
+        return new CreateGroupReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CreateGroupReplyPacket *CreateGroupReplyPacket_packet = dynamic_cast<const CreateGroupReplyPacket *>(packet);
+        if (CreateGroupReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CreateGroupReplyPacket(*CreateGroupReplyPacket_packet);
     }
 };
 
@@ -26007,7 +28725,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UpdateGroupInfoPacket();
+        return new UpdateGroupInfoPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UpdateGroupInfoPacket *UpdateGroupInfoPacket_packet = dynamic_cast<const UpdateGroupInfoPacket *>(packet);
+        if (UpdateGroupInfoPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UpdateGroupInfoPacket(*UpdateGroupInfoPacket_packet);
     }
 };
 
@@ -26075,7 +28800,14 @@ public:
         RoleChange.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupRoleChangesPacket();
+        return new GroupRoleChangesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupRoleChangesPacket *GroupRoleChangesPacket_packet = dynamic_cast<const GroupRoleChangesPacket *>(packet);
+        if (GroupRoleChangesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupRoleChangesPacket(*GroupRoleChangesPacket_packet);
     }
 };
 
@@ -26135,7 +28867,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new JoinGroupRequestPacket();
+        return new JoinGroupRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const JoinGroupRequestPacket *JoinGroupRequestPacket_packet = dynamic_cast<const JoinGroupRequestPacket *>(packet);
+        if (JoinGroupRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new JoinGroupRequestPacket(*JoinGroupRequestPacket_packet);
     }
 };
 
@@ -26195,7 +28934,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new JoinGroupReplyPacket();
+        return new JoinGroupReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const JoinGroupReplyPacket *JoinGroupReplyPacket_packet = dynamic_cast<const JoinGroupReplyPacket *>(packet);
+        if (JoinGroupReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new JoinGroupReplyPacket(*JoinGroupReplyPacket_packet);
     }
 };
 
@@ -26271,7 +29017,14 @@ public:
         EjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EjectGroupMemberRequestPacket();
+        return new EjectGroupMemberRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EjectGroupMemberRequestPacket *EjectGroupMemberRequestPacket_packet = dynamic_cast<const EjectGroupMemberRequestPacket *>(packet);
+        if (EjectGroupMemberRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EjectGroupMemberRequestPacket(*EjectGroupMemberRequestPacket_packet);
     }
 };
 
@@ -26345,7 +29098,14 @@ public:
         EjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new EjectGroupMemberReplyPacket();
+        return new EjectGroupMemberReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const EjectGroupMemberReplyPacket *EjectGroupMemberReplyPacket_packet = dynamic_cast<const EjectGroupMemberReplyPacket *>(packet);
+        if (EjectGroupMemberReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new EjectGroupMemberReplyPacket(*EjectGroupMemberReplyPacket_packet);
     }
 };
 
@@ -26404,7 +29164,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LeaveGroupRequestPacket();
+        return new LeaveGroupRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LeaveGroupRequestPacket *LeaveGroupRequestPacket_packet = dynamic_cast<const LeaveGroupRequestPacket *>(packet);
+        if (LeaveGroupRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LeaveGroupRequestPacket(*LeaveGroupRequestPacket_packet);
     }
 };
 
@@ -26464,7 +29231,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LeaveGroupReplyPacket();
+        return new LeaveGroupReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LeaveGroupReplyPacket *LeaveGroupReplyPacket_packet = dynamic_cast<const LeaveGroupReplyPacket *>(packet);
+        if (LeaveGroupReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LeaveGroupReplyPacket(*LeaveGroupReplyPacket_packet);
     }
 };
 
@@ -26543,7 +29317,14 @@ public:
         InviteData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new InviteGroupRequestPacket();
+        return new InviteGroupRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const InviteGroupRequestPacket *InviteGroupRequestPacket_packet = dynamic_cast<const InviteGroupRequestPacket *>(packet);
+        if (InviteGroupRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new InviteGroupRequestPacket(*InviteGroupRequestPacket_packet);
     }
 };
 
@@ -26595,7 +29376,14 @@ public:
         InviteData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new InviteGroupResponsePacket();
+        return new InviteGroupResponsePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const InviteGroupResponsePacket *InviteGroupResponsePacket_packet = dynamic_cast<const InviteGroupResponsePacket *>(packet);
+        if (InviteGroupResponsePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new InviteGroupResponsePacket(*InviteGroupResponsePacket_packet);
     }
 };
 
@@ -26654,7 +29442,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupProfileRequestPacket();
+        return new GroupProfileRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupProfileRequestPacket *GroupProfileRequestPacket_packet = dynamic_cast<const GroupProfileRequestPacket *>(packet);
+        if (GroupProfileRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupProfileRequestPacket(*GroupProfileRequestPacket_packet);
     }
 };
 
@@ -26756,7 +29551,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupProfileReplyPacket();
+        return new GroupProfileReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupProfileReplyPacket *GroupProfileReplyPacket_packet = dynamic_cast<const GroupProfileReplyPacket *>(packet);
+        if (GroupProfileReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupProfileReplyPacket(*GroupProfileReplyPacket_packet);
     }
 };
 
@@ -26825,7 +29627,14 @@ public:
         MoneyData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupAccountSummaryRequestPacket();
+        return new GroupAccountSummaryRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupAccountSummaryRequestPacket *GroupAccountSummaryRequestPacket_packet = dynamic_cast<const GroupAccountSummaryRequestPacket *>(packet);
+        if (GroupAccountSummaryRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupAccountSummaryRequestPacket(*GroupAccountSummaryRequestPacket_packet);
     }
 };
 
@@ -26942,7 +29751,14 @@ public:
         MoneyData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupAccountSummaryReplyPacket();
+        return new GroupAccountSummaryReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupAccountSummaryReplyPacket *GroupAccountSummaryReplyPacket_packet = dynamic_cast<const GroupAccountSummaryReplyPacket *>(packet);
+        if (GroupAccountSummaryReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupAccountSummaryReplyPacket(*GroupAccountSummaryReplyPacket_packet);
     }
 };
 
@@ -27011,7 +29827,14 @@ public:
         MoneyData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupAccountDetailsRequestPacket();
+        return new GroupAccountDetailsRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupAccountDetailsRequestPacket *GroupAccountDetailsRequestPacket_packet = dynamic_cast<const GroupAccountDetailsRequestPacket *>(packet);
+        if (GroupAccountDetailsRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupAccountDetailsRequestPacket(*GroupAccountDetailsRequestPacket_packet);
     }
 };
 
@@ -27100,7 +29923,14 @@ public:
         HistoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupAccountDetailsReplyPacket();
+        return new GroupAccountDetailsReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupAccountDetailsReplyPacket *GroupAccountDetailsReplyPacket_packet = dynamic_cast<const GroupAccountDetailsReplyPacket *>(packet);
+        if (GroupAccountDetailsReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupAccountDetailsReplyPacket(*GroupAccountDetailsReplyPacket_packet);
     }
 };
 
@@ -27169,7 +29999,14 @@ public:
         MoneyData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupAccountTransactionsRequestPacket();
+        return new GroupAccountTransactionsRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupAccountTransactionsRequestPacket *GroupAccountTransactionsRequestPacket_packet = dynamic_cast<const GroupAccountTransactionsRequestPacket *>(packet);
+        if (GroupAccountTransactionsRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupAccountTransactionsRequestPacket(*GroupAccountTransactionsRequestPacket_packet);
     }
 };
 
@@ -27267,7 +30104,14 @@ public:
         HistoryData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupAccountTransactionsReplyPacket();
+        return new GroupAccountTransactionsReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupAccountTransactionsReplyPacket *GroupAccountTransactionsReplyPacket_packet = dynamic_cast<const GroupAccountTransactionsReplyPacket *>(packet);
+        if (GroupAccountTransactionsReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupAccountTransactionsReplyPacket(*GroupAccountTransactionsReplyPacket_packet);
     }
 };
 
@@ -27343,7 +30187,14 @@ public:
         TransactionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupActiveProposalsRequestPacket();
+        return new GroupActiveProposalsRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupActiveProposalsRequestPacket *GroupActiveProposalsRequestPacket_packet = dynamic_cast<const GroupActiveProposalsRequestPacket *>(packet);
+        if (GroupActiveProposalsRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupActiveProposalsRequestPacket(*GroupActiveProposalsRequestPacket_packet);
     }
 };
 
@@ -27450,7 +30301,14 @@ public:
         ProposalData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupActiveProposalItemReplyPacket();
+        return new GroupActiveProposalItemReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupActiveProposalItemReplyPacket *GroupActiveProposalItemReplyPacket_packet = dynamic_cast<const GroupActiveProposalItemReplyPacket *>(packet);
+        if (GroupActiveProposalItemReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupActiveProposalItemReplyPacket(*GroupActiveProposalItemReplyPacket_packet);
     }
 };
 
@@ -27526,7 +30384,14 @@ public:
         TransactionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupVoteHistoryRequestPacket();
+        return new GroupVoteHistoryRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupVoteHistoryRequestPacket *GroupVoteHistoryRequestPacket_packet = dynamic_cast<const GroupVoteHistoryRequestPacket *>(packet);
+        if (GroupVoteHistoryRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupVoteHistoryRequestPacket(*GroupVoteHistoryRequestPacket_packet);
     }
 };
 
@@ -27656,7 +30521,14 @@ public:
         VoteItem.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupVoteHistoryItemReplyPacket();
+        return new GroupVoteHistoryItemReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupVoteHistoryItemReplyPacket *GroupVoteHistoryItemReplyPacket_packet = dynamic_cast<const GroupVoteHistoryItemReplyPacket *>(packet);
+        if (GroupVoteHistoryItemReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupVoteHistoryItemReplyPacket(*GroupVoteHistoryItemReplyPacket_packet);
     }
 };
 
@@ -27728,7 +30600,14 @@ public:
         ProposalData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new StartGroupProposalPacket();
+        return new StartGroupProposalPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const StartGroupProposalPacket *StartGroupProposalPacket_packet = dynamic_cast<const StartGroupProposalPacket *>(packet);
+        if (StartGroupProposalPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new StartGroupProposalPacket(*StartGroupProposalPacket_packet);
     }
 };
 
@@ -27793,7 +30672,14 @@ public:
         ProposalData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupProposalBallotPacket();
+        return new GroupProposalBallotPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupProposalBallotPacket *GroupProposalBallotPacket_packet = dynamic_cast<const GroupProposalBallotPacket *>(packet);
+        if (GroupProposalBallotPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupProposalBallotPacket(*GroupProposalBallotPacket_packet);
     }
 };
 
@@ -27814,7 +30700,14 @@ public:
     virtual void serialize(PacketBuffer &buffer) const {}
     virtual void deserialize(PacketBuffer &buffer) {}
     virtual PacketBase *clone() const {
-        return new TallyVotesPacket();
+        return new TallyVotesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TallyVotesPacket *TallyVotesPacket_packet = dynamic_cast<const TallyVotesPacket *>(packet);
+        if (TallyVotesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TallyVotesPacket(*TallyVotesPacket_packet);
     }
 };
 
@@ -27876,7 +30769,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupMembersRequestPacket();
+        return new GroupMembersRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupMembersRequestPacket *GroupMembersRequestPacket_packet = dynamic_cast<const GroupMembersRequestPacket *>(packet);
+        if (GroupMembersRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupMembersRequestPacket(*GroupMembersRequestPacket_packet);
     }
 };
 
@@ -27971,7 +30871,14 @@ public:
         MemberData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupMembersReplyPacket();
+        return new GroupMembersReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupMembersReplyPacket *GroupMembersReplyPacket_packet = dynamic_cast<const GroupMembersReplyPacket *>(packet);
+        if (GroupMembersReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupMembersReplyPacket(*GroupMembersReplyPacket_packet);
     }
 };
 
@@ -28017,7 +30924,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ActivateGroupPacket();
+        return new ActivateGroupPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ActivateGroupPacket *ActivateGroupPacket_packet = dynamic_cast<const ActivateGroupPacket *>(packet);
+        if (ActivateGroupPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ActivateGroupPacket(*ActivateGroupPacket_packet);
     }
 };
 
@@ -28079,7 +30993,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SetGroupContributionPacket();
+        return new SetGroupContributionPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SetGroupContributionPacket *SetGroupContributionPacket_packet = dynamic_cast<const SetGroupContributionPacket *>(packet);
+        if (SetGroupContributionPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SetGroupContributionPacket(*SetGroupContributionPacket_packet);
     }
 };
 
@@ -28158,7 +31079,14 @@ public:
         NewData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SetGroupAcceptNoticesPacket();
+        return new SetGroupAcceptNoticesPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SetGroupAcceptNoticesPacket *SetGroupAcceptNoticesPacket_packet = dynamic_cast<const SetGroupAcceptNoticesPacket *>(packet);
+        if (SetGroupAcceptNoticesPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SetGroupAcceptNoticesPacket(*SetGroupAcceptNoticesPacket_packet);
     }
 };
 
@@ -28220,7 +31148,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupRoleDataRequestPacket();
+        return new GroupRoleDataRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupRoleDataRequestPacket *GroupRoleDataRequestPacket_packet = dynamic_cast<const GroupRoleDataRequestPacket *>(packet);
+        if (GroupRoleDataRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupRoleDataRequestPacket(*GroupRoleDataRequestPacket_packet);
     }
 };
 
@@ -28315,7 +31250,14 @@ public:
         RoleData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupRoleDataReplyPacket();
+        return new GroupRoleDataReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupRoleDataReplyPacket *GroupRoleDataReplyPacket_packet = dynamic_cast<const GroupRoleDataReplyPacket *>(packet);
+        if (GroupRoleDataReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupRoleDataReplyPacket(*GroupRoleDataReplyPacket_packet);
     }
 };
 
@@ -28377,7 +31319,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupRoleMembersRequestPacket();
+        return new GroupRoleMembersRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupRoleMembersRequestPacket *GroupRoleMembersRequestPacket_packet = dynamic_cast<const GroupRoleMembersRequestPacket *>(packet);
+        if (GroupRoleMembersRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupRoleMembersRequestPacket(*GroupRoleMembersRequestPacket_packet);
     }
 };
 
@@ -28446,7 +31395,14 @@ public:
         MemberData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupRoleMembersReplyPacket();
+        return new GroupRoleMembersReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupRoleMembersReplyPacket *GroupRoleMembersReplyPacket_packet = dynamic_cast<const GroupRoleMembersReplyPacket *>(packet);
+        if (GroupRoleMembersReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupRoleMembersReplyPacket(*GroupRoleMembersReplyPacket_packet);
     }
 };
 
@@ -28494,7 +31450,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupTitlesRequestPacket();
+        return new GroupTitlesRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupTitlesRequestPacket *GroupTitlesRequestPacket_packet = dynamic_cast<const GroupTitlesRequestPacket *>(packet);
+        if (GroupTitlesRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupTitlesRequestPacket(*GroupTitlesRequestPacket_packet);
     }
 };
 
@@ -28563,7 +31526,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupTitlesReplyPacket();
+        return new GroupTitlesReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupTitlesReplyPacket *GroupTitlesReplyPacket_packet = dynamic_cast<const GroupTitlesReplyPacket *>(packet);
+        if (GroupTitlesReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupTitlesReplyPacket(*GroupTitlesReplyPacket_packet);
     }
 };
 
@@ -28611,7 +31581,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupTitleUpdatePacket();
+        return new GroupTitleUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupTitleUpdatePacket *GroupTitleUpdatePacket_packet = dynamic_cast<const GroupTitleUpdatePacket *>(packet);
+        if (GroupTitleUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupTitleUpdatePacket(*GroupTitleUpdatePacket_packet);
     }
 };
 
@@ -28688,7 +31665,14 @@ public:
         RoleData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupRoleUpdatePacket();
+        return new GroupRoleUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupRoleUpdatePacket *GroupRoleUpdatePacket_packet = dynamic_cast<const GroupRoleUpdatePacket *>(packet);
+        if (GroupRoleUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupRoleUpdatePacket(*GroupRoleUpdatePacket_packet);
     }
 };
 
@@ -28731,7 +31715,14 @@ public:
         RequestData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LiveHelpGroupRequestPacket();
+        return new LiveHelpGroupRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LiveHelpGroupRequestPacket *LiveHelpGroupRequestPacket_packet = dynamic_cast<const LiveHelpGroupRequestPacket *>(packet);
+        if (LiveHelpGroupRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LiveHelpGroupRequestPacket(*LiveHelpGroupRequestPacket_packet);
     }
 };
 
@@ -28777,7 +31768,14 @@ public:
         ReplyData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LiveHelpGroupReplyPacket();
+        return new LiveHelpGroupReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LiveHelpGroupReplyPacket *LiveHelpGroupReplyPacket_packet = dynamic_cast<const LiveHelpGroupReplyPacket *>(packet);
+        if (LiveHelpGroupReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LiveHelpGroupReplyPacket(*LiveHelpGroupReplyPacket_packet);
     }
 };
 
@@ -28819,7 +31817,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentWearablesRequestPacket();
+        return new AgentWearablesRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentWearablesRequestPacket *AgentWearablesRequestPacket_packet = dynamic_cast<const AgentWearablesRequestPacket *>(packet);
+        if (AgentWearablesRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentWearablesRequestPacket(*AgentWearablesRequestPacket_packet);
     }
 };
 
@@ -28888,7 +31893,14 @@ public:
         WearableData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentWearablesUpdatePacket();
+        return new AgentWearablesUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentWearablesUpdatePacket *AgentWearablesUpdatePacket_packet = dynamic_cast<const AgentWearablesUpdatePacket *>(packet);
+        if (AgentWearablesUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentWearablesUpdatePacket(*AgentWearablesUpdatePacket_packet);
     }
 };
 
@@ -28951,7 +31963,14 @@ public:
         WearableData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentIsNowWearingPacket();
+        return new AgentIsNowWearingPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentIsNowWearingPacket *AgentIsNowWearingPacket_packet = dynamic_cast<const AgentIsNowWearingPacket *>(packet);
+        if (AgentIsNowWearingPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentIsNowWearingPacket(*AgentIsNowWearingPacket_packet);
     }
 };
 
@@ -29016,7 +32035,14 @@ public:
         WearableData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentCachedTexturePacket();
+        return new AgentCachedTexturePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentCachedTexturePacket *AgentCachedTexturePacket_packet = dynamic_cast<const AgentCachedTexturePacket *>(packet);
+        if (AgentCachedTexturePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentCachedTexturePacket(*AgentCachedTexturePacket_packet);
     }
 };
 
@@ -29085,7 +32111,14 @@ public:
         WearableData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentCachedTextureResponsePacket();
+        return new AgentCachedTextureResponsePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentCachedTextureResponsePacket *AgentCachedTextureResponsePacket_packet = dynamic_cast<const AgentCachedTextureResponsePacket *>(packet);
+        if (AgentCachedTextureResponsePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentCachedTextureResponsePacket(*AgentCachedTextureResponsePacket_packet);
     }
 };
 
@@ -29127,7 +32160,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentDataUpdateRequestPacket();
+        return new AgentDataUpdateRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentDataUpdateRequestPacket *AgentDataUpdateRequestPacket_packet = dynamic_cast<const AgentDataUpdateRequestPacket *>(packet);
+        if (AgentDataUpdateRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentDataUpdateRequestPacket(*AgentDataUpdateRequestPacket_packet);
     }
 };
 
@@ -29185,7 +32225,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentDataUpdatePacket();
+        return new AgentDataUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentDataUpdatePacket *AgentDataUpdatePacket_packet = dynamic_cast<const AgentDataUpdatePacket *>(packet);
+        if (AgentDataUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentDataUpdatePacket(*AgentDataUpdatePacket_packet);
     }
 };
 
@@ -29234,7 +32281,14 @@ public:
         AgentGroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new GroupDataUpdatePacket();
+        return new GroupDataUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const GroupDataUpdatePacket *GroupDataUpdatePacket_packet = dynamic_cast<const GroupDataUpdatePacket *>(packet);
+        if (GroupDataUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new GroupDataUpdatePacket(*GroupDataUpdatePacket_packet);
     }
 };
 
@@ -29306,7 +32360,14 @@ public:
         GroupData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentGroupDataUpdatePacket();
+        return new AgentGroupDataUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentGroupDataUpdatePacket *AgentGroupDataUpdatePacket_packet = dynamic_cast<const AgentGroupDataUpdatePacket *>(packet);
+        if (AgentGroupDataUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentGroupDataUpdatePacket(*AgentGroupDataUpdatePacket_packet);
     }
 };
 
@@ -29349,7 +32410,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new AgentDropGroupPacket();
+        return new AgentDropGroupPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const AgentDropGroupPacket *AgentDropGroupPacket_packet = dynamic_cast<const AgentDropGroupPacket *>(packet);
+        if (AgentDropGroupPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new AgentDropGroupPacket(*AgentDropGroupPacket_packet);
     }
 };
 
@@ -29404,7 +32472,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LogTextMessagePacket();
+        return new LogTextMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LogTextMessagePacket *LogTextMessagePacket_packet = dynamic_cast<const LogTextMessagePacket *>(packet);
+        if (LogTextMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LogTextMessagePacket(*LogTextMessagePacket_packet);
     }
 };
 
@@ -29479,7 +32554,14 @@ public:
         Effect.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ViewerEffectPacket();
+        return new ViewerEffectPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ViewerEffectPacket *ViewerEffectPacket_packet = dynamic_cast<const ViewerEffectPacket *>(packet);
+        if (ViewerEffectPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ViewerEffectPacket(*ViewerEffectPacket_packet);
     }
 };
 
@@ -29521,7 +32603,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CreateTrustedCircuitPacket();
+        return new CreateTrustedCircuitPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CreateTrustedCircuitPacket *CreateTrustedCircuitPacket_packet = dynamic_cast<const CreateTrustedCircuitPacket *>(packet);
+        if (CreateTrustedCircuitPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CreateTrustedCircuitPacket(*CreateTrustedCircuitPacket_packet);
     }
 };
 
@@ -29560,7 +32649,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DenyTrustedCircuitPacket();
+        return new DenyTrustedCircuitPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DenyTrustedCircuitPacket *DenyTrustedCircuitPacket_packet = dynamic_cast<const DenyTrustedCircuitPacket *>(packet);
+        if (DenyTrustedCircuitPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DenyTrustedCircuitPacket(*DenyTrustedCircuitPacket_packet);
     }
 };
 
@@ -29581,7 +32677,14 @@ public:
     virtual void serialize(PacketBuffer &buffer) const {}
     virtual void deserialize(PacketBuffer &buffer) {}
     virtual PacketBase *clone() const {
-        return new RequestTrustedCircuitPacket();
+        return new RequestTrustedCircuitPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RequestTrustedCircuitPacket *RequestTrustedCircuitPacket_packet = dynamic_cast<const RequestTrustedCircuitPacket *>(packet);
+        if (RequestTrustedCircuitPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RequestTrustedCircuitPacket(*RequestTrustedCircuitPacket_packet);
     }
 };
 
@@ -29665,7 +32768,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RezSingleAttachmentFromInvPacket();
+        return new RezSingleAttachmentFromInvPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RezSingleAttachmentFromInvPacket *RezSingleAttachmentFromInvPacket_packet = dynamic_cast<const RezSingleAttachmentFromInvPacket *>(packet);
+        if (RezSingleAttachmentFromInvPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RezSingleAttachmentFromInvPacket(*RezSingleAttachmentFromInvPacket_packet);
     }
 };
 
@@ -29772,7 +32882,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RezMultipleAttachmentsFromInvPacket();
+        return new RezMultipleAttachmentsFromInvPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RezMultipleAttachmentsFromInvPacket *RezMultipleAttachmentsFromInvPacket_packet = dynamic_cast<const RezMultipleAttachmentsFromInvPacket *>(packet);
+        if (RezMultipleAttachmentsFromInvPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RezMultipleAttachmentsFromInvPacket(*RezMultipleAttachmentsFromInvPacket_packet);
     }
 };
 
@@ -29814,7 +32931,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new DetachAttachmentIntoInvPacket();
+        return new DetachAttachmentIntoInvPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const DetachAttachmentIntoInvPacket *DetachAttachmentIntoInvPacket_packet = dynamic_cast<const DetachAttachmentIntoInvPacket *>(packet);
+        if (DetachAttachmentIntoInvPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new DetachAttachmentIntoInvPacket(*DetachAttachmentIntoInvPacket_packet);
     }
 };
 
@@ -29893,7 +33017,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new CreateNewOutfitAttachmentsPacket();
+        return new CreateNewOutfitAttachmentsPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CreateNewOutfitAttachmentsPacket *CreateNewOutfitAttachmentsPacket_packet = dynamic_cast<const CreateNewOutfitAttachmentsPacket *>(packet);
+        if (CreateNewOutfitAttachmentsPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CreateNewOutfitAttachmentsPacket(*CreateNewOutfitAttachmentsPacket_packet);
     }
 };
 
@@ -29935,7 +33066,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UserInfoRequestPacket();
+        return new UserInfoRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UserInfoRequestPacket *UserInfoRequestPacket_packet = dynamic_cast<const UserInfoRequestPacket *>(packet);
+        if (UserInfoRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UserInfoRequestPacket(*UserInfoRequestPacket_packet);
     }
 };
 
@@ -29997,7 +33135,14 @@ public:
         UserData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UserInfoReplyPacket();
+        return new UserInfoReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UserInfoReplyPacket *UserInfoReplyPacket_packet = dynamic_cast<const UserInfoReplyPacket *>(packet);
+        if (UserInfoReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UserInfoReplyPacket(*UserInfoReplyPacket_packet);
     }
 };
 
@@ -30059,7 +33204,14 @@ public:
         UserData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UpdateUserInfoPacket();
+        return new UpdateUserInfoPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const UpdateUserInfoPacket *UpdateUserInfoPacket_packet = dynamic_cast<const UpdateUserInfoPacket *>(packet);
+        if (UpdateUserInfoPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new UpdateUserInfoPacket(*UpdateUserInfoPacket_packet);
     }
 };
 
@@ -30102,7 +33254,14 @@ public:
         ParcelData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelRenamePacket();
+        return new ParcelRenamePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelRenamePacket *ParcelRenamePacket_packet = dynamic_cast<const ParcelRenamePacket *>(packet);
+        if (ParcelRenamePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelRenamePacket(*ParcelRenamePacket_packet);
     }
 };
 
@@ -30161,7 +33320,14 @@ public:
         FileData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new InitiateDownloadPacket();
+        return new InitiateDownloadPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const InitiateDownloadPacket *InitiateDownloadPacket_packet = dynamic_cast<const InitiateDownloadPacket *>(packet);
+        if (InitiateDownloadPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new InitiateDownloadPacket(*InitiateDownloadPacket_packet);
     }
 };
 
@@ -30224,7 +33390,14 @@ public:
         ParamList.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SystemMessagePacket();
+        return new SystemMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SystemMessagePacket *SystemMessagePacket_packet = dynamic_cast<const SystemMessagePacket *>(packet);
+        if (SystemMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SystemMessagePacket(*SystemMessagePacket_packet);
     }
 };
 
@@ -30275,7 +33448,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MapLayerRequestPacket();
+        return new MapLayerRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MapLayerRequestPacket *MapLayerRequestPacket_packet = dynamic_cast<const MapLayerRequestPacket *>(packet);
+        if (MapLayerRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MapLayerRequestPacket(*MapLayerRequestPacket_packet);
     }
 };
 
@@ -30347,7 +33527,14 @@ public:
         LayerData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MapLayerReplyPacket();
+        return new MapLayerReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MapLayerReplyPacket *MapLayerReplyPacket_packet = dynamic_cast<const MapLayerReplyPacket *>(packet);
+        if (MapLayerReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MapLayerReplyPacket(*MapLayerReplyPacket_packet);
     }
 };
 
@@ -30424,7 +33611,14 @@ public:
         PositionData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MapBlockRequestPacket();
+        return new MapBlockRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MapBlockRequestPacket *MapBlockRequestPacket_packet = dynamic_cast<const MapBlockRequestPacket *>(packet);
+        if (MapBlockRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MapBlockRequestPacket(*MapBlockRequestPacket_packet);
     }
 };
 
@@ -30492,7 +33686,14 @@ public:
         NameData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MapNameRequestPacket();
+        return new MapNameRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MapNameRequestPacket *MapNameRequestPacket_packet = dynamic_cast<const MapNameRequestPacket *>(packet);
+        if (MapNameRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MapNameRequestPacket(*MapNameRequestPacket_packet);
     }
 };
 
@@ -30573,7 +33774,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MapBlockReplyPacket();
+        return new MapBlockReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MapBlockReplyPacket *MapBlockReplyPacket_packet = dynamic_cast<const MapBlockReplyPacket *>(packet);
+        if (MapBlockReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MapBlockReplyPacket(*MapBlockReplyPacket_packet);
     }
 };
 
@@ -30644,7 +33852,14 @@ public:
         RequestData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MapItemRequestPacket();
+        return new MapItemRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MapItemRequestPacket *MapItemRequestPacket_packet = dynamic_cast<const MapItemRequestPacket *>(packet);
+        if (MapItemRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MapItemRequestPacket(*MapItemRequestPacket_packet);
     }
 };
 
@@ -30736,7 +33951,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new MapItemReplyPacket();
+        return new MapItemReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const MapItemReplyPacket *MapItemReplyPacket_packet = dynamic_cast<const MapItemReplyPacket *>(packet);
+        if (MapItemReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new MapItemReplyPacket(*MapItemReplyPacket_packet);
     }
 };
 
@@ -30805,7 +34027,14 @@ public:
         AgentData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new SendPostcardPacket();
+        return new SendPostcardPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const SendPostcardPacket *SendPostcardPacket_packet = dynamic_cast<const SendPostcardPacket *>(packet);
+        if (SendPostcardPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new SendPostcardPacket(*SendPostcardPacket_packet);
     }
 };
 
@@ -30854,7 +34083,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RpcChannelRequestPacket();
+        return new RpcChannelRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RpcChannelRequestPacket *RpcChannelRequestPacket_packet = dynamic_cast<const RpcChannelRequestPacket *>(packet);
+        if (RpcChannelRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RpcChannelRequestPacket(*RpcChannelRequestPacket_packet);
     }
 };
 
@@ -30900,7 +34136,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RpcChannelReplyPacket();
+        return new RpcChannelReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RpcChannelReplyPacket *RpcChannelReplyPacket_packet = dynamic_cast<const RpcChannelReplyPacket *>(packet);
+        if (RpcChannelReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RpcChannelReplyPacket(*RpcChannelReplyPacket_packet);
     }
 };
 
@@ -30971,7 +34214,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RpcScriptRequestInboundPacket();
+        return new RpcScriptRequestInboundPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RpcScriptRequestInboundPacket *RpcScriptRequestInboundPacket_packet = dynamic_cast<const RpcScriptRequestInboundPacket *>(packet);
+        if (RpcScriptRequestInboundPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RpcScriptRequestInboundPacket(*RpcScriptRequestInboundPacket_packet);
     }
 };
 
@@ -31029,7 +34279,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RpcScriptRequestInboundForwardPacket();
+        return new RpcScriptRequestInboundForwardPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RpcScriptRequestInboundForwardPacket *RpcScriptRequestInboundForwardPacket_packet = dynamic_cast<const RpcScriptRequestInboundForwardPacket *>(packet);
+        if (RpcScriptRequestInboundForwardPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RpcScriptRequestInboundForwardPacket(*RpcScriptRequestInboundForwardPacket_packet);
     }
 };
 
@@ -31080,7 +34337,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new RpcScriptReplyInboundPacket();
+        return new RpcScriptReplyInboundPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const RpcScriptReplyInboundPacket *RpcScriptReplyInboundPacket_packet = dynamic_cast<const RpcScriptReplyInboundPacket *>(packet);
+        if (RpcScriptReplyInboundPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new RpcScriptReplyInboundPacket(*RpcScriptReplyInboundPacket_packet);
     }
 };
 
@@ -31129,7 +34393,14 @@ public:
         DataBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ScriptMailRegistrationPacket();
+        return new ScriptMailRegistrationPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ScriptMailRegistrationPacket *ScriptMailRegistrationPacket_packet = dynamic_cast<const ScriptMailRegistrationPacket *>(packet);
+        if (ScriptMailRegistrationPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ScriptMailRegistrationPacket(*ScriptMailRegistrationPacket_packet);
     }
 };
 
@@ -31175,7 +34446,14 @@ public:
         CommandBlock.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelMediaCommandMessagePacket();
+        return new ParcelMediaCommandMessagePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelMediaCommandMessagePacket *ParcelMediaCommandMessagePacket_packet = dynamic_cast<const ParcelMediaCommandMessagePacket *>(packet);
+        if (ParcelMediaCommandMessagePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelMediaCommandMessagePacket(*ParcelMediaCommandMessagePacket_packet);
     }
 };
 
@@ -31250,7 +34528,14 @@ public:
         DataBlockExtended.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ParcelMediaUpdatePacket();
+        return new ParcelMediaUpdatePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ParcelMediaUpdatePacket *ParcelMediaUpdatePacket_packet = dynamic_cast<const ParcelMediaUpdatePacket *>(packet);
+        if (ParcelMediaUpdatePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ParcelMediaUpdatePacket(*ParcelMediaUpdatePacket_packet);
     }
 };
 
@@ -31318,7 +34603,14 @@ public:
         RequestData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LandStatRequestPacket();
+        return new LandStatRequestPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LandStatRequestPacket *LandStatRequestPacket_packet = dynamic_cast<const LandStatRequestPacket *>(packet);
+        if (LandStatRequestPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LandStatRequestPacket(*LandStatRequestPacket_packet);
     }
 };
 
@@ -31402,7 +34694,14 @@ public:
         ReportData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new LandStatReplyPacket();
+        return new LandStatReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const LandStatReplyPacket *LandStatReplyPacket_packet = dynamic_cast<const LandStatReplyPacket *>(packet);
+        if (LandStatReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new LandStatReplyPacket(*LandStatReplyPacket_packet);
     }
 };
 
@@ -31474,7 +34773,14 @@ public:
         Data.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ErrorPacket();
+        return new ErrorPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ErrorPacket *ErrorPacket_packet = dynamic_cast<const ErrorPacket *>(packet);
+        if (ErrorPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ErrorPacket(*ErrorPacket_packet);
     }
 };
 
@@ -31536,7 +34842,14 @@ public:
         ObjectData.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new ObjectIncludeInSearchPacket();
+        return new ObjectIncludeInSearchPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const ObjectIncludeInSearchPacket *ObjectIncludeInSearchPacket_packet = dynamic_cast<const ObjectIncludeInSearchPacket *>(packet);
+        if (ObjectIncludeInSearchPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new ObjectIncludeInSearchPacket(*ObjectIncludeInSearchPacket_packet);
     }
 };
 

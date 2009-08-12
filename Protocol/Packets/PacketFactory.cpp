@@ -493,8 +493,16 @@ PacketBase *PacketFactory::createPacket(PacketHeader::PACKET_ID_TYPE packet_id) 
     PacketBase *ret = NULL;
     PACKET_MAP_TYPE::const_iterator it = PacketList.find(packet_id);
     if(it != PacketList.end()){
-	ret = it->second->clone();
-	//TODO @@@ implement "clone" instead of simply create a new!!!
+        ret = it->second->clone();
+    }
+    return ret;
+}
+
+PacketBase *PacketFactory::createPacketCopy(PacketHeader::PACKET_ID_TYPE packet_id, const PacketBase *packet) const {
+    PacketBase *ret = NULL;
+    PACKET_MAP_TYPE::const_iterator it = PacketList.find(packet_id);
+    if(it != PacketList.end()){
+        ret = it->second->clone(packet);
     }
     return ret;
 }
@@ -502,8 +510,8 @@ PacketBase *PacketFactory::createPacket(PacketHeader::PACKET_ID_TYPE packet_id) 
 PacketFactory *PacketFactory::GetInstance() {
     static PacketFactory *factory;
     if (factory == NULL){
-	factory = new PacketFactory();
-	factory->init();
+        factory = new PacketFactory();
+        factory->init();
     }
     return factory;
 }
