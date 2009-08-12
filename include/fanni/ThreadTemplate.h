@@ -9,6 +9,7 @@
 #define THREAD_H_
 
 #include <pthread.h>
+#include "fanni/Exception.h"
 
 namespace Fanni {
 
@@ -49,10 +50,13 @@ public:
 protected:
 	// @@@ arg must be derived from ThreadHandlerBase
 	static void *caller(void *arg) {
-		ThreadHandlerType & handler
-				= *reinterpret_cast<ThreadHandlerType *> (arg);
-		// TODO @@@ assert typeof(handler)
-		handler();
+		ThreadHandlerType & handler = *reinterpret_cast<ThreadHandlerType *> (arg);
+		/* TODO @@@ assert typeof(handler) */
+		try {
+			handler();
+		} catch (ErrorException &e) {
+			ERROR_LOG("Thread terminated by catching ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
+		}
 		return NULL;
 	}
 };

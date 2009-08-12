@@ -11,16 +11,13 @@ DEBUG_LDFLAGS = EXTRA_LIB
 env = Environment(CCFLAGS=DEBUG_CCFLAGS, LINKFLAGS=DEBUG_LDFLAGS)
 Export("env")
 
-# Libraries
-env.SConscript('Basic/SConscript')
-env.SConscript('Framework/Threads/SConscript')
-env.SConscript('Framework/Network/SConscript')
-#env.SConscript('Framework/Communication/SConscript')
-env.SConscript('Protocol/Packets/SConscript')
-#env.SConscript('Network/SConscript')
+files = [
+	"Socket.cpp",
+	]
 
-# Programs
-
-# Tests
-env.SConscript('Tests/SConstruct')
+env.SharedLibrary(
+	"../../lib/packets",
+	files,
+	CPPPATH=["../../include", "../../Protocol"]
+	)
 

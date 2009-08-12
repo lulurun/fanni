@@ -24,8 +24,10 @@ void *ThreadBase::thread_handler(void *t) {
 	ThreadBase::set_thread_priority ( This->priority );
 	try {
 		This->loop();
-	} catch (const FatalException &ex) {
-		// TODO: how to deal with FATAL
+	} catch (const FatalException &e) {
+		ERROR_LOG("FATAL Worker Thread terminated: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
+	} catch (const ErrorException &e) {
+		ERROR_LOG("ERROR Worker Thread terminated: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
 	}
 	TRACE_LOG("exit");
 	return NULL;

@@ -1,63 +1,52 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?fileVersion 4.0.0?>
 
 <cproject>
-  <storageModule moduleId="org.eclipse.cdt.core.settings">
-    <cconfiguration id="cdt.managedbuild.toolchain.gnu.base.285908149">
-      <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.toolchain.gnu.base.285908149" moduleId="org.eclipse.cdt.core.settings" name="Linux GCC">
+<storageModule moduleId="org.eclipse.cdt.core.settings">
+<cconfiguration id="cdt.managedbuild.toolchain.gnu.base.1472933653">
+<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.toolchain.gnu.base.1472933653" moduleId="org.eclipse.cdt.core.settings" name="Linux GCC">
 <externalSettings/>
 <extensions>
 <extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
-<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 <extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 <extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 </extensions>
 </storageModule>
-      <storageModule moduleId="cdtBuildSystem" version="4.0.0">
-<configuration artifactName="FanniPlanet" buildProperties="" description="" id="cdt.managedbuild.toolchain.gnu.base.285908149" name="Linux GCC" parent="org.eclipse.cdt.build.core.emptycfg">
-<folderInfo id="cdt.managedbuild.toolchain.gnu.base.285908149.348147405" name="/" resourcePath="">
-<toolChain id="cdt.managedbuild.toolchain.gnu.base.125977500" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base">
-<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base.2142477722" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-<builder command="scons" id="cdt.managedbuild.target.gnu.builder.base.1333131818" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.base"/>
-<tool id="cdt.managedbuild.tool.gnu.archiver.base.1968002559" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
-<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.634808937" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
-<option id="gnu.cpp.compiler.option.include.paths.2088396387" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FanniPlanet/include}&quot;"/>
-<listOptionValue builtIn="false" value="/home/lulu/temp/install/include"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FanniPlanet/Framework}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FanniPlanet/Protocol}&quot;"/>
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<configuration artifactName="fanni" buildProperties="" description="" id="cdt.managedbuild.toolchain.gnu.base.1472933653" name="Linux GCC" parent="org.eclipse.cdt.build.core.emptycfg">
+<folderInfo id="cdt.managedbuild.toolchain.gnu.base.1472933653.1775017083" name="/" resourcePath="">
+<toolChain id="cdt.managedbuild.toolchain.gnu.base.964634309" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base">
+<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base.1054707642" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
+<builder cleanBuildTarget="-c" command="scons" id="cdt.managedbuild.target.gnu.builder.base.349109976" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.base"/>
+<tool id="cdt.managedbuild.tool.gnu.archiver.base.1916014223" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
+<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1846822438" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
+<option id="gnu.cpp.compiler.option.include.paths.950848298" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fanni/Framework}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fanni/Protocol}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fanni/Network}&quot;"/>
 </option>
-<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1366559801" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1818787586" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.383037687" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
-<option id="gnu.c.compiler.option.include.paths.737253196" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FanniPlanet/include}&quot;"/>
-</option>
-<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.93720249" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.861486246" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
+<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1371073648" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.c.linker.base.575062643" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
-<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1285424810" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
-<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.607826207" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+<tool id="cdt.managedbuild.tool.gnu.c.linker.base.1624737356" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
+<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1676015280" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
+<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1958781323" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 <additionalInput kind="additionalinput" paths="$(LIBS)"/>
 </inputType>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.assembler.base.530192687" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
-<option id="gnu.both.asm.option.include.paths.857668662" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FanniPlanet/include}&quot;"/>
-</option>
-<inputType id="cdt.managedbuild.tool.gnu.assembler.input.2130587206" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+<tool id="cdt.managedbuild.tool.gnu.assembler.base.136033728" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
+<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1967609445" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
 </folderInfo>
 </configuration>
 </storageModule>
-      
-      <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
-    <storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
-<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
-
+<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 <storageModule moduleId="scannerConfiguration">
 <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile"/>
 <profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
@@ -140,7 +129,7 @@
 <parser enabled="true"/>
 </scannerInfoProvider>
 </profile>
-<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.285908149;cdt.managedbuild.toolchain.gnu.base.285908149.348147405;cdt.managedbuild.tool.gnu.cpp.compiler.base.634808937;cdt.managedbuild.tool.gnu.cpp.compiler.input.1366559801">
+<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.1472933653;cdt.managedbuild.toolchain.gnu.base.1472933653.1775017083;cdt.managedbuild.tool.gnu.cpp.compiler.base.1846822438;cdt.managedbuild.tool.gnu.cpp.compiler.input.1818787586">
 <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 <profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 <buildOutputProvider>
@@ -223,7 +212,7 @@
 </scannerInfoProvider>
 </profile>
 </scannerConfigBuildInfo>
-<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.285908149;cdt.managedbuild.toolchain.gnu.base.285908149.348147405;cdt.managedbuild.tool.gnu.c.compiler.base.383037687;cdt.managedbuild.tool.gnu.c.compiler.input.93720249">
+<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.1472933653;cdt.managedbuild.toolchain.gnu.base.1472933653.1775017083;cdt.managedbuild.tool.gnu.c.compiler.base.861486246;cdt.managedbuild.tool.gnu.c.compiler.input.1371073648">
 <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
 <profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 <buildOutputProvider>
@@ -308,8 +297,8 @@
 </scannerConfigBuildInfo>
 </storageModule>
 </cconfiguration>
-  </storageModule>
-  <storageModule moduleId="cdtBuildSystem" version="4.0.0">
-<project id="FanniPlanet.cdt.managedbuild.target.gnu.exe.1097372078" name="Executable" projectType="cdt.managedbuild.target.gnu.exe"/>
+</storageModule>
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<project id="fanni.null.1441087519" name="fanni"/>
 </storageModule>
 </cproject>

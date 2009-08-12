@@ -32,6 +32,7 @@ public:
 	virtual void deserializePacket(PacketBuffer &buffer);
 
 	virtual PacketBase *clone() const = 0;
+	virtual PacketBase *clone(const PacketBase *packet) const = 0;
 };
 
 }

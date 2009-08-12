@@ -21,7 +21,7 @@ PacketReactor::~PacketReactor() {
 }
 
 void PacketReactor::init() {
-	this->handler_factory = PacketHandlerFactory::GetInstance();
+	this->handler_factory = new PacketHandlerFactory();
 }
 
 void PacketReactor::dispatch(const PacketBase &packet, const EndPoint &ep) {

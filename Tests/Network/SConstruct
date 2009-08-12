@@ -1,24 +1,17 @@
 # TODO: should not import
 Import("test_env")
 
-#test_env.Program("test_libevent_udp",
-#		"test_libevent_udp.cpp",
-#		LIBS = ["framework_network", "basic", "event", "framework_threads", "pthread", "log4cxx"],
-#		CPPPATH = ["../../Framework", "../../include"],
-#		LIBPATH = ["../../lib"],
-#		)
-#
-#test_env.Program("test_libevent",
-#		"test_libevent.cpp",
-#		LIBS = ["basic", "event", "framework_network", "framework_threads", "pthread", "log4cxx"],
-#		CPPPATH = ["../../Framework", "../../include"],
-#		LIBPATH = ["../../lib"],
-#		)
-#
-
-test_env.Program("test_udpclient",
-		"Test_UDPClient.cpp",
-		LIBS = ["basic", "event", "framework_network", "framework_threads", "pthread", "log4cxx", "packets"],
-		CPPPATH = ["../../Framework", "../../include", "../../Protocol"],
+test_env.Program("simple_packet_transfer",
+		["simple_packet_transfer.cpp"],
+		LIBS = ["framework_network", "basic", "event", "framework_threads", "pthread", "packets", "log4cxx"],
+		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
 		LIBPATH = ["../../lib"],
 		)
+
+test_env.Program("echo_server",
+		["EchoServer.cpp"],
+		LIBS = ["framework_network", "basic", "event", "framework_threads", "pthread", "packets", "log4cxx"],
+		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
+		LIBPATH = ["../../lib"],
+		)
+

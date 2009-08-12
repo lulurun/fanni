@@ -29,7 +29,7 @@ class EventHandlerBase {
 public:
 	EventHandlerBase() { }
 	virtual ~EventHandlerBase(){ }
-	virtual void operator() (int fd, short flags) const = 0;
+	virtual void operator() (int fd, short flags) = 0;
 };
 
 class EventManager {

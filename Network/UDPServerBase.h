@@ -21,17 +21,10 @@ namespace Network {
 static const short DEFAULT_PORT = 9001;
 static const std::string DEFAULT_ADDR = "0.0.0.0";
 
-class OnRecvHandlerBase {
-public:
-	virtual ~OnRecvHandlerBase() {};
-	virtual void operator()(PacketBuffer *buffer, const EndPoint *ep) const = 0;
-};
-
 class UDPServerBase {
 protected:
 	EndPoint ep;
     SOCKET socket;
-    const OnRecvHandlerBase *recv_handler;
 
 public:
 	UDPServerBase() {
@@ -49,23 +42,16 @@ public:
 	};
 	virtual ~UDPServerBase() {};
 
-	virtual void start() {
-		if (this->recv_handler == NULL) {
-			ErrorException::throw_exception(EXP_Network, EXP_PRE_MSG, "UDPServer not initialized");
-		}
-	};
+	virtual void start() = 0;
 	virtual void shutdown() {
 		if (this->socket == 0) {
 			// TODO @@@ not needed ??
 			ErrorException::throw_exception(EXP_Network, EXP_PRE_MSG, "UDPServer not started");
 		}
+		::close(this->socket); // TODO @@@ what to do ???
 	};
 
 	int getPort() const { return this->ep.getPort(); };
-	void setOnRecv(const OnRecvHandlerBase *handler) {
-		this->recv_handler = handler;
-	};
-
 };
 
 }

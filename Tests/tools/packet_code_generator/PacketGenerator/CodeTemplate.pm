@@ -28,7 +28,14 @@ public:
 {MemberListDeserialize}
     }
     virtual PacketBase *clone() const {
-        return new {ClassName}();
+        return new {ClassName}(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const {ClassName} *{ClassName}_packet = dynamic_cast<const {ClassName} *>(packet);
+        if ({ClassName}_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new {ClassName}(*{ClassName}_packet);
     }
 };
 
@@ -63,6 +70,8 @@ BLOCKCLASS_TEMPLATE
 our $Packet_H_Template =<< "PACKET_H_TEMPLATE";
 #ifndef PACKET_IMPL_H_
 #define PACKET_IMPL_H_
+
+#include "fanni/Exception.h"
 
 #include "PacketBaseTypes.h"
 #include "PacketBase.h"
@@ -104,8 +113,16 @@ PacketBase *PacketFactory::createPacket(PacketHeader::PACKET_ID_TYPE packet_id) 
     PacketBase *ret = NULL;
     PACKET_MAP_TYPE::const_iterator it = PacketList.find(packet_id);
     if(it != PacketList.end()){
-	ret = it->second->clone();
-	//TODO @@@ implement "clone" instead of simply create a new!!!
+        ret = it->second->clone();
+    }
+    return ret;
+}
+
+PacketBase *PacketFactory::createPacketCopy(PacketHeader::PACKET_ID_TYPE packet_id, const PacketBase *packet) const {
+    PacketBase *ret = NULL;
+    PACKET_MAP_TYPE::const_iterator it = PacketList.find(packet_id);
+    if(it != PacketList.end()){
+        ret = it->second->clone(packet);
     }
     return ret;
 }
@@ -113,8 +130,8 @@ PacketBase *PacketFactory::createPacket(PacketHeader::PACKET_ID_TYPE packet_id) 
 PacketFactory *PacketFactory::GetInstance() {
     static PacketFactory *factory;
     if (factory == NULL){
-	factory = new PacketFactory();
-	factory->init();
+        factory = new PacketFactory();
+        factory->init();
     }
     return factory;
 }

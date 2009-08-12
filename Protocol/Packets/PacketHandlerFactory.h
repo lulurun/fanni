@@ -14,13 +14,13 @@
 namespace Fanni {
 
 class PacketHandlerFactory {
-	PacketHandlerFactory();
 public:
+	PacketHandlerFactory();
 	virtual ~PacketHandlerFactory();
 
 	void init();
 	const PacketHandlerBase *getPacketHandler(PacketHeader::PACKET_ID_TYPE packet_id) const;
-	static PacketHandlerFactory *GetInstance();
+	void registerPacketHandler(PacketHeader::PACKET_ID_TYPE packet_id, const PacketHandlerBase *packet_handler) ;
 };
 
 }
