@@ -38,7 +38,7 @@ public:
 			}
 
 			try {
-				auto_ptr<const TransferDataBuffer> auto_queue_data(const_queue_data);
+				auto_ptr<const TransferDataBuffer> auto_queue_data();
 				PacketBase *packet = this->packet_serializer.deserialize(*(const_queue_data->data));
 
 				// resending, ack management

@@ -130,7 +130,9 @@ int main(int argc, char **argv) {
 			DEBUG_LOG("enter Client mode");
 			Event_UDPClient peer(thread_number);
 			// set UDP client handlers
-			ReceiverManager *recevier_manager = new ReceiverManager(thread_number, NULL);
+			PacketTransferManager *packet_transfer_manager = new PacketTransferManager(thread_number, peer.getSocket());
+			packet_transfer_manager->init();
+			ReceiverManager *recevier_manager = new ReceiverManager(thread_number, packet_transfer_manager);
 			recevier_manager->init();
 			// register packet handlers
 			recevier_manager->registerHandler(CompletePingCheck_ID, new CompletePingCheckPacketHandler());
