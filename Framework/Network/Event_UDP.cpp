@@ -43,7 +43,8 @@ void Event_UDP::start() {
 	TRACE_LOG("enter");
 	try {
 		if (this->recv_handler == NULL) {
-			WARN_LOG("recv handler is NULL");
+			ERROR_LOG("recv handler is NULL");
+			return;
 		}
 		this->_libevent_OnRecv_handler = new Event_OnRecvHandler(this->recv_handler);
 		EventBase<Event_OnRecvHandler> e(this->socket, EV_READ| EV_PERSIST,

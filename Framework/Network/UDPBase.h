@@ -1,12 +1,12 @@
 /*
- * UDPServerBase.h
+ * UDPBase.h
  *
  *  Created on: Apr 26, 2009
  *      Author: lulu
  */
 
-#ifndef UDPSERVERBASE_H_
-#define UDPSERVERBASE_H_
+#ifndef UDPBASE_H_
+#define UDPBASE_H_
 
 #include <string>
 
@@ -54,13 +54,23 @@ public:
 		this->shutdown();
 	};
 
-	int getPort() const { return this->ep.getPort(); };
-	const SOCKET &getSocket() const { return this->socket; }
 	void setOnRecvHandler(UDP_OnRecvHandlerBase *handler) {
 		this->recv_handler = handler;
 	};
 
+	int getPort() const { return this->ep.getPort(); };
+
+	const SOCKET &getSocket() const { return this->socket; }
+
 	virtual void start() = 0;
+
+	virtual void send(const PacketBuffer &buffer, const EndPoint &ep) const {
+		this->send(buffer.getConstBuffer(), buffer.getLength(), ep);
+	}
+
+	virtual void send(const unsigned char* data, size_t data_len, const EndPoint &ep) const {
+		FanniSock::SendPacket(this->socket, data_len, data, *reinterpret_cast<const sockaddr *>(&ep));
+	}
 
 	virtual void shutdown() {
 		if (this->socket == 0) {

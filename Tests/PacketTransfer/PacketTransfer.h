@@ -11,12 +11,15 @@
 #include <tr1/unordered_map>
 
 #include "fanni/Logger.h"
+#include "fanni/Timer.h"
 
 #include "Threads/Mutex.h"
 #include "Threads/ThreadManager.h"
 #include "Packets/PacketBase.h"
 #include "Packets/Packets.h"
 #include "Packets/PacketSerializer.h"
+
+#include "TransferData.h"
 
 namespace Fanni {
 namespace Tests {
@@ -32,15 +35,14 @@ public:
 	virtual void stop() { ; }
 };
 
-typedef std::tr1::unordered_map<uint32_t, const PacketBase*> RESEND_PACKET_LIST_TYPE;
+typedef std::tr1::unordered_map<uint32_t, const TransferDataPacket*> RESEND_PACKET_LIST_TYPE;
 static RESEND_PACKET_LIST_TYPE ResendPacketList;
 static Mutex ResendPacketList_lock;
 
-typedef std::tr1::unordered_map<uint32_t, bool> ACK_PACKET_LIST_TYPE;
+typedef std::tr1::unordered_map<uint32_t, const EndPoint*> ACK_PACKET_LIST_TYPE;
 static ACK_PACKET_LIST_TYPE AckPacketList;
 static Mutex AckPacketList_lock;
 
-// TODO @@@ add timer to resend packets and answer acks
 class PacketTransferManager: public ThreadManager {
 private:
 	int thread_number;
@@ -55,7 +57,7 @@ public:
 		if (packet->header.isReliable()) {
 			S_MUTEX_LOCK l;
 			l.lock(&AckPacketList_lock);
-			AckPacketList[packet->header.getSequenceNumber()] = true;
+			AckPacketList[packet->header.getSequenceNumber()] = new EndPoint(*ep);
 		}
 		if (packet->header.isAppendedAcks()) {
 			S_MUTEX_LOCK l;
@@ -66,7 +68,10 @@ public:
 			}
 		}
 		if (packet->header.getPacketID() == PacketAck_ID) {
-			; // TODO @@@ get sequence numbers from packet
+			PacketAckPacket *packet_ack = dynamic_cast<PacketAckPacket *>(packet);
+			for(size_t i=0; i<packet_ack->Packets.size(); i++) {
+				ResendPacketList.erase(packet_ack->Packets[i].ID);
+			}
 		}
 	}
 
@@ -74,9 +79,43 @@ public:
 		if (packet->header.isReliable()) {
 			S_MUTEX_LOCK l;
 			l.lock(&ResendPacketList_lock);
-			ResendPacketList[packet->header.getSequenceNumber()] =
-				PacketFactory::GetInstance()->createPacketCopy(packet->header.getPacketID(), packet);
+			TransferDataPacket *transfer_data = new TransferDataPacket(
+					PacketFactory::GetInstance()->createPacketCopy(packet->header.getPacketID(), packet),
+					new EndPoint(*ep));
+			ResendPacketList[packet->header.getSequenceNumber()] = transfer_data;
 		}
+	}
+};
+
+static const int MAX_ACK_NUMBER = 100;
+class OnTimerElapsedHandler_CheckACK : public OnTimerElapsedHandler {
+private:
+	PacketTransferManager *packet_transfer_manager;
+public:
+	OnTimerElapsedHandler_CheckACK(PacketTransferManager *packet_transfer_manager) :
+		packet_transfer_manager(packet_transfer_manager) { }
+
+	virtual void operator()() const {
+		S_MUTEX_LOCK l;
+		l.lock(&AckPacketList_lock);
+		if (AckPacketList.size() == 0) return;
+		int count = 0;
+		PacketAckPacket *packet = new PacketAckPacket();
+		for(ACK_PACKET_LIST_TYPE::iterator it=AckPacketList.begin(); it!=AckPacketList.end(); it++) {
+			PacketAckPacket::PacketsBlock packets_block;
+			packets_block.ID = it->first;
+			packet->Packets.push(packets_block); // TODO @@@ avoid memory reallocate insize "push"
+			if (++count == MAX_ACK_NUMBER) break;
+		}
+		// send
+		/*
+		TransferDataPacket *transfer_data = new TransferDataPacket(packet, );
+		this->packet_transfer_manager->deliverTask()
+
+		for(int i=0; i<count; count++) {
+			AckPacketList.erase(packet.Packets[i].ID);
+		}
+		*/
 	}
 };
 

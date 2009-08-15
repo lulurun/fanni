@@ -24,7 +24,6 @@ public:
 	virtual ~Event_UDP();
 
 	virtual void start();
-
 };
 
 }

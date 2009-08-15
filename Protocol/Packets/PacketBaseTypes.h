@@ -64,6 +64,7 @@ class VariableSerializable : public PacketSerializable {
 public:
 	static const uint16_t MAX_LENGTH = 256;
 	std::vector<T> val;
+
 public:
 	VariableSerializable() {}
 	VariableSerializable(const std::vector<T> &val) {
@@ -77,6 +78,10 @@ public:
 		} else {
 	    	ErrorException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not add more objects");
 		}
+	}
+
+	size_t size() const {
+		return this->val.size();
 	}
 
 	const T &operator[](size_t idx) const {

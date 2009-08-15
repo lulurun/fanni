@@ -527,6 +527,7 @@ public:
     // TestMessagePacket Member List
     TestBlock1Block TestBlock1;
     MultipleSerializable<NeighborBlockBlock, 4> NeighborBlock;
+    typedef MultipleSerializable<NeighborBlockBlock, 4> NEIGHBORBLOCKBLOCK_LIST_TYPE;
 
 public:
     TestMessagePacket() {
@@ -576,6 +577,7 @@ public:
     };
     // PacketAckPacket Member List
     VariableSerializable<PacketsBlock> Packets;
+    typedef VariableSerializable<PacketsBlock> PACKETSBLOCK_LIST_TYPE;
 
 public:
     PacketAckPacket() {
@@ -916,6 +918,7 @@ public:
     };
     // NeighborListPacket Member List
     MultipleSerializable<NeighborBlockBlock, 4> NeighborBlock;
+    typedef MultipleSerializable<NeighborBlockBlock, 4> NEIGHBORBLOCKBLOCK_LIST_TYPE;
 
 public:
     NeighborListPacket() {
@@ -1001,7 +1004,9 @@ public:
     // AvatarTextureUpdatePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<WearableDataBlock> WearableData;
+    typedef VariableSerializable<WearableDataBlock> WEARABLEDATABLOCK_LIST_TYPE;
     VariableSerializable<TextureDataBlock> TextureData;
+    typedef VariableSerializable<TextureDataBlock> TEXTUREDATABLOCK_LIST_TYPE;
 
 public:
     AvatarTextureUpdatePacket() {
@@ -1315,6 +1320,7 @@ public:
     // TelehubInfoPacket Member List
     TelehubBlockBlock TelehubBlock;
     VariableSerializable<SpawnPointBlockBlock> SpawnPointBlock;
+    typedef VariableSerializable<SpawnPointBlockBlock> SPAWNPOINTBLOCKBLOCK_LIST_TYPE;
 
 public:
     TelehubInfoPacket() {
@@ -1437,8 +1443,10 @@ public:
     // SimulatorPresentAtLocationPacket Member List
     SimulatorPublicHostBlockBlock SimulatorPublicHostBlock;
     MultipleSerializable<NeighborBlockBlock, 4> NeighborBlock;
+    typedef MultipleSerializable<NeighborBlockBlock, 4> NEIGHBORBLOCKBLOCK_LIST_TYPE;
     SimulatorBlockBlock SimulatorBlock;
     VariableSerializable<TelehubBlockBlock> TelehubBlock;
+    typedef VariableSerializable<TelehubBlockBlock> TELEHUBBLOCKBLOCK_LIST_TYPE;
 
 public:
     SimulatorPresentAtLocationPacket() {
@@ -1519,6 +1527,7 @@ public:
     // SimulatorLoadPacket Member List
     SimulatorLoadBlock SimulatorLoad;
     VariableSerializable<AgentListBlock> AgentList;
+    typedef VariableSerializable<AgentListBlock> AGENTLISTBLOCK_LIST_TYPE;
 
 public:
     SimulatorLoadPacket() {
@@ -1596,6 +1605,7 @@ public:
     };
     // RegionPresenceRequestByRegionIDPacket Member List
     VariableSerializable<RegionDataBlock> RegionData;
+    typedef VariableSerializable<RegionDataBlock> REGIONDATABLOCK_LIST_TYPE;
 
 public:
     RegionPresenceRequestByRegionIDPacket() {
@@ -1643,6 +1653,7 @@ public:
     };
     // RegionPresenceRequestByHandlePacket Member List
     VariableSerializable<RegionDataBlock> RegionData;
+    typedef VariableSerializable<RegionDataBlock> REGIONDATABLOCK_LIST_TYPE;
 
 public:
     RegionPresenceRequestByHandlePacket() {
@@ -1708,6 +1719,7 @@ public:
     };
     // RegionPresenceResponsePacket Member List
     VariableSerializable<RegionDataBlock> RegionData;
+    typedef VariableSerializable<RegionDataBlock> REGIONDATABLOCK_LIST_TYPE;
 
 public:
     RegionPresenceResponsePacket() {
@@ -2528,6 +2540,7 @@ public:
     // AvatarPickerReplyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<DataBlock> Data;
+    typedef VariableSerializable<DataBlock> DATABLOCK_LIST_TYPE;
 
 public:
     AvatarPickerReplyPacket() {
@@ -2742,6 +2755,7 @@ public:
     AgentDataBlock AgentData;
     TransactionDataBlock TransactionData;
     VariableSerializable<QueryDataBlock> QueryData;
+    typedef VariableSerializable<QueryDataBlock> QUERYDATABLOCK_LIST_TYPE;
 
 public:
     PlacesReplyPacket() {
@@ -3156,7 +3170,9 @@ public:
     // DirPlacesReplyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<QueryDataBlock> QueryData;
+    typedef VariableSerializable<QueryDataBlock> QUERYDATABLOCK_LIST_TYPE;
     VariableSerializable<QueryRepliesBlock> QueryReplies;
+    typedef VariableSerializable<QueryRepliesBlock> QUERYREPLIESBLOCK_LIST_TYPE;
 
 public:
     DirPlacesReplyPacket() {
@@ -3253,6 +3269,7 @@ public:
     AgentDataBlock AgentData;
     QueryDataBlock QueryData;
     VariableSerializable<QueryRepliesBlock> QueryReplies;
+    typedef VariableSerializable<QueryRepliesBlock> QUERYREPLIESBLOCK_LIST_TYPE;
 
 public:
     DirPeopleReplyPacket() {
@@ -3349,6 +3366,7 @@ public:
     AgentDataBlock AgentData;
     QueryDataBlock QueryData;
     VariableSerializable<QueryRepliesBlock> QueryReplies;
+    typedef VariableSerializable<QueryRepliesBlock> QUERYREPLIESBLOCK_LIST_TYPE;
 
 public:
     DirEventsReplyPacket() {
@@ -3439,6 +3457,7 @@ public:
     AgentDataBlock AgentData;
     QueryDataBlock QueryData;
     VariableSerializable<QueryRepliesBlock> QueryReplies;
+    typedef VariableSerializable<QueryRepliesBlock> QUERYREPLIESBLOCK_LIST_TYPE;
 
 public:
     DirGroupsReplyPacket() {
@@ -3696,6 +3715,7 @@ public:
     AgentDataBlock AgentData;
     QueryDataBlock QueryData;
     VariableSerializable<QueryRepliesBlock> QueryReplies;
+    typedef VariableSerializable<QueryRepliesBlock> QUERYREPLIESBLOCK_LIST_TYPE;
 
 public:
     DirClassifiedReplyPacket() {
@@ -3768,6 +3788,7 @@ public:
     // AvatarClassifiedReplyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<DataBlock> Data;
+    typedef VariableSerializable<DataBlock> DATABLOCK_LIST_TYPE;
 
 public:
     AvatarClassifiedReplyPacket() {
@@ -4430,6 +4451,7 @@ public:
     AgentDataBlock AgentData;
     QueryDataBlock QueryData;
     VariableSerializable<QueryRepliesBlock> QueryReplies;
+    typedef VariableSerializable<QueryRepliesBlock> QUERYREPLIESBLOCK_LIST_TYPE;
 
 public:
     DirLandReplyPacket() {
@@ -4660,6 +4682,7 @@ public:
     AgentDataBlock AgentData;
     QueryDataBlock QueryData;
     VariableSerializable<QueryRepliesBlock> QueryReplies;
+    typedef VariableSerializable<QueryRepliesBlock> QUERYREPLIESBLOCK_LIST_TYPE;
 
 public:
     DirPopularReplyPacket() {
@@ -4958,6 +4981,7 @@ public:
     };
     // ParcelObjectOwnersReplyPacket Member List
     VariableSerializable<DataBlock> Data;
+    typedef VariableSerializable<DataBlock> DATABLOCK_LIST_TYPE;
 
 public:
     ParcelObjectOwnersReplyPacket() {
@@ -5104,6 +5128,7 @@ public:
     // GroupNoticesListReplyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<DataBlock> Data;
+    typedef VariableSerializable<DataBlock> DATABLOCK_LIST_TYPE;
 
 public:
     GroupNoticesListReplyPacket() {
@@ -5831,6 +5856,7 @@ public:
     AgentDataBlock AgentData;
     InfoBlock Info;
     VariableSerializable<TargetDataBlock> TargetData;
+    typedef VariableSerializable<TargetDataBlock> TARGETDATABLOCK_LIST_TYPE;
 
 public:
     StartLurePacket() {
@@ -6103,6 +6129,7 @@ public:
     // UndoPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     UndoPacket() {
@@ -6172,6 +6199,7 @@ public:
     // RedoPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     RedoPacket() {
@@ -6801,8 +6829,10 @@ public:
     // AgentSetAppearancePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<WearableDataBlock> WearableData;
+    typedef VariableSerializable<WearableDataBlock> WEARABLEDATABLOCK_LIST_TYPE;
     ObjectDataBlock ObjectData;
     VariableSerializable<VisualParamBlock> VisualParam;
+    typedef VariableSerializable<VisualParamBlock> VISUALPARAMBLOCK_LIST_TYPE;
 
 public:
     AgentSetAppearancePacket() {
@@ -6891,7 +6921,9 @@ public:
     // AgentAnimationPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<AnimationListBlock> AnimationList;
+    typedef VariableSerializable<AnimationListBlock> ANIMATIONLISTBLOCK_LIST_TYPE;
     VariableSerializable<PhysicalAvatarEventListBlock> PhysicalAvatarEventList;
+    typedef VariableSerializable<PhysicalAvatarEventListBlock> PHYSICALAVATAREVENTLISTBLOCK_LIST_TYPE;
 
 public:
     AgentAnimationPacket() {
@@ -7157,6 +7189,7 @@ public:
     // RequestImagePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<RequestImageBlock> RequestImage;
+    typedef VariableSerializable<RequestImageBlock> REQUESTIMAGEBLOCK_LIST_TYPE;
 
 public:
     RequestImagePacket() {
@@ -7526,6 +7559,7 @@ public:
     // ObjectDeletePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectDeletePacket() {
@@ -7614,6 +7648,7 @@ public:
     AgentDataBlock AgentData;
     SharedDataBlock SharedData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectDuplicatePacket() {
@@ -7710,6 +7745,7 @@ public:
     // ObjectDuplicateOnRayPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectDuplicateOnRayPacket() {
@@ -7783,6 +7819,7 @@ public:
     // MultipleObjectUpdatePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     MultipleObjectUpdatePacket() {
@@ -7853,6 +7890,7 @@ public:
     // RequestMultipleObjectsPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     RequestMultipleObjectsPacket() {
@@ -7923,6 +7961,7 @@ public:
     // ObjectPositionPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectPositionPacket() {
@@ -7993,6 +8032,7 @@ public:
     // ObjectScalePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectScalePacket() {
@@ -8063,6 +8103,7 @@ public:
     // ObjectRotationPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectRotationPacket() {
@@ -8198,6 +8239,7 @@ public:
     // ObjectClickActionPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectClickActionPacket() {
@@ -8271,6 +8313,7 @@ public:
     // ObjectImagePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectImagePacket() {
@@ -8341,6 +8384,7 @@ public:
     // ObjectMaterialPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectMaterialPacket() {
@@ -8462,6 +8506,7 @@ public:
     // ObjectShapePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectShapePacket() {
@@ -8541,6 +8586,7 @@ public:
     // ObjectExtraParamsPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectExtraParamsPacket() {
@@ -8629,6 +8675,7 @@ public:
     AgentDataBlock AgentData;
     HeaderDataBlock HeaderData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectOwnerPacket() {
@@ -8701,6 +8748,7 @@ public:
     // ObjectGroupPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectGroupPacket() {
@@ -8780,6 +8828,7 @@ public:
     // ObjectBuyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectBuyPacket() {
@@ -8994,6 +9043,7 @@ public:
     AgentDataBlock AgentData;
     HeaderDataBlock HeaderData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectPermissionsPacket() {
@@ -9069,6 +9119,7 @@ public:
     // ObjectSaleInfoPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectSaleInfoPacket() {
@@ -9139,6 +9190,7 @@ public:
     // ObjectNamePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectNamePacket() {
@@ -9209,6 +9261,7 @@ public:
     // ObjectDescriptionPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectDescriptionPacket() {
@@ -9279,6 +9332,7 @@ public:
     // ObjectCategoryPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectCategoryPacket() {
@@ -9346,6 +9400,7 @@ public:
     // ObjectSelectPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectSelectPacket() {
@@ -9413,6 +9468,7 @@ public:
     // ObjectDeselectPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectDeselectPacket() {
@@ -9486,6 +9542,7 @@ public:
     // ObjectAttachPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectAttachPacket() {
@@ -9553,6 +9610,7 @@ public:
     // ObjectDetachPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectDetachPacket() {
@@ -9619,6 +9677,7 @@ public:
     // ObjectDropPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectDropPacket() {
@@ -9685,6 +9744,7 @@ public:
     // ObjectLinkPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectLinkPacket() {
@@ -9751,6 +9811,7 @@ public:
     // ObjectDelinkPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectDelinkPacket() {
@@ -9850,6 +9911,7 @@ public:
     AgentDataBlock AgentData;
     ObjectDataBlock ObjectData;
     VariableSerializable<SurfaceInfoBlock> SurfaceInfo;
+    typedef VariableSerializable<SurfaceInfoBlock> SURFACEINFOBLOCK_LIST_TYPE;
 
 public:
     ObjectGrabPacket() {
@@ -9958,6 +10020,7 @@ public:
     AgentDataBlock AgentData;
     ObjectDataBlock ObjectData;
     VariableSerializable<SurfaceInfoBlock> SurfaceInfo;
+    typedef VariableSerializable<SurfaceInfoBlock> SURFACEINFOBLOCK_LIST_TYPE;
 
 public:
     ObjectGrabUpdatePacket() {
@@ -10057,6 +10120,7 @@ public:
     AgentDataBlock AgentData;
     ObjectDataBlock ObjectData;
     VariableSerializable<SurfaceInfoBlock> SurfaceInfo;
+    typedef VariableSerializable<SurfaceInfoBlock> SURFACEINFOBLOCK_LIST_TYPE;
 
 public:
     ObjectDeGrabPacket() {
@@ -10332,6 +10396,7 @@ public:
     // ObjectExportSelectedPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectExportSelectedPacket() {
@@ -10435,6 +10500,7 @@ public:
     AgentDataBlock AgentData;
     ModifyBlockBlock ModifyBlock;
     VariableSerializable<ParcelDataBlock> ParcelData;
+    typedef VariableSerializable<ParcelDataBlock> PARCELDATABLOCK_LIST_TYPE;
 
 public:
     ModifyLandPacket() {
@@ -11037,8 +11103,10 @@ public:
     AgentDataBlock AgentData;
     DownloadTotalsBlock DownloadTotals;
     MultipleSerializable<NetStatsBlock, 2> NetStats;
+    typedef MultipleSerializable<NetStatsBlock, 2> NETSTATSBLOCK_LIST_TYPE;
     FailStatsBlock FailStats;
     VariableSerializable<MiscStatsBlock> MiscStats;
+    typedef VariableSerializable<MiscStatsBlock> MISCSTATSBLOCK_LIST_TYPE;
 
 public:
     ViewerStatsPacket() {
@@ -11392,6 +11460,7 @@ public:
     };
     // MeanCollisionAlertPacket Member List
     VariableSerializable<MeanCollisionBlock> MeanCollision;
+    typedef VariableSerializable<MeanCollisionBlock> MEANCOLLISIONBLOCK_LIST_TYPE;
 
 public:
     MeanCollisionAlertPacket() {
@@ -11642,6 +11711,7 @@ public:
     // SimStatsPacket Member List
     RegionBlock Region;
     VariableSerializable<StatBlock> Stat;
+    typedef VariableSerializable<StatBlock> STATBLOCK_LIST_TYPE;
     PidStatBlock PidStat;
 
 public:
@@ -12368,8 +12438,10 @@ public:
     };
     // CoarseLocationUpdatePacket Member List
     VariableSerializable<LocationBlock> Location;
+    typedef VariableSerializable<LocationBlock> LOCATIONBLOCK_LIST_TYPE;
     IndexBlock Index;
     VariableSerializable<AgentDataBlock> AgentData;
+    typedef VariableSerializable<AgentDataBlock> AGENTDATABLOCK_LIST_TYPE;
 
 public:
     CoarseLocationUpdatePacket() {
@@ -12778,6 +12850,7 @@ public:
     // ObjectUpdatePacket Member List
     RegionDataBlock RegionData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectUpdatePacket() {
@@ -12848,6 +12921,7 @@ public:
     // ObjectUpdateCompressedPacket Member List
     RegionDataBlock RegionData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectUpdateCompressedPacket() {
@@ -12921,6 +12995,7 @@ public:
     // ObjectUpdateCachedPacket Member List
     RegionDataBlock RegionData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectUpdateCachedPacket() {
@@ -12991,6 +13066,7 @@ public:
     // ImprovedTerseObjectUpdatePacket Member List
     RegionDataBlock RegionData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ImprovedTerseObjectUpdatePacket() {
@@ -13040,6 +13116,7 @@ public:
     };
     // KillObjectPacket Member List
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     KillObjectPacket() {
@@ -13880,8 +13957,11 @@ public:
     // AvatarAnimationPacket Member List
     SenderBlock Sender;
     VariableSerializable<AnimationListBlock> AnimationList;
+    typedef VariableSerializable<AnimationListBlock> ANIMATIONLISTBLOCK_LIST_TYPE;
     VariableSerializable<AnimationSourceListBlock> AnimationSourceList;
+    typedef VariableSerializable<AnimationSourceListBlock> ANIMATIONSOURCELISTBLOCK_LIST_TYPE;
     VariableSerializable<PhysicalAvatarEventListBlock> PhysicalAvatarEventList;
+    typedef VariableSerializable<PhysicalAvatarEventListBlock> PHYSICALAVATAREVENTLISTBLOCK_LIST_TYPE;
 
 public:
     AvatarAnimationPacket() {
@@ -13968,6 +14048,7 @@ public:
     SenderBlock Sender;
     ObjectDataBlock ObjectData;
     VariableSerializable<VisualParamBlock> VisualParam;
+    typedef VariableSerializable<VisualParamBlock> VISUALPARAMBLOCK_LIST_TYPE;
 
 public:
     AvatarAppearancePacket() {
@@ -14116,6 +14197,7 @@ public:
     // SetFollowCamPropertiesPacket Member List
     ObjectDataBlock ObjectData;
     VariableSerializable<CameraPropertyBlock> CameraProperty;
+    typedef VariableSerializable<CameraPropertyBlock> CAMERAPROPERTYBLOCK_LIST_TYPE;
 
 public:
     SetFollowCamPropertiesPacket() {
@@ -14337,6 +14419,7 @@ public:
     };
     // ObjectPropertiesPacket Member List
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectPropertiesPacket() {
@@ -14540,6 +14623,7 @@ public:
     // PayPriceReplyPacket Member List
     ObjectDataBlock ObjectData;
     VariableSerializable<ButtonDataBlock> ButtonData;
+    typedef VariableSerializable<ButtonDataBlock> BUTTONDATABLOCK_LIST_TYPE;
 
 public:
     PayPriceReplyPacket() {
@@ -14770,6 +14854,7 @@ public:
     };
     // SystemKickUserPacket Member List
     VariableSerializable<AgentInfoBlock> AgentInfo;
+    typedef VariableSerializable<AgentInfoBlock> AGENTINFOBLOCK_LIST_TYPE;
 
 public:
     SystemKickUserPacket() {
@@ -15280,6 +15365,7 @@ public:
     // AvatarGroupsReplyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<GroupDataBlock> GroupData;
+    typedef VariableSerializable<GroupDataBlock> GROUPDATABLOCK_LIST_TYPE;
     NewGroupDataBlock NewGroupData;
 
 public:
@@ -15653,6 +15739,7 @@ public:
     // AvatarPicksReplyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<DataBlock> Data;
+    typedef VariableSerializable<DataBlock> DATABLOCK_LIST_TYPE;
 
 public:
     AvatarPicksReplyPacket() {
@@ -16485,6 +16572,7 @@ public:
     };
     // ScriptControlChangePacket Member List
     VariableSerializable<DataBlock> Data;
+    typedef VariableSerializable<DataBlock> DATABLOCK_LIST_TYPE;
 
 public:
     ScriptControlChangePacket() {
@@ -16565,6 +16653,7 @@ public:
     // ScriptDialogPacket Member List
     DataBlock Data;
     VariableSerializable<ButtonsBlock> Buttons;
+    typedef VariableSerializable<ButtonsBlock> BUTTONSBLOCK_LIST_TYPE;
 
 public:
     ScriptDialogPacket() {
@@ -17507,7 +17596,9 @@ public:
     AgentDataBlock AgentData;
     ParcelDataBlock ParcelData;
     VariableSerializable<TaskIDsBlock> TaskIDs;
+    typedef VariableSerializable<TaskIDsBlock> TASKIDSBLOCK_LIST_TYPE;
     VariableSerializable<OwnerIDsBlock> OwnerIDs;
+    typedef VariableSerializable<OwnerIDsBlock> OWNERIDSBLOCK_LIST_TYPE;
 
 public:
     ParcelReturnObjectsPacket() {
@@ -17681,7 +17772,9 @@ public:
     AgentDataBlock AgentData;
     ParcelDataBlock ParcelData;
     VariableSerializable<TaskIDsBlock> TaskIDs;
+    typedef VariableSerializable<TaskIDsBlock> TASKIDSBLOCK_LIST_TYPE;
     VariableSerializable<OwnerIDsBlock> OwnerIDs;
+    typedef VariableSerializable<OwnerIDsBlock> OWNERIDSBLOCK_LIST_TYPE;
 
 public:
     ParcelDisableObjectsPacket() {
@@ -17771,6 +17864,7 @@ public:
     AgentDataBlock AgentData;
     ParcelDataBlock ParcelData;
     VariableSerializable<ReturnIDsBlock> ReturnIDs;
+    typedef VariableSerializable<ReturnIDsBlock> RETURNIDSBLOCK_LIST_TYPE;
 
 public:
     ParcelSelectObjectsPacket() {
@@ -17942,6 +18036,7 @@ public:
     // ForceObjectSelectPacket Member List
     HeaderBlock Header;
     VariableSerializable<DataBlock> Data;
+    typedef VariableSerializable<DataBlock> DATABLOCK_LIST_TYPE;
 
 public:
     ForceObjectSelectPacket() {
@@ -18240,6 +18335,7 @@ public:
     AgentDataBlock AgentData;
     DataBlock Data;
     VariableSerializable<ParcelDataBlock> ParcelData;
+    typedef VariableSerializable<ParcelDataBlock> PARCELDATABLOCK_LIST_TYPE;
 
 public:
     ParcelClaimPacket() {
@@ -18779,6 +18875,7 @@ public:
     // ParcelAccessListReplyPacket Member List
     DataBlock Data;
     VariableSerializable<ListBlock> List;
+    typedef VariableSerializable<ListBlock> LISTBLOCK_LIST_TYPE;
 
 public:
     ParcelAccessListReplyPacket() {
@@ -18879,6 +18976,7 @@ public:
     AgentDataBlock AgentData;
     DataBlock Data;
     VariableSerializable<ListBlock> List;
+    typedef VariableSerializable<ListBlock> LISTBLOCK_LIST_TYPE;
 
 public:
     ParcelAccessListUpdatePacket() {
@@ -19253,6 +19351,7 @@ public:
     };
     // RemoveParcelPacket Member List
     VariableSerializable<ParcelDataBlock> ParcelData;
+    typedef VariableSerializable<ParcelDataBlock> PARCELDATABLOCK_LIST_TYPE;
 
 public:
     RemoveParcelPacket() {
@@ -19315,6 +19414,7 @@ public:
     // MergeParcelPacket Member List
     MasterParcelDataBlock MasterParcelData;
     VariableSerializable<SlaveParcelDataBlock> SlaveParcelData;
+    typedef VariableSerializable<SlaveParcelDataBlock> SLAVEPARCELDATABLOCK_LIST_TYPE;
 
 public:
     MergeParcelPacket() {
@@ -19409,6 +19509,7 @@ public:
     AgentDataBlock AgentData;
     RegionDataBlock RegionData;
     VariableSerializable<ParcelDataBlock> ParcelData;
+    typedef VariableSerializable<ParcelDataBlock> PARCELDATABLOCK_LIST_TYPE;
 
 public:
     LogParcelChangesPacket() {
@@ -19460,6 +19561,7 @@ public:
     };
     // CheckParcelSalesPacket Member List
     VariableSerializable<RegionDataBlock> RegionData;
+    typedef VariableSerializable<RegionDataBlock> REGIONDATABLOCK_LIST_TYPE;
 
 public:
     CheckParcelSalesPacket() {
@@ -19510,6 +19612,7 @@ public:
     };
     // ParcelSalesPacket Member List
     VariableSerializable<ParcelDataBlock> ParcelData;
+    typedef VariableSerializable<ParcelDataBlock> PARCELDATABLOCK_LIST_TYPE;
 
 public:
     ParcelSalesPacket() {
@@ -19812,6 +19915,7 @@ public:
     };
     // CompleteAuctionPacket Member List
     VariableSerializable<ParcelDataBlock> ParcelData;
+    typedef VariableSerializable<ParcelDataBlock> PARCELDATABLOCK_LIST_TYPE;
 
 public:
     CompleteAuctionPacket() {
@@ -19859,6 +19963,7 @@ public:
     };
     // CancelAuctionPacket Member List
     VariableSerializable<ParcelDataBlock> ParcelData;
+    typedef VariableSerializable<ParcelDataBlock> PARCELDATABLOCK_LIST_TYPE;
 
 public:
     CancelAuctionPacket() {
@@ -19906,6 +20011,7 @@ public:
     };
     // CheckParcelAuctionsPacket Member List
     VariableSerializable<RegionDataBlock> RegionData;
+    typedef VariableSerializable<RegionDataBlock> REGIONDATABLOCK_LIST_TYPE;
 
 public:
     CheckParcelAuctionsPacket() {
@@ -19956,6 +20062,7 @@ public:
     };
     // ParcelAuctionsPacket Member List
     VariableSerializable<ParcelDataBlock> ParcelData;
+    typedef VariableSerializable<ParcelDataBlock> PARCELDATABLOCK_LIST_TYPE;
 
 public:
     ParcelAuctionsPacket() {
@@ -20003,6 +20110,7 @@ public:
     };
     // UUIDNameRequestPacket Member List
     VariableSerializable<UUIDNameBlockBlock> UUIDNameBlock;
+    typedef VariableSerializable<UUIDNameBlockBlock> UUIDNAMEBLOCKBLOCK_LIST_TYPE;
 
 public:
     UUIDNameRequestPacket() {
@@ -20055,6 +20163,7 @@ public:
     };
     // UUIDNameReplyPacket Member List
     VariableSerializable<UUIDNameBlockBlock> UUIDNameBlock;
+    typedef VariableSerializable<UUIDNameBlockBlock> UUIDNAMEBLOCKBLOCK_LIST_TYPE;
 
 public:
     UUIDNameReplyPacket() {
@@ -20102,6 +20211,7 @@ public:
     };
     // UUIDGroupNameRequestPacket Member List
     VariableSerializable<UUIDNameBlockBlock> UUIDNameBlock;
+    typedef VariableSerializable<UUIDNameBlockBlock> UUIDNAMEBLOCKBLOCK_LIST_TYPE;
 
 public:
     UUIDGroupNameRequestPacket() {
@@ -20151,6 +20261,7 @@ public:
     };
     // UUIDGroupNameReplyPacket Member List
     VariableSerializable<UUIDNameBlockBlock> UUIDNameBlock;
+    typedef VariableSerializable<UUIDNameBlockBlock> UUIDNAMEBLOCKBLOCK_LIST_TYPE;
 
 public:
     UUIDGroupNameReplyPacket() {
@@ -20530,10 +20641,15 @@ public:
     // ChildAgentUpdatePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<GroupDataBlock> GroupData;
+    typedef VariableSerializable<GroupDataBlock> GROUPDATABLOCK_LIST_TYPE;
     VariableSerializable<AnimationDataBlock> AnimationData;
+    typedef VariableSerializable<AnimationDataBlock> ANIMATIONDATABLOCK_LIST_TYPE;
     VariableSerializable<GranterBlockBlock> GranterBlock;
+    typedef VariableSerializable<GranterBlockBlock> GRANTERBLOCKBLOCK_LIST_TYPE;
     VariableSerializable<NVPairDataBlock> NVPairData;
+    typedef VariableSerializable<NVPairDataBlock> NVPAIRDATABLOCK_LIST_TYPE;
     VariableSerializable<VisualParamBlock> VisualParam;
+    typedef VariableSerializable<VisualParamBlock> VISUALPARAMBLOCK_LIST_TYPE;
 
 public:
     ChildAgentUpdatePacket() {
@@ -21282,6 +21398,7 @@ public:
     // ScriptSensorReplyPacket Member List
     RequesterBlock Requester;
     VariableSerializable<SensedDataBlock> SensedData;
+    typedef VariableSerializable<SensedDataBlock> SENSEDDATABLOCK_LIST_TYPE;
 
 public:
     ScriptSensorReplyPacket() {
@@ -21598,6 +21715,7 @@ public:
     // LogoutReplyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<InventoryDataBlock> InventoryData;
+    typedef VariableSerializable<InventoryDataBlock> INVENTORYDATABLOCK_LIST_TYPE;
 
 public:
     LogoutReplyPacket() {
@@ -21820,6 +21938,7 @@ public:
     // FindAgentPacket Member List
     AgentBlockBlock AgentBlock;
     VariableSerializable<LocationBlockBlock> LocationBlock;
+    typedef VariableSerializable<LocationBlockBlock> LOCATIONBLOCKBLOCK_LIST_TYPE;
 
 public:
     FindAgentPacket() {
@@ -22046,6 +22165,7 @@ public:
     AgentDataBlock AgentData;
     MethodDataBlock MethodData;
     VariableSerializable<ParamListBlock> ParamList;
+    typedef VariableSerializable<ParamListBlock> PARAMLISTBLOCK_LIST_TYPE;
 
 public:
     GodlikeMessagePacket() {
@@ -22136,6 +22256,7 @@ public:
     AgentDataBlock AgentData;
     MethodDataBlock MethodData;
     VariableSerializable<ParamListBlock> ParamList;
+    typedef VariableSerializable<ParamListBlock> PARAMLISTBLOCK_LIST_TYPE;
 
 public:
     EstateOwnerMessagePacket() {
@@ -22226,6 +22347,7 @@ public:
     AgentDataBlock AgentData;
     MethodDataBlock MethodData;
     VariableSerializable<ParamListBlock> ParamList;
+    typedef VariableSerializable<ParamListBlock> PARAMLISTBLOCK_LIST_TYPE;
 
 public:
     GenericMessagePacket() {
@@ -22526,6 +22648,7 @@ public:
     AgentDataBlock AgentData;
     NotecardDataBlock NotecardData;
     VariableSerializable<InventoryDataBlock> InventoryData;
+    typedef VariableSerializable<InventoryDataBlock> INVENTORYDATABLOCK_LIST_TYPE;
 
 public:
     CopyInventoryFromNotecardPacket() {
@@ -22661,6 +22784,7 @@ public:
     // UpdateInventoryItemPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<InventoryDataBlock> InventoryData;
+    typedef VariableSerializable<InventoryDataBlock> INVENTORYDATABLOCK_LIST_TYPE;
 
 public:
     UpdateInventoryItemPacket() {
@@ -22794,6 +22918,7 @@ public:
     // UpdateCreateInventoryItemPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<InventoryDataBlock> InventoryData;
+    typedef VariableSerializable<InventoryDataBlock> INVENTORYDATABLOCK_LIST_TYPE;
 
 public:
     UpdateCreateInventoryItemPacket() {
@@ -22870,6 +22995,7 @@ public:
     // MoveInventoryItemPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<InventoryDataBlock> InventoryData;
+    typedef VariableSerializable<InventoryDataBlock> INVENTORYDATABLOCK_LIST_TYPE;
 
 public:
     MoveInventoryItemPacket() {
@@ -22949,6 +23075,7 @@ public:
     // CopyInventoryItemPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<InventoryDataBlock> InventoryData;
+    typedef VariableSerializable<InventoryDataBlock> INVENTORYDATABLOCK_LIST_TYPE;
 
 public:
     CopyInventoryItemPacket() {
@@ -23016,6 +23143,7 @@ public:
     // RemoveInventoryItemPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<InventoryDataBlock> InventoryData;
+    typedef VariableSerializable<InventoryDataBlock> INVENTORYDATABLOCK_LIST_TYPE;
 
 public:
     RemoveInventoryItemPacket() {
@@ -23085,6 +23213,7 @@ public:
     // ChangeInventoryItemFlagsPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<InventoryDataBlock> InventoryData;
+    typedef VariableSerializable<InventoryDataBlock> INVENTORYDATABLOCK_LIST_TYPE;
 
 public:
     ChangeInventoryItemFlagsPacket() {
@@ -23302,6 +23431,7 @@ public:
     // UpdateInventoryFolderPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<FolderDataBlock> FolderData;
+    typedef VariableSerializable<FolderDataBlock> FOLDERDATABLOCK_LIST_TYPE;
 
 public:
     UpdateInventoryFolderPacket() {
@@ -23374,6 +23504,7 @@ public:
     // MoveInventoryFolderPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<InventoryDataBlock> InventoryData;
+    typedef VariableSerializable<InventoryDataBlock> INVENTORYDATABLOCK_LIST_TYPE;
 
 public:
     MoveInventoryFolderPacket() {
@@ -23441,6 +23572,7 @@ public:
     // RemoveInventoryFolderPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<FolderDataBlock> FolderData;
+    typedef VariableSerializable<FolderDataBlock> FOLDERDATABLOCK_LIST_TYPE;
 
 public:
     RemoveInventoryFolderPacket() {
@@ -23678,7 +23810,9 @@ public:
     // InventoryDescendentsPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<FolderDataBlock> FolderData;
+    typedef VariableSerializable<FolderDataBlock> FOLDERDATABLOCK_LIST_TYPE;
     VariableSerializable<ItemDataBlock> ItemData;
+    typedef VariableSerializable<ItemDataBlock> ITEMDATABLOCK_LIST_TYPE;
 
 public:
     InventoryDescendentsPacket() {
@@ -23751,6 +23885,7 @@ public:
     // FetchInventoryPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<InventoryDataBlock> InventoryData;
+    typedef VariableSerializable<InventoryDataBlock> INVENTORYDATABLOCK_LIST_TYPE;
 
 public:
     FetchInventoryPacket() {
@@ -23875,6 +24010,7 @@ public:
     // FetchInventoryReplyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<InventoryDataBlock> InventoryData;
+    typedef VariableSerializable<InventoryDataBlock> INVENTORYDATABLOCK_LIST_TYPE;
 
 public:
     FetchInventoryReplyPacket() {
@@ -24028,7 +24164,9 @@ public:
     // BulkUpdateInventoryPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<FolderDataBlock> FolderData;
+    typedef VariableSerializable<FolderDataBlock> FOLDERDATABLOCK_LIST_TYPE;
     VariableSerializable<ItemDataBlock> ItemData;
+    typedef VariableSerializable<ItemDataBlock> ITEMDATABLOCK_LIST_TYPE;
 
 public:
     BulkUpdateInventoryPacket() {
@@ -24221,7 +24359,9 @@ public:
     // RemoveInventoryObjectsPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<FolderDataBlock> FolderData;
+    typedef VariableSerializable<FolderDataBlock> FOLDERDATABLOCK_LIST_TYPE;
     VariableSerializable<ItemDataBlock> ItemData;
+    typedef VariableSerializable<ItemDataBlock> ITEMDATABLOCK_LIST_TYPE;
 
 public:
     RemoveInventoryObjectsPacket() {
@@ -24795,6 +24935,7 @@ public:
     AgentDataBlock AgentData;
     AgentBlockBlock AgentBlock;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     DeRezObjectPacket() {
@@ -25163,6 +25304,7 @@ public:
     RezDataBlock RezData;
     NotecardDataBlock NotecardData;
     VariableSerializable<InventoryDataBlock> InventoryData;
+    typedef VariableSerializable<InventoryDataBlock> INVENTORYDATABLOCK_LIST_TYPE;
 
 public:
     RezObjectFromNotecardPacket() {
@@ -25240,6 +25382,7 @@ public:
     // TransferInventoryPacket Member List
     InfoBlockBlock InfoBlock;
     VariableSerializable<InventoryBlockBlock> InventoryBlock;
+    typedef VariableSerializable<InventoryBlockBlock> INVENTORYBLOCKBLOCK_LIST_TYPE;
 
 public:
     TransferInventoryPacket() {
@@ -25372,6 +25515,7 @@ public:
     AgentDataBlock AgentData;
     TransactionBlockBlock TransactionBlock;
     VariableSerializable<FolderDataBlock> FolderData;
+    typedef VariableSerializable<FolderDataBlock> FOLDERDATABLOCK_LIST_TYPE;
 
 public:
     AcceptFriendshipPacket() {
@@ -25706,6 +25850,7 @@ public:
     AgentDataBlock AgentData;
     TransactionBlockBlock TransactionBlock;
     VariableSerializable<FolderDataBlock> FolderData;
+    typedef VariableSerializable<FolderDataBlock> FOLDERDATABLOCK_LIST_TYPE;
 
 public:
     AcceptCallingCardPacket() {
@@ -26795,6 +26940,7 @@ public:
     // ActivateGesturesPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<DataBlock> Data;
+    typedef VariableSerializable<DataBlock> DATABLOCK_LIST_TYPE;
 
 public:
     ActivateGesturesPacket() {
@@ -26867,6 +27013,7 @@ public:
     // DeactivateGesturesPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<DataBlock> Data;
+    typedef VariableSerializable<DataBlock> DATABLOCK_LIST_TYPE;
 
 public:
     DeactivateGesturesPacket() {
@@ -27032,6 +27179,7 @@ public:
     // GrantUserRightsPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<RightsBlock> Rights;
+    typedef VariableSerializable<RightsBlock> RIGHTSBLOCK_LIST_TYPE;
 
 public:
     GrantUserRightsPacket() {
@@ -27098,6 +27246,7 @@ public:
     // ChangeUserRightsPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<RightsBlock> Rights;
+    typedef VariableSerializable<RightsBlock> RIGHTSBLOCK_LIST_TYPE;
 
 public:
     ChangeUserRightsPacket() {
@@ -27147,6 +27296,7 @@ public:
     };
     // OnlineNotificationPacket Member List
     VariableSerializable<AgentBlockBlock> AgentBlock;
+    typedef VariableSerializable<AgentBlockBlock> AGENTBLOCKBLOCK_LIST_TYPE;
 
 public:
     OnlineNotificationPacket() {
@@ -27194,6 +27344,7 @@ public:
     };
     // OfflineNotificationPacket Member List
     VariableSerializable<AgentBlockBlock> AgentBlock;
+    typedef VariableSerializable<AgentBlockBlock> AGENTBLOCKBLOCK_LIST_TYPE;
 
 public:
     OfflineNotificationPacket() {
@@ -27489,6 +27640,7 @@ public:
     // SimCrashedPacket Member List
     DataBlock Data;
     VariableSerializable<UsersBlock> Users;
+    typedef VariableSerializable<UsersBlock> USERSBLOCK_LIST_TYPE;
 
 public:
     SimCrashedPacket() {
@@ -27552,6 +27704,7 @@ public:
     // NameValuePairPacket Member List
     TaskDataBlock TaskData;
     VariableSerializable<NameValueDataBlock> NameValueData;
+    typedef VariableSerializable<NameValueDataBlock> NAMEVALUEDATABLOCK_LIST_TYPE;
 
 public:
     NameValuePairPacket() {
@@ -27616,6 +27769,7 @@ public:
     // RemoveNameValuePairPacket Member List
     TaskDataBlock TaskData;
     VariableSerializable<NameValueDataBlock> NameValueData;
+    typedef VariableSerializable<NameValueDataBlock> NAMEVALUEDATABLOCK_LIST_TYPE;
 
 public:
     RemoveNameValuePairPacket() {
@@ -28077,6 +28231,7 @@ public:
     };
     // PreloadSoundPacket Member List
     VariableSerializable<DataBlockBlock> DataBlock;
+    typedef VariableSerializable<DataBlockBlock> DATABLOCKBLOCK_LIST_TYPE;
 
 public:
     PreloadSoundPacket() {
@@ -28414,6 +28569,7 @@ public:
     };
     // ScriptDataRequestPacket Member List
     VariableSerializable<DataBlockBlock> DataBlock;
+    typedef VariableSerializable<DataBlockBlock> DATABLOCKBLOCK_LIST_TYPE;
 
 public:
     ScriptDataRequestPacket() {
@@ -28464,6 +28620,7 @@ public:
     };
     // ScriptDataReplyPacket Member List
     VariableSerializable<DataBlockBlock> DataBlock;
+    typedef VariableSerializable<DataBlockBlock> DATABLOCKBLOCK_LIST_TYPE;
 
 public:
     ScriptDataReplyPacket() {
@@ -28784,6 +28941,7 @@ public:
     // GroupRoleChangesPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<RoleChangeBlock> RoleChange;
+    typedef VariableSerializable<RoleChangeBlock> ROLECHANGEBLOCK_LIST_TYPE;
 
 public:
     GroupRoleChangesPacket() {
@@ -28999,6 +29157,7 @@ public:
     AgentDataBlock AgentData;
     GroupDataBlock GroupData;
     VariableSerializable<EjectDataBlock> EjectData;
+    typedef VariableSerializable<EjectDataBlock> EJECTDATABLOCK_LIST_TYPE;
 
 public:
     EjectGroupMemberRequestPacket() {
@@ -29299,6 +29458,7 @@ public:
     AgentDataBlock AgentData;
     GroupDataBlock GroupData;
     VariableSerializable<InviteDataBlock> InviteData;
+    typedef VariableSerializable<InviteDataBlock> INVITEDATABLOCK_LIST_TYPE;
 
 public:
     InviteGroupRequestPacket() {
@@ -29904,6 +30064,7 @@ public:
     AgentDataBlock AgentData;
     MoneyDataBlock MoneyData;
     VariableSerializable<HistoryDataBlock> HistoryData;
+    typedef VariableSerializable<HistoryDataBlock> HISTORYDATABLOCK_LIST_TYPE;
 
 public:
     GroupAccountDetailsReplyPacket() {
@@ -30085,6 +30246,7 @@ public:
     AgentDataBlock AgentData;
     MoneyDataBlock MoneyData;
     VariableSerializable<HistoryDataBlock> HistoryData;
+    typedef VariableSerializable<HistoryDataBlock> HISTORYDATABLOCK_LIST_TYPE;
 
 public:
     GroupAccountTransactionsReplyPacket() {
@@ -30282,6 +30444,7 @@ public:
     AgentDataBlock AgentData;
     TransactionDataBlock TransactionData;
     VariableSerializable<ProposalDataBlock> ProposalData;
+    typedef VariableSerializable<ProposalDataBlock> PROPOSALDATABLOCK_LIST_TYPE;
 
 public:
     GroupActiveProposalItemReplyPacket() {
@@ -30500,6 +30663,7 @@ public:
     TransactionDataBlock TransactionData;
     HistoryItemDataBlock HistoryItemData;
     VariableSerializable<VoteItemBlock> VoteItem;
+    typedef VariableSerializable<VoteItemBlock> VOTEITEMBLOCK_LIST_TYPE;
 
 public:
     GroupVoteHistoryItemReplyPacket() {
@@ -30852,6 +31016,7 @@ public:
     AgentDataBlock AgentData;
     GroupDataBlock GroupData;
     VariableSerializable<MemberDataBlock> MemberData;
+    typedef VariableSerializable<MemberDataBlock> MEMBERDATABLOCK_LIST_TYPE;
 
 public:
     GroupMembersReplyPacket() {
@@ -31231,6 +31396,7 @@ public:
     AgentDataBlock AgentData;
     GroupDataBlock GroupData;
     VariableSerializable<RoleDataBlock> RoleData;
+    typedef VariableSerializable<RoleDataBlock> ROLEDATABLOCK_LIST_TYPE;
 
 public:
     GroupRoleDataReplyPacket() {
@@ -31378,6 +31544,7 @@ public:
     // GroupRoleMembersReplyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<MemberDataBlock> MemberData;
+    typedef VariableSerializable<MemberDataBlock> MEMBERDATABLOCK_LIST_TYPE;
 
 public:
     GroupRoleMembersReplyPacket() {
@@ -31509,6 +31676,7 @@ public:
     // GroupTitlesReplyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<GroupDataBlock> GroupData;
+    typedef VariableSerializable<GroupDataBlock> GROUPDATABLOCK_LIST_TYPE;
 
 public:
     GroupTitlesReplyPacket() {
@@ -31649,6 +31817,7 @@ public:
     // GroupRoleUpdatePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<RoleDataBlock> RoleData;
+    typedef VariableSerializable<RoleDataBlock> ROLEDATABLOCK_LIST_TYPE;
 
 public:
     GroupRoleUpdatePacket() {
@@ -31876,6 +32045,7 @@ public:
     // AgentWearablesUpdatePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<WearableDataBlock> WearableData;
+    typedef VariableSerializable<WearableDataBlock> WEARABLEDATABLOCK_LIST_TYPE;
 
 public:
     AgentWearablesUpdatePacket() {
@@ -31946,6 +32116,7 @@ public:
     // AgentIsNowWearingPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<WearableDataBlock> WearableData;
+    typedef VariableSerializable<WearableDataBlock> WEARABLEDATABLOCK_LIST_TYPE;
 
 public:
     AgentIsNowWearingPacket() {
@@ -32019,6 +32190,7 @@ public:
     // AgentCachedTexturePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<WearableDataBlock> WearableData;
+    typedef VariableSerializable<WearableDataBlock> WEARABLEDATABLOCK_LIST_TYPE;
 
 public:
     AgentCachedTexturePacket() {
@@ -32094,6 +32266,7 @@ public:
     // AgentCachedTextureResponsePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<WearableDataBlock> WearableData;
+    typedef VariableSerializable<WearableDataBlock> WEARABLEDATABLOCK_LIST_TYPE;
 
 public:
     AgentCachedTextureResponsePacket() {
@@ -32266,6 +32439,7 @@ public:
     };
     // GroupDataUpdatePacket Member List
     VariableSerializable<AgentGroupDataBlock> AgentGroupData;
+    typedef VariableSerializable<AgentGroupDataBlock> AGENTGROUPDATABLOCK_LIST_TYPE;
 
 public:
     GroupDataUpdatePacket() {
@@ -32343,6 +32517,7 @@ public:
     // AgentGroupDataUpdatePacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<GroupDataBlock> GroupData;
+    typedef VariableSerializable<GroupDataBlock> GROUPDATABLOCK_LIST_TYPE;
 
 public:
     AgentGroupDataUpdatePacket() {
@@ -32457,6 +32632,7 @@ public:
     };
     // LogTextMessagePacket Member List
     VariableSerializable<DataBlockBlock> DataBlock;
+    typedef VariableSerializable<DataBlockBlock> DATABLOCKBLOCK_LIST_TYPE;
 
 public:
     LogTextMessagePacket() {
@@ -32537,6 +32713,7 @@ public:
     // ViewerEffectPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<EffectBlock> Effect;
+    typedef VariableSerializable<EffectBlock> EFFECTBLOCK_LIST_TYPE;
 
 public:
     ViewerEffectPacket() {
@@ -32863,6 +33040,7 @@ public:
     AgentDataBlock AgentData;
     HeaderDataBlock HeaderData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     RezMultipleAttachmentsFromInvPacket() {
@@ -32999,6 +33177,7 @@ public:
     AgentDataBlock AgentData;
     HeaderDataBlock HeaderData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     CreateNewOutfitAttachmentsPacket() {
@@ -33239,6 +33418,7 @@ public:
     };
     // ParcelRenamePacket Member List
     VariableSerializable<ParcelDataBlock> ParcelData;
+    typedef VariableSerializable<ParcelDataBlock> PARCELDATABLOCK_LIST_TYPE;
 
 public:
     ParcelRenamePacket() {
@@ -33373,6 +33553,7 @@ public:
     // SystemMessagePacket Member List
     MethodDataBlock MethodData;
     VariableSerializable<ParamListBlock> ParamList;
+    typedef VariableSerializable<ParamListBlock> PARAMLISTBLOCK_LIST_TYPE;
 
 public:
     SystemMessagePacket() {
@@ -33510,6 +33691,7 @@ public:
     // MapLayerReplyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<LayerDataBlock> LayerData;
+    typedef VariableSerializable<LayerDataBlock> LAYERDATABLOCK_LIST_TYPE;
 
 public:
     MapLayerReplyPacket() {
@@ -33757,6 +33939,7 @@ public:
     // MapBlockReplyPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<DataBlock> Data;
+    typedef VariableSerializable<DataBlock> DATABLOCK_LIST_TYPE;
 
 public:
     MapBlockReplyPacket() {
@@ -33932,6 +34115,7 @@ public:
     AgentDataBlock AgentData;
     RequestDataBlock RequestData;
     VariableSerializable<DataBlock> Data;
+    typedef VariableSerializable<DataBlock> DATABLOCK_LIST_TYPE;
 
 public:
     MapItemReplyPacket() {
@@ -34677,6 +34861,7 @@ public:
     // LandStatReplyPacket Member List
     RequestDataBlock RequestData;
     VariableSerializable<ReportDataBlock> ReportData;
+    typedef VariableSerializable<ReportDataBlock> REPORTDATABLOCK_LIST_TYPE;
 
 public:
     LandStatReplyPacket() {
@@ -34826,6 +35011,7 @@ public:
     // ObjectIncludeInSearchPacket Member List
     AgentDataBlock AgentData;
     VariableSerializable<ObjectDataBlock> ObjectData;
+    typedef VariableSerializable<ObjectDataBlock> OBJECTDATABLOCK_LIST_TYPE;
 
 public:
     ObjectIncludeInSearchPacket() {
