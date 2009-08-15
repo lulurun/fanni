@@ -18,11 +18,18 @@ public:
 class Timer {
 	clock_t counter;
 public:
-	Timer() : counter(0) {};
+	Timer() {
+		this->start();
+	};
+
+	void start() {
+		this->counter = std::clock();
+	};
+
 	bool elapsed(clock_t ms) {
 		clock_t tick = std::clock();
-		if(tick - counter >= ms) {
-			counter = tick;
+		if(tick - this->counter >= ms) {
+			this->counter = tick;
 			return true;
 		}
 		return false;
@@ -50,7 +57,7 @@ public:
 	}
 };
 
-class OneTimeTask : TimeOutTaskBase {
+class OneTimeTask : public TimeOutTaskBase {
 public:
 	OneTimeTask(int ms, const OnTimerElapsedHandler *handler) : TimeOutTaskBase(ms, handler){};
 
@@ -73,6 +80,7 @@ public:
 class PeriodicTask : public TimeOutTaskBase {
 private:
 	int max_time;
+
 public:
 	PeriodicTask(int ms, const OnTimerElapsedHandler *handler, int max_time = -1) :
 		TimeOutTaskBase(ms, handler), max_time(max_time) { };
@@ -80,6 +88,32 @@ public:
 	void stop() {};
 
 	virtual void start() const {
+		if (max_time > 0) {
+			this->_start_limited();
+		} else {
+			this->_start_forever();
+		}
+	}
+
+private:
+	virtual void _start_limited() const {
+		Timer timer;
+		int count = 0;
+		while(count < max_time) {
+			if (timer.elapsed(this->period)) {
+				try {
+					this->handler->operator()();
+					count++;
+				} catch (ErrorException &e) {
+					// TODO @@@ catch more general exceptions
+					ERROR_LOG("OneTimeTask failed: " << e.get_msg());
+				}
+				// TODO @@@ implement stop !!
+			}
+		}
+	}
+
+	virtual void _start_forever() const {
 		Timer timer;
 		while(1) {
 			if (timer.elapsed(this->period)) {
@@ -93,10 +127,9 @@ public:
 			}
 		}
 	}
-
 };
 
-typedef ThreadTemplate<OneTimeTask> OneTimeThread;
+typedef ThreadTemplate<OneTimeTask> OneTimeTaskThread;
 typedef ThreadTemplate<PeriodicTask> PeriodicTaskThread;
 
 }
