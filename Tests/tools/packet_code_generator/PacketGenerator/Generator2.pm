@@ -62,14 +62,18 @@ sub _generate_serializable_classes {
 	foreach my $block (@$block_list) {
 	    $block_class_list .= &_generate_block($block);
 	    my $member_class_name = "";
+	    my $define_new_type = 0;
 	    if ($block->{number} eq "Variable") {
 		$member_class_name = "VariableSerializable<" . $block->{name} . "Block>";
+		$define_new_type = 1;
 	    } elsif ($block->{number} eq "Single" || $block->{number} eq "//") {
 		$member_class_name = $block->{name} . "Block";
 	    } else {
 		$member_class_name = "MultipleSerializable<" . $block->{name} . "Block, " .  $block->{number} . ">";
+		$define_new_type = 1;
 	    }
 	    $member_list .= "    " . $member_class_name . " " . $block->{name} . ";\n";
+	    $member_list .= "    typedef " . $member_class_name . " " . uc($block->{name} . "Block") . "_LIST_TYPE;\n" if ($define_new_type);
 	    $member_list_serialize .= "        " . $block->{name} . ".serialize(buffer);\n";
 	    $member_list_deserialize .= "        " . $block->{name} . ".deserialize(buffer);\n";
 	}
