@@ -22,6 +22,8 @@ int main()
     m["Akira"]  = 23;
     m["Johnny"] = 38;
     m["Millia"] = 16;
+    // count
+    cout << m.size() << endl;
     // list
     for(MAP_TYPE::iterator it=m.begin(); it!=m.end(); it++) {
     	cout << it->first << " => " << it->second << endl;
