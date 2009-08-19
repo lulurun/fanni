@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
 			peer.setOnRecvHandler(new PacketTransfer_OnRecvHandler(recevier_manager));
 			// start UDP server
 			PacketTransfer_ThreadHandler thread_handler(peer);
-			PacketTransfer_Thread thread(thread_handler);
+			PacketTransfer_Thread thread(&thread_handler);
 			thread.kick();
 			thread.join();
 		} else {
@@ -139,7 +139,7 @@ int main(int argc, char **argv) {
 			peer.setOnRecvHandler(new PacketTransfer_OnRecvHandler(recevier_manager));
 			// start UDP client
 			PacketTransfer_ThreadHandler thread_handler(peer);
-			PacketTransfer_Thread thread(thread_handler);
+			PacketTransfer_Thread thread(&thread_handler);
 			thread.kick();
 
 			sleep(1);

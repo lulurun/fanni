@@ -9,44 +9,41 @@
 #define PACKETSERVER_H_
 
 #include <string>
+#include <tr1/unordered_map>
 
 #include "fanni/EndPoint.h"
-#include "Threads/ThreadWorker.h"
-#include "Threads/ThreadManager.h"
 #include "Packets/PacketBase.h"
+#include "Packets/Packets.h"
 #include "Packets/PacketSerializer.h"
-#include "Network/Event_UDP.h"
 
-#include "ReceiverBase.h"
+#include "PacketTransferBase.h"
 
 namespace Fanni {
 namespace Tests {
 
-class PacketSender : public ThreadWorker {
+class PacketServer : public PacketTransferBase {
 private:
-	PacketSerializer packet_serializer;
-	const Fanni::Network::UDPBase &udp_server;
-
-public:
-	PacketSender(const Fanni::Network::UDPBase &udp_server) : udp_server(udp_server) {}
-	virtual void loop();
-	virtual void stop() { ; }
-};
-
-class PacketServer : public ThreadManager {
-private:
-	int thread_number;
-	Fanni::Network::Event_UDP *udp_server;
-	ReceiverManager *receiver_manager;
+	typedef std::tr1::unordered_map<EndPoint::IPV4_HASH_KEY_TYPE, ClientConnection *> CLIENT_CONNECTION_MAP_TYPE;
+	CLIENT_CONNECTION_MAP_TYPE client_connection_map;
+	Mutex client_connection_map_lock;
+	static const PacketHeader::PACKET_ID_TYPE OPEN_CONNECTION_PACKET = UseCircuitCode_ID;
 
 public:
 	PacketServer(const std::string &addr, int port, int thread_number);
 	virtual ~PacketServer();
 	virtual void init();
 
-	virtual void processIncomingPacket(PacketBase *packet, const EndPoint *ep);
-	virtual void processOutgoingPacket(PacketBase *packet, const EndPoint *ep);
+	// Client Connection management
+	virtual void addConnection(uint32_t circuit_code, const EndPoint *ep);
+	virtual void removeConnection(const EndPoint *ep);
+	ClientConnection *getConnection(const EndPoint *ep);
 
+	// Reliable Packet Transfer
+	virtual void processIncomingPacket(const PacketBase *packet, const EndPoint *ep);
+	virtual void processOutgoingPacket(const PacketBase *packet, const EndPoint *ep);
+
+	virtual void checkACK();
+	virtual void checkRESEND();
 };
 
 }

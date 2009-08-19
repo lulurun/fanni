@@ -10,13 +10,14 @@
 
 #include "fanni/Exception.h"
 #include "PacketHandlerFactory.h"
+#include "PacketTransferBase.h"
 
 namespace Fanni {
 namespace Tests {
 
 class NullHandler : public PacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketServer &packet_server) const {
+	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const {
 		INFO_LOG("handler not defined for Packet: " << std::hex << packet->header.getPacketID() << std::dec);
 	};
 };
@@ -40,6 +41,7 @@ PacketHandlerFactory::~PacketHandlerFactory() {
 void PacketHandlerFactory::init() {}
 
 void PacketHandlerFactory::registerPacketHandler(PacketHeader::PACKET_ID_TYPE packet_id, const PacketHandlerBase *packet_handler) {
+	// MEMO @@@ not thread safe, call me in one thread
 	PacketHandlerList[packet_id] = packet_handler;
 }
 

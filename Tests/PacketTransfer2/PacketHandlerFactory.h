@@ -15,12 +15,12 @@
 namespace Fanni {
 namespace Tests {
 
-class PacketServer;
+class PacketTransferBase;
 class PacketHandlerBase {
 public:
 	PacketHandlerBase() {};
 	virtual ~PacketHandlerBase() {};
-	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketServer &packet_server) const = 0;
+	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const = 0;
 };
 
 class PacketHandlerFactory {

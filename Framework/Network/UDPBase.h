@@ -54,7 +54,7 @@ public:
 		this->shutdown();
 	};
 
-	void setOnRecvHandler(UDP_OnRecvHandlerBase *handler) {
+	virtual void setOnRecvHandler(UDP_OnRecvHandlerBase *handler) {
 		this->recv_handler = handler;
 	};
 

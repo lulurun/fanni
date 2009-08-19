@@ -10,7 +10,7 @@
 
 #include "fanni/PacketBuffer.h"
 #include "fanni/EndPoint.h"
-
+#include "Threads/ThreadTask.h"
 #include "Packets/PacketBase.h"
 
 namespace Fanni {

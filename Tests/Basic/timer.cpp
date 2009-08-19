@@ -43,22 +43,22 @@ int main() {
 	}
 	cout << "periodic" << endl;
 	{ // PeriodicTask
-		PeriodicTask task(1000, handler_B, 5);
+		PeriodicTask task(2000, handler_B, 5);
 		task.start();
 	}
 
 	cout << "Thread timers" << endl;
 	PeriodicTask period_task(1000, handler_A, 7);
-	PeriodicTaskThread PeriodicTask_thread(period_task);
+	PeriodicTaskThread PeriodicTask_thread(&period_task);
 	PeriodicTask_thread.kick();
 
 	OneTimeTask onetime_task(1000, handler_B);
-	OneTimeTaskThread OneTimeTask_thread(onetime_task);
+	OneTimeTaskThread OneTimeTask_thread(&onetime_task);
 	OneTimeTask_thread.kick();
 	OneTimeTask_thread.join();
 
 	PeriodicTask period_task2(1000, handler_B, 5);
-	PeriodicTaskThread PeriodicTask_thread2(period_task2);
+	PeriodicTaskThread PeriodicTask_thread2(&period_task2);
 	PeriodicTask_thread2.kick();
 
 	PeriodicTask_thread.join();

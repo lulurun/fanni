@@ -65,6 +65,12 @@ public:
 	const sockaddr &getSockAddr() const {
 		return *reinterpret_cast<const sockaddr *>(this); // TODO @@@ is this OK, =:hihihi ???
 	}
+
+	typedef uint64_t IPV4_HASH_KEY_TYPE;
+	IPV4_HASH_KEY_TYPE getIPv4HashKey() const {
+		return (static_cast<uint64_t>(this->sin_addr.s_addr) << 32) + this->sin_port;
+
+	}
 };
 
 }

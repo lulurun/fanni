@@ -20,15 +20,16 @@
 namespace Fanni {
 namespace Tests {
 
-class PacketServer;
+class PacketTransferBase;
 class ReceiverBase : public ThreadWorker {
 private:
 	PacketSerializer packet_serializer;
+	// reference of ReceiverManager::packet_handler_factory
 	const PacketHandlerFactory &packet_handler_factory;
-	PacketServer &packet_server;
+	PacketTransferBase *transfer_peer;
 
 public:
-	ReceiverBase(PacketHandlerFactory &phf, PacketServer &packet_server);
+	ReceiverBase(PacketHandlerFactory &phf, PacketTransferBase *transfer_peer);
 	virtual void loop();
 	virtual void stop();
 };
@@ -36,11 +37,11 @@ public:
 class ReceiverManager: public ThreadManager {
 private:
 	int thread_number;
-	PacketServer &packet_server;
+	PacketTransferBase *transfer_peer;
 	PacketHandlerFactory packet_handler_factory;
 
 public:
-	ReceiverManager(int thread_number, PacketServer &packet_server);
+	ReceiverManager(int thread_number, PacketTransferBase *transfer_peer);
 	virtual void registerHandler(PacketHeader::PACKET_ID_TYPE packet_id, const PacketHandlerBase *handler);
 	virtual void init();
 };

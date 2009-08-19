@@ -30,10 +30,10 @@ template<class ThreadHandlerType>
 class ThreadTemplate {
 private:
 	pthread_t th;
-	ThreadHandlerType &handler;
+	ThreadHandlerType *handler;
 
 public:
-	ThreadTemplate(ThreadHandlerType &handler) :
+	ThreadTemplate(ThreadHandlerType *handler) :
 		handler(handler) {
 	}
 	virtual ~ThreadTemplate() {
@@ -42,7 +42,7 @@ public:
 		return this->th;
 	}
 	void kick() {
-		::pthread_create(&this->th, NULL, caller, &handler);
+		::pthread_create(&this->th, NULL, caller, handler);
 	}
 	void join() {
 		::pthread_join(this->th, NULL);
@@ -50,11 +50,11 @@ public:
 
 protected:
 	// @@@ arg must be derived from ThreadHandlerBase
-	static void *caller(void *arg) {
-		ThreadHandlerType & handler = *reinterpret_cast<ThreadHandlerType *> (arg);
+	static void *caller(void *arg = NULL) {
+		ThreadHandlerType *handler = reinterpret_cast<ThreadHandlerType *> (arg);
 		/* TODO @@@ assert typeof(handler) */
 		try {
-			handler();
+			handler->operator()();
 		} catch (ErrorException &e) {
 			ERROR_LOG("Thread terminated by catching ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
 		}

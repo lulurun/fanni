@@ -192,7 +192,7 @@ int main(int argc, char **argv) {
 			peer.setOnRecvHandler(new PacketServer_OnRecvHandler(peer));
 
 			PacketTransfer_ThreadHandler thread_handler(peer);
-			PacketTransfer_Thread thread(thread_handler);
+			PacketTransfer_Thread thread(&thread_handler);
 			thread.kick();
 			thread.join();
 		} else {
@@ -200,7 +200,7 @@ int main(int argc, char **argv) {
 			peer.setOnRecvHandler(new PacketClient_OnRecvHandler());
 
 			PacketTransfer_ThreadHandler thread_handler(peer);
-			PacketTransfer_Thread thread(thread_handler);
+			PacketTransfer_Thread thread(&thread_handler);
 			thread.kick();
 
 			sleep(1);
