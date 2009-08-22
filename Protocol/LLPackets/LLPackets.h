@@ -1,10 +1,10 @@
-#ifndef PACKET_IMPL_H_
-#define PACKET_IMPL_H_
+#ifndef LLPACKET_IMPL_H_
+#define LLPACKET_IMPL_H_
 
 #include "fanni/Exception.h"
 
-#include "PacketBaseTypes.h"
-#include "PacketBase.h"
+#include "Packets/PacketBaseTypes.h"
+#include "Packets/PacketBase.h"
 
 namespace Fanni {
 

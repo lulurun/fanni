@@ -10,10 +10,10 @@ namespace Fanni {
 class PacketSerializer {
 private:
 	PacketBuffer buf;
-	PacketFactory *factory;
+	const PacketFactory *factory;
 
 public:
-	PacketSerializer();
+	PacketSerializer(const PacketFactory *packet_factory);
 	virtual ~PacketSerializer();
 
 	const unsigned char *serialize(const PacketBase *packet, int *len);

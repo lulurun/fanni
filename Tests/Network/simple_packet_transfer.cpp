@@ -8,10 +8,9 @@
 
 // packets
 #include "fanni/PacketBuffer.h"
-#include "Packets/PacketHandlerFactory.h"
 #include "Packets/PacketBase.h"
-#include "Packets/Packets.h"
 #include "Packets/PacketSerializer.h"
+#include "LLPackets/LLPacketFactory.h"
 
 using namespace std;
 using namespace Fanni;
@@ -26,15 +25,19 @@ static SequenceGenerator *sg =
 // Client
 class Test_UDPClient : public Event_UDP {
 private:
-	PacketSerializer serializer;
 	EndPoint current_server;
+	PacketSerializer *packet_serializer;
 
 public:
-	Test_UDPClient() {};
-	virtual ~Test_UDPClient() {};
+	Test_UDPClient() {
+		this->packet_serializer = new PacketSerializer(&LLPacketFactorySingleton::get());
+	};
+	virtual ~Test_UDPClient() {
+		delete this->packet_serializer;
+	};
 
 	void sendStartPingCheck(uint8_t ping_id) {
-		PacketBase *packet = PacketFactory::GetInstance()->createPacket(StartPingCheck_ID);
+		PacketBase *packet = LLPacketFacotrySingleton::get().createPacket(StartPingCheck_ID);
 		StartPingCheckPacket *start_ping_packet = dynamic_cast<StartPingCheckPacket *> (packet);
 		if (start_ping_packet == NULL) {
 			FatalException::throw_exception(EXP_TEST, EXP_PRE_MSG,"wrong implementation" );
@@ -43,7 +46,7 @@ public:
 		start_ping_packet->setSequence(sg->next());
 
 		int buffer_size = 0;
-		const unsigned char *buffer = this->serializer.serialize(start_ping_packet, &buffer_size);
+		const unsigned char *buffer = this->packet_serializer->serialize(start_ping_packet, &buffer_size);
 		FanniSock::SendPacket(this->socket, buffer_size, buffer, this->current_server.getSockAddr());
 	};
 
@@ -67,17 +70,23 @@ public:
 //Client handler
 class PacketClient_OnRecvHandler: public UDP_OnRecvHandlerBase {
 private:
-	PacketSerializer packet_serializer;
+	PacketSerializer *packet_serializer;
 
 public:
-	PacketClient_OnRecvHandler() {}
+	PacketClient_OnRecvHandler() {
+		this->packet_serializer = new PacketSerializer(&LLPacketFactorySingleton::get());
+	}
+
+	~PacketClient_OnRecvHandler() {
+		delete this->packet_serializer;
+	}
 
 	virtual void operator()(PacketBuffer *buffer, const EndPoint *ep) {
 		TRACE_LOG("enter");
 		PacketBase *packet_base;
 
 		// get request packet
-		packet_base = this->packet_serializer.deserialize(*buffer);
+		packet_base = this->packet_serializer->deserialize(*buffer);
 		DEBUG_LOG("incoming packet " <<
 				"FROM: " << ep->getAddrStr() << ":" << ep->getPort() << "\n" <<
 				" [id]: " << hex << packet_base->header.getPacketID() << dec <<
@@ -106,12 +115,13 @@ public:
 // Server handler
 class PacketServer_OnRecvHandler : public UDP_OnRecvHandlerBase {
 private:
-	PacketSerializer packet_serializer;
 	Event_UDP &udp_server;
+	PacketSerializer *packet_serializer;
 
 public:
 	PacketServer_OnRecvHandler(Event_UDP &udp_server) :
 		udp_server(udp_server){
+		this->packet_serializer = new PacketSerializer(&LLPacketFactorySingleton::get());
 	};
 
 	virtual void operator() (PacketBuffer *buffer, const EndPoint *ep) {
@@ -119,7 +129,7 @@ public:
 		PacketBase *packet_base;
 
 		// get request packet
-		packet_base = this->packet_serializer.deserialize(*buffer);
+		packet_base = this->packet_serializer->deserialize(*buffer);
 		DEBUG_LOG("incoming packet " <<
 				"FROM: " << ep->getAddrStr() << ":" << ep->getPort() << "\n" <<
 				" [id]: " << hex << packet_base->header.getPacketID() << dec <<
@@ -138,7 +148,7 @@ public:
 		// TODO @@@ delete buffer ???
 		delete buffer;
 		// create response packet
-		packet_base = PacketFactory::GetInstance()->createPacket(CompletePingCheck_ID);
+		packet_base = LLPacketFacotrySingleton::get().createPacket(CompletePingCheck_ID);
 		CompletePingCheckPacket *complete_ping_packet = dynamic_cast<CompletePingCheckPacket *>(packet_base);
 		if (complete_ping_packet == NULL) {
 			FATAL_LOG("should never reach here");
@@ -147,7 +157,7 @@ public:
 		complete_ping_packet->PingID.PingID = ping_id;
 
 		int len = 0;
-		const unsigned char *resp_buf = this->packet_serializer.serialize(complete_ping_packet, &len);
+		const unsigned char *resp_buf = this->packet_serializer->serialize(complete_ping_packet, &len);
 
 		// send response
 		if (len > 0) {

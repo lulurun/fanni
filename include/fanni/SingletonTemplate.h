@@ -31,13 +31,11 @@ public:
 	}
 };
 
-/*
 template<class T>
-boost::once_flag Singleton<T>::flag = boost::BOOST_ONCE_INIT;
+boost::once_flag Singleton<T>::flag = BOOST_ONCE_INIT;
 
 template<class T>
 std::auto_ptr<T> Singleton<T>::instance;
-*/
 
 }
 

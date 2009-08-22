@@ -1,18 +1,15 @@
-#include <tr1/unordered_map>
-#include "Packets.h"
-#include "PacketBase.h"
-#include "PacketFactory.h"
+#include "LLPacketFactory.h"
 
 using namespace std;
 using namespace Fanni;
 
-typedef tr1::unordered_map<PacketHeader::PACKET_ID_TYPE, const PacketBase*> PACKET_MAP_TYPE;
-static PACKET_MAP_TYPE PacketList;
+LLPacketFactory::LLPacketFactory() {
+	this->init();
+}
 
-PacketFactory::PacketFactory() {}
-PacketFactory::~PacketFactory() {}
+LLPacketFactory::~LLPacketFactory() {}
 
-void PacketFactory::init() {
+void LLPacketFactory::init() {
     PacketList[TestMessage_ID] = new TestMessagePacket();
     PacketList[PacketAck_ID] = new PacketAckPacket();
     PacketList[OpenCircuit_ID] = new OpenCircuitPacket();
@@ -489,30 +486,4 @@ void PacketFactory::init() {
 
 }
 
-PacketBase *PacketFactory::createPacket(PacketHeader::PACKET_ID_TYPE packet_id) const {
-    PacketBase *ret = NULL;
-    PACKET_MAP_TYPE::const_iterator it = PacketList.find(packet_id);
-    if(it != PacketList.end()){
-        ret = it->second->clone();
-    }
-    return ret;
-}
-
-PacketBase *PacketFactory::createPacketCopy(PacketHeader::PACKET_ID_TYPE packet_id, const PacketBase *packet) const {
-    PacketBase *ret = NULL;
-    PACKET_MAP_TYPE::const_iterator it = PacketList.find(packet_id);
-    if(it != PacketList.end()){
-        ret = it->second->clone(packet);
-    }
-    return ret;
-}
-
-PacketFactory *PacketFactory::GetInstance() {
-    static PacketFactory *factory;
-    if (factory == NULL){
-        factory = new PacketFactory();
-        factory->init();
-    }
-    return factory;
-}
 

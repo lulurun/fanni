@@ -5,7 +5,7 @@ test_env.Program("test_timer",
 		[
 		"timer.cpp",
 		],
-		LIBS = ["framework_network", "basic", "event", "framework_threads", "pthread", "packets", "log4cxx"],
+		LIBS = ["framework_network", "basic", "event", "framework_threads", "pthread", "log4cxx"],
 		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
 		LIBPATH = ["../../lib"],
 		)

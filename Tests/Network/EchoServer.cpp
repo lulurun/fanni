@@ -8,10 +8,6 @@
 
 // packets
 #include "fanni/PacketBuffer.h"
-#include "Packets/PacketHandlerFactory.h"
-#include "Packets/PacketBase.h"
-#include "Packets/Packets.h"
-#include "Packets/PacketSerializer.h"
 
 using namespace std;
 using namespace Fanni;
@@ -23,13 +19,11 @@ namespace Tests {
 // Server handler
 class PacketServer_OnRecvHandler : public UDP_OnRecvHandlerBase {
 private:
-	PacketSerializer packet_serializer;
 	Event_UDP &udp_server;
 
 public:
 	PacketServer_OnRecvHandler(Event_UDP &udp_server) :
-		udp_server(udp_server){
-	};
+		udp_server(udp_server){};
 
 	virtual void operator() (PacketBuffer *buffer, const EndPoint *ep) {
 		FanniSock::SendPacket(this->udp_server.getSocket(), buffer->getLength(), buffer->getBuffer(), ep->getSockAddr());
@@ -61,7 +55,6 @@ int main(int argc, char **argv) {
 	try {
 		Event_UDP peer(::DEFAULT_ADDR, ::DEFAULT_PORT);
 		peer.setOnRecvHandler(new PacketServer_OnRecvHandler(peer));
-
 		PacketTransfer_ThreadHandler thread_handler(peer);
 		PacketTransfer_Thread thread(&thread_handler);
 		thread.kick();
