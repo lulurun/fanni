@@ -13,6 +13,7 @@
 #include "Threads/ThreadManager.h"
 #include "Packets/PacketHeader.h"
 #include "Packets/PacketSerializer.h"
+
 // app
 #include "TransferData.h"
 #include "PacketHandlerFactory.h"
@@ -23,13 +24,14 @@ namespace Tests {
 class PacketTransferBase;
 class ReceiverBase : public ThreadWorker {
 private:
-	PacketSerializer packet_serializer;
+	PacketSerializer *packet_serializer;
 	// reference of ReceiverManager::packet_handler_factory
 	const PacketHandlerFactory &packet_handler_factory;
 	PacketTransferBase *transfer_peer;
 
 public:
 	ReceiverBase(PacketHandlerFactory &phf, PacketTransferBase *transfer_peer);
+	~ReceiverBase();
 	virtual void loop();
 	virtual void stop();
 };

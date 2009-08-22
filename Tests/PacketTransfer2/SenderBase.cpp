@@ -6,6 +6,7 @@
  */
 
 #include "fanni/Exception.h"
+#include "LLPackets/LLPacketFactory.h"
 
 #include "TransferData.h"
 #include "SenderBase.h"
@@ -19,6 +20,11 @@ using namespace Fanni::Tests;
 // SenderBase
 SenderBase::SenderBase(const Event_UDP &udp_server, PacketTransferBase *transfer_peer) :
 	udp_server(udp_server), transfer_peer(transfer_peer) {
+	this->packet_serializer = CreateLLPacketSerializer();
+}
+
+SenderBase::~SenderBase() {
+	delete this->packet_serializer;
 }
 
 void SenderBase::loop() {
@@ -32,7 +38,7 @@ void SenderBase::loop() {
 		std::auto_ptr<const TransferDataPacket> auto_queue_data(const_queue_data);
 
 		int len = 0;
-		const unsigned char *resp_buf = this->packet_serializer.serialize(const_queue_data->data, &len);
+		const unsigned char *resp_buf = this->packet_serializer->serialize(const_queue_data->data, &len);
 		this->transfer_peer->processOutgoingPacket(const_queue_data->data, const_queue_data->ep);
 		this->udp_server.send(resp_buf, len, *const_queue_data->ep);
 		TRACE_LOG("exit send packet");

@@ -5,6 +5,7 @@
 #include "fanni/SingletonTemplate.h"
 
 #include "Packets/PacketFactory.h"
+#include "Packets/PacketSerializer.h"
 #include "LLPackets.h"
 
 namespace Fanni {
@@ -18,6 +19,8 @@ public:
 
 typedef Singleton<LLPacketFactory> LLPacketFactorySingleton;
 
+PacketSerializer *CreateLLPacketSerializer();
+
 }
 
-#endif /* PACKETFACTORY_H_ */
+#endif /* LLPACKETFACTORY_H_ */

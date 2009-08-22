@@ -7,9 +7,10 @@
 
 #include <ctime>
 
-#include "Packets/Packets.h"
 #include "ClientConnection.h"
 #include "PacketTransferBase.h"
+#include "LLPackets/LLPackets.h"
+#include "LLPackets/LLPacketFactory.h"
 
 using namespace std;
 using namespace Fanni;
@@ -89,7 +90,7 @@ void ClientConnection::remove_resend_packet(uint32_t seq) {
 void ClientConnection::add_resend_packet(const PacketBase* packet) {
 	uint32_t seq_key = packet->header.sequence;
 	// @@@ take a copy of the packet
-	this->resend_packet_map[seq_key] = PacketFactory::GetInstance()->createPacketCopy(
+	this->resend_packet_map[seq_key] = LLPacketFactorySingleton::get().createPacketCopy(
 			packet->header.getPacketID(), packet);
 	this->resend_status_map[seq_key] = ::time(NULL);
 }

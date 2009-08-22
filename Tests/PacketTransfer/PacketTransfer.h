@@ -16,8 +16,9 @@
 #include "Threads/Mutex.h"
 #include "Threads/ThreadManager.h"
 #include "Packets/PacketBase.h"
-#include "Packets/Packets.h"
 #include "Packets/PacketSerializer.h"
+#include "LLPackets/LLPackets.h"
+#include "LLPackets/LLPacketFactory.h"
 
 #include "TransferData.h"
 
@@ -27,10 +28,15 @@ namespace Tests {
 class PacketSender: public ThreadWorker {
 private:
 	int server_socket;
-	PacketSerializer packet_serializer;
+	PacketSerializer *packet_serializer;
 
 public:
-	PacketSender(int server_socket) : server_socket(server_socket) {}
+	PacketSender(int server_socket) : server_socket(server_socket) {
+		this->packet_serializer = CreateLLPacketSerializer();
+		}
+	~PacketSender() {
+		delete this->packet_serializer;
+	}
 	virtual void loop();
 	virtual void stop() { ; }
 };
@@ -80,7 +86,7 @@ public:
 			S_MUTEX_LOCK l;
 			l.lock(&ResendPacketList_lock);
 			TransferDataPacket *transfer_data = new TransferDataPacket(
-					PacketFactory::GetInstance()->createPacketCopy(packet->header.getPacketID(), packet),
+					LLPacketFactorySingleton::get().createPacketCopy(packet->header.getPacketID(), packet),
 					new EndPoint(*ep));
 			ResendPacketList[packet->header.getSequenceNumber()] = transfer_data;
 		}

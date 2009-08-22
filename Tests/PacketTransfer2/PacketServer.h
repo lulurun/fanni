@@ -13,8 +13,7 @@
 
 #include "fanni/EndPoint.h"
 #include "Packets/PacketBase.h"
-#include "Packets/Packets.h"
-#include "Packets/PacketSerializer.h"
+#include "LLPackets/LLPackets.h"
 
 #include "PacketTransferBase.h"
 

@@ -1,7 +1,6 @@
 #include "LLPacketFactory.h"
 
-using namespace std;
-using namespace Fanni;
+namespace Fanni {
 
 LLPacketFactory::LLPacketFactory() {
 	this->init();
@@ -486,4 +485,8 @@ void LLPacketFactory::init() {
 
 }
 
+PacketSerializer *CreateLLPacketSerializer() {
+	return new PacketSerializer(&LLPacketFactorySingleton::get());
+}
 
+}

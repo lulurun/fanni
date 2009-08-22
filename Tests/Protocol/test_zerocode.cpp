@@ -3,6 +3,7 @@
 #include "Packets/PacketBaseTypes.h"
 #include "Packets/PacketSerializer.h"
 #include "Packets/PacketHeader.h"
+#include "LLPackets/LLPacketFactory.h"
 
 using namespace std;
 using namespace Fanni;
@@ -19,15 +20,17 @@ void test_zerocode() {
 	cout << buffer.to_debug_string() << endl;
 
 	// encode
-	PacketSerializer ps;
-	ps.zeroEncode(buffer);
+	PacketSerializer *ps = CreateLLPacketSerializer();
+	ps->zeroEncode(buffer);
 	cout << "encode:" << endl;
 	cout << buffer.to_debug_string() << endl;
 
 	// decode
-	ps.zeroDecode(buffer);
+	ps->zeroDecode(buffer);
 	cout << "decode:" << endl;
 	cout << buffer.to_debug_string() << endl;
+
+	delete ps;
 }
 
 int main() {

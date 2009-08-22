@@ -30,14 +30,14 @@ private:
 
 public:
 	Test_UDPClient() {
-		this->packet_serializer = new PacketSerializer(&LLPacketFactorySingleton::get());
+		this->packet_serializer = CreateLLPacketSerializer();
 	};
 	virtual ~Test_UDPClient() {
 		delete this->packet_serializer;
 	};
 
 	void sendStartPingCheck(uint8_t ping_id) {
-		PacketBase *packet = LLPacketFacotrySingleton::get().createPacket(StartPingCheck_ID);
+		PacketBase *packet = LLPacketFactorySingleton::get().createPacket(StartPingCheck_ID);
 		StartPingCheckPacket *start_ping_packet = dynamic_cast<StartPingCheckPacket *> (packet);
 		if (start_ping_packet == NULL) {
 			FatalException::throw_exception(EXP_TEST, EXP_PRE_MSG,"wrong implementation" );
@@ -74,7 +74,7 @@ private:
 
 public:
 	PacketClient_OnRecvHandler() {
-		this->packet_serializer = new PacketSerializer(&LLPacketFactorySingleton::get());
+		this->packet_serializer = CreateLLPacketSerializer();
 	}
 
 	~PacketClient_OnRecvHandler() {
@@ -121,7 +121,7 @@ private:
 public:
 	PacketServer_OnRecvHandler(Event_UDP &udp_server) :
 		udp_server(udp_server){
-		this->packet_serializer = new PacketSerializer(&LLPacketFactorySingleton::get());
+		this->packet_serializer = CreateLLPacketSerializer();
 	};
 
 	virtual void operator() (PacketBuffer *buffer, const EndPoint *ep) {
@@ -148,7 +148,7 @@ public:
 		// TODO @@@ delete buffer ???
 		delete buffer;
 		// create response packet
-		packet_base = LLPacketFacotrySingleton::get().createPacket(CompletePingCheck_ID);
+		packet_base = LLPacketFactorySingleton::get().createPacket(CompletePingCheck_ID);
 		CompletePingCheckPacket *complete_ping_packet = dynamic_cast<CompletePingCheckPacket *>(packet_base);
 		if (complete_ping_packet == NULL) {
 			FATAL_LOG("should never reach here");

@@ -4,6 +4,7 @@
 #include "fanni/PacketBuffer.h"
 #include "fanni/Exception.h"
 #include "Packets/PacketSerializer.h"
+#include "LLPackets/LLPacketFactory.h"
 
 using namespace std;
 using namespace Fanni;
@@ -39,7 +40,8 @@ int main() {
 	int skip = -1;
 	int max_line = 500;
 	try {
-		PacketSerializer packet_serializer;
+		PacketSerializer *packet_serializer = CreateLLPacketSerializer();
+		// TODO @@@ delete packet_serializer
 		ifstream ifs("libomv_generated_messages.txt");
 		string csharp_line;
 		int count = 0;
@@ -58,11 +60,11 @@ int main() {
 			// serialize
 			PacketBuffer buf_1;
 			hexstring_to_bytearray(csharp_line, buf_1);
-			PacketBase *packet = packet_serializer.deserialize(buf_1);
+			PacketBase *packet = packet_serializer->deserialize(buf_1);
 			cout << hex << packet->header.getPacketID() << dec << endl;
 			// deserialize
 			int len = 0;
-			const unsigned char *cpp_line = packet_serializer.serialize(packet,
+			const unsigned char *cpp_line = packet_serializer->serialize(packet,
 					&len);
 			(void) cpp_line;
 			{

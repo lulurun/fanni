@@ -21,12 +21,13 @@ namespace Tests {
 class PacketTransferBase;
 class SenderBase : public ThreadWorker {
 private:
-	PacketSerializer packet_serializer;
+	PacketSerializer *packet_serializer;
 	const Fanni::Network::Event_UDP &udp_server;
 	PacketTransferBase *transfer_peer;
 
 public:
 	SenderBase(const Fanni::Network::Event_UDP &udp_server, PacketTransferBase *peer);
+	~SenderBase();
 	virtual void loop();
 	virtual void stop();
 };

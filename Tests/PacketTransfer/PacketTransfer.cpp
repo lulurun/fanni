@@ -26,7 +26,7 @@ void PacketSender::loop() {
 		std::auto_ptr<const TransferDataPacket> auto_queue_data(const_queue_data);
 
 		int len = 0;
-		const unsigned char *resp_buf = this->packet_serializer.serialize(const_queue_data->data, &len);
+		const unsigned char *resp_buf = this->packet_serializer->serialize(const_queue_data->data, &len);
 		Fanni::Network::FanniSock::SendPacket(this->server_socket, len, resp_buf, *reinterpret_cast<const sockaddr *>(const_queue_data->ep));
 	}
 }

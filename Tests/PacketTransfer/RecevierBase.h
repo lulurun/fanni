@@ -12,6 +12,7 @@
 #include "Threads/ThreadWorker.h"
 #include "Packets/PacketHeader.h"
 // app
+#include "LLPackets/LLPacketFactory.h"
 #include "TransferData.h"
 #include "PacketTransfer.h"
 #include "PacketHandlerFactory.h"
@@ -21,13 +22,15 @@ namespace Tests {
 
 class ReceiverBase : public ThreadWorker {
 private:
-	PacketSerializer packet_serializer;
+	PacketSerializer *packet_serializer;
 	const PacketHandlerFactory &packet_handler_factory;
 	PacketTransferManager *packet_transfer_manager;
 
 public:
 	ReceiverBase(PacketHandlerFactory &phf, PacketTransferManager *ptm = NULL) :
-		packet_handler_factory(phf), packet_transfer_manager(ptm) {}
+		packet_handler_factory(phf), packet_transfer_manager(ptm) {
+		this->packet_serializer = CreateLLPacketSerializer();
+	}
 
 	virtual void loop() {
 		while (1) {
@@ -39,7 +42,7 @@ public:
 
 			try {
 				auto_ptr<const TransferDataBuffer> auto_queue_data();
-				PacketBase *packet = this->packet_serializer.deserialize(*(const_queue_data->data));
+				PacketBase *packet = this->packet_serializer->deserialize(*(const_queue_data->data));
 
 				// resending, ack management
 				this->packet_transfer_manager->processIncomingPacket(packet, const_queue_data->ep);

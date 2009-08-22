@@ -3,29 +3,29 @@ Import("test_env")
 
 test_env.Program("test_serializer",
 		"test_serializer.cpp",
-		LIBS = ["packets", "basic", "pthread", "log4cxx"],
-		CPPPATH = ["../../Protocol", "../../include"],
+		LIBS = ["packets", "basic", "pthread", "log4cxx", "llpackets", "boost_thread-mt"],
+		CPPPATH = ["../../Protocol", "../../include", "../../Framework"],
 		LIBPATH = ["../../lib"],
 		)
 
 test_env.Program("test_serializer_basetypes",
 		"test_serializer_basetypes.cpp",
 		LIBS = ["packets", "basic", "pthread", "log4cxx"],
-		CPPPATH = ["../../Protocol", "../../include"],
+		CPPPATH = ["../../Protocol", "../../include", "../../Framework"],
 		LIBPATH = ["../../lib"],
 		)
 
 test_env.Program("test_zerocode",
 		"test_zerocode.cpp",
-		LIBS = ["packets", "basic", "pthread", "log4cxx"],
-		CPPPATH = ["../../Protocol", "../../include"],
+		LIBS = ["packets", "basic", "pthread", "log4cxx", "llpackets", "boost_thread-mt"],
+		CPPPATH = ["../../Protocol", "../../include", "../../Framework"],
 		LIBPATH = ["../../lib"],
 		)
 
 test_env.Program("test_packet",
 		"test_packet.cpp",
 		LIBS = ["packets", "basic", "pthread", "log4cxx"],
-		CPPPATH = ["../../Protocol", "../../include"],
+		CPPPATH = ["../../Protocol", "../../include", "../../Framework"],
 		LIBPATH = ["../../lib"],
 		)
 		

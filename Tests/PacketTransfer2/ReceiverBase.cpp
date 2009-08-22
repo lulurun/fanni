@@ -5,6 +5,7 @@
  *      Author: lulu
  */
 
+#include "LLPackets/LLPacketFactory.h"
 #include "ReceiverBase.h"
 #include "PacketServer.h"
 
@@ -15,7 +16,13 @@ using namespace Fanni::Network;
 // ==========
 // RecevierBase
 ReceiverBase::ReceiverBase(PacketHandlerFactory &phf, PacketTransferBase *transfer_peer) :
-	packet_handler_factory(phf), transfer_peer(transfer_peer) {}
+	packet_handler_factory(phf), transfer_peer(transfer_peer) {
+	this->packet_serializer = CreateLLPacketSerializer();
+}
+
+ReceiverBase::~ReceiverBase() {
+	delete this->packet_serializer;
+}
 
 void ReceiverBase::loop() {
 	while (1) {
@@ -26,7 +33,7 @@ void ReceiverBase::loop() {
 		}
 		try {
 			auto_ptr<const TransferDataBuffer> auto_queue_data();
-			PacketBase *packet = this->packet_serializer.deserialize(*(const_queue_data->data));
+			PacketBase *packet = this->packet_serializer->deserialize(*(const_queue_data->data));
 			// RESEND, ACK management
 			this->transfer_peer->processIncomingPacket(packet, const_queue_data->ep);
 			// dispatch packet handler

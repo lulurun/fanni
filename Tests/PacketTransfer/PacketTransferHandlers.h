@@ -8,6 +8,10 @@
 #ifndef QUEUEPACKETTRANSFERHANDLERS_H_
 #define QUEUEPACKETTRANSFERHANDLERS_H_
 
+#include "LLPackets/LLPackets.h"
+#include "LLPackets/LLPacketFactory.h"
+#include "PacketHandlerFactory.h"
+
 namespace Fanni {
 namespace Tests {
 
@@ -23,7 +27,7 @@ public:
 		}
 		uint8_t ping_id = start_ping_packet->PingID.PingID;
 		// create response packet
-		PacketBase *packet_base = PacketFactory::GetInstance()->createPacket(CompletePingCheck_ID);
+		PacketBase *packet_base = LLPacketFactorySingleton::get().createPacket(CompletePingCheck_ID);
 		CompletePingCheckPacket *complete_ping_packet = dynamic_cast<CompletePingCheckPacket *> (packet_base);
 		if (complete_ping_packet == NULL) {
 			FATAL_LOG("should never reach here");

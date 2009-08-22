@@ -14,13 +14,11 @@ namespace Tests {
 
 class PacketTransferBase_OnRecvHandler : public Fanni::Network::UDP_OnRecvHandlerBase {
 private:
-	PacketSerializer packet_serializer;
 	ReceiverManager *recevier_manager;
 
 public:
 	PacketTransferBase_OnRecvHandler(ReceiverManager *recevier_manager) :
-		recevier_manager(recevier_manager) {
-	}
+		recevier_manager(recevier_manager) {}
 	virtual void operator()(PacketBuffer *buffer, const EndPoint *ep) {
 		TransferDataBuffer *recv_data = new TransferDataBuffer(buffer, ep);
 		this->recevier_manager->deliverTask(recv_data);

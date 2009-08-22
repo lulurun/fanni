@@ -16,8 +16,9 @@
 // packets
 #include "fanni/PacketBuffer.h"
 #include "Packets/PacketBase.h"
-#include "Packets/Packets.h"
 #include "Packets/PacketSerializer.h"
+#include "LLPackets/LLPackets.h"
+#include "LLPackets/LLPacketFactory.h"
 // app
 #include "TransferData.h"
 #include "PacketTransfer.h"
@@ -33,11 +34,14 @@ namespace Tests {
 
 class PacketTransfer_OnRecvHandler : public UDP_OnRecvHandlerBase {
 private:
-	PacketSerializer packet_serializer;
+	PacketSerializer *packet_serializer;
 	ReceiverManager *recevier_manager;
 
 public:
-	PacketTransfer_OnRecvHandler(ReceiverManager *recevier_manager) : recevier_manager(recevier_manager) {};
+	PacketTransfer_OnRecvHandler(ReceiverManager *recevier_manager) :
+		recevier_manager(recevier_manager) {
+		this->packet_serializer = CreateLLPacketSerializer();
+	};
 
 	virtual void operator() (PacketBuffer *buffer, const EndPoint *ep) {
 		TransferDataBuffer *recv_data = new TransferDataBuffer(buffer, ep);
@@ -65,7 +69,7 @@ private:
 	PacketTransferManager *packet_transfer_manager;
 
 	void sendStartPingCheck(uint8_t ping_id) {
-		PacketBase *packet = PacketFactory::GetInstance()->createPacket(StartPingCheck_ID);
+		PacketBase *packet = LLPacketFactorySingleton::get().createPacket(StartPingCheck_ID);
 		StartPingCheckPacket *start_ping_packet = dynamic_cast<StartPingCheckPacket *> (packet);
 		if (start_ping_packet == NULL) {
 			FatalException::throw_exception(EXP_TEST, EXP_PRE_MSG,"wrong implementation" );

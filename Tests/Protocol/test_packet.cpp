@@ -5,7 +5,7 @@
 #include "Packets/PacketSerializer.h"
 #include "Packets/PacketHeader.h"
 #include "Packets/PacketBase.h"
-#include "Packets/Packets.h"
+#include "LLPackets/LLPackets.h"
 #include "fanni/Exception.h"
 #include "fanni/PacketBuffer.h"
 
