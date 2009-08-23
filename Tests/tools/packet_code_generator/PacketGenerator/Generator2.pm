@@ -28,13 +28,20 @@ my %data_type_table = (
     Variable2 => "SerializableVariable2",
 );
 
-sub generate_packet_impls {
+sub generate_packet_id {
     my $packet_list = shift;
     my $packet_id_enum = &_generate_packet_classes_header($packet_list);
+
+    my $text = $CodeTemplate::PacketsID_H_Template;
+    $text =~ s/{PacketIDEnum}/$packet_id_enum/;
+    return $text;
+}
+
+sub generate_packet_impls {
+    my $packet_list = shift;
     my $packet_classes = &_generate_serializable_classes($packet_list);
 
-    my $text = $CodeTemplate::Packet_H_Template;
-    $text =~ s/{PacketIDEnum}/$packet_id_enum/;
+    my $text = $CodeTemplate::Packets_H_Template;
     $text =~ s/{PacketClasses}/$packet_classes/;
     return $text;
 }
@@ -190,6 +197,12 @@ INIT_PACKET
 
     my $text = $CodeTemplate::PacketFactory_CPP_Template;
     $text =~ s/{InitAllPackets}/$init_all_packets/;
+    return $text;
+}
+
+sub generate_packet_factory_h {
+    my $packet_list = shift;
+    my $text = $CodeTemplate::PacketFactory_H_Template;
     return $text;
 }
 

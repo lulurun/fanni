@@ -69,8 +69,7 @@ void PacketTransferBase::init() {
 	this->sender_manager = new SenderManager(this->thread_number, *this->udp_server, this);
 	{ // start UDP server thread
 		this->udp_server->setOnRecvHandler(new PacketTransferBase_OnRecvHandler(this->receiver_manager));
-		UDPServer_ThreadHandler *udp_server_thread_handler = new UDPServer_ThreadHandler(this->udp_server);
-		this->udp_thread = new UDPServer_Thread(udp_server_thread_handler);
+		this->udp_thread = new SimpleThreadTemplate<Event_UDP>(*this->udp_server);
 	}
 	{ // init timers
 		OnTimerElapsedHandler_CheckACK *check_ack_handler = new OnTimerElapsedHandler_CheckACK(this);

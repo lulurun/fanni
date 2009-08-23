@@ -21,26 +21,10 @@
 namespace Fanni {
 namespace Tests {
 
-class UDPServer_ThreadHandler: public ThreadHandlerBase {
-private:
-	Fanni::Network::Event_UDP *peer;
-public:
-	UDPServer_ThreadHandler(Fanni::Network::Event_UDP *peer) : peer(peer) {}
-	virtual void setArg(void *arg) {}
-	virtual void operator()() {
-		TRACE_LOG("enter");
-		this->peer->start();
-		TRACE_LOG("exit");
-	}
-};
-
-typedef ThreadTemplate<UDPServer_ThreadHandler> UDPServer_Thread;
-
-
 class PacketTransferBase {
 private:
 	// Threads handled by "this"
-	UDPServer_Thread *udp_thread;
+	SimpleThreadTemplate<Fanni::Network::Event_UDP> *udp_thread;
 	PeriodicTaskThread *check_ACK_timer_thread;
 	PeriodicTaskThread *check_RESEND_timer_thread;
 	ReceiverManager *receiver_manager;

@@ -66,77 +66,99 @@ public:
 BLOCKCLASS_TEMPLATE
 
 # #######################
-# PACKET_H_TEMPLATE
-our $Packet_H_Template =<< "PACKET_H_TEMPLATE";
-#ifndef PACKET_IMPL_H_
-#define PACKET_IMPL_H_
-
-#include "fanni/Exception.h"
-
-#include "PacketBaseTypes.h"
-#include "PacketBase.h"
+# PACKETSID_H_TEMPLATE
+our $PacketsID_H_Template =<< "PACKETSID_H_TEMPLATE";
+#ifndef LLPACKET_ID_H_
+#define LLPACKET_ID_H_
 
 namespace Fanni {
 
 {PacketIDEnum}
 
+};
+
+#endif // LLPACKET_ID_H
+
+PACKETSID_H_TEMPLATE
+
+# #######################
+# PACKETS_H_TEMPLATE
+our $Packets_H_Template =<< "PACKETS_H_TEMPLATE";
+#ifndef LLPACKET_IMPL_H_
+#define LLPACKET_IMPL_H_
+
+#include "fanni/Exception.h"
+
+#include "Packets/PacketBaseTypes.h"
+#include "Packets/PacketBase.h"
+#include "LLPacketsID.h"
+
+namespace Fanni {
+
 {PacketClasses}
 
 };
 
-#endif // PACKET_IMPL_H
+#endif // LLPACKET_IMPL_H
 
-PACKET_H_TEMPLATE
+PACKETS_H_TEMPLATE
 
 # #######################
 # PACKETFACTORY_CPP_TEMPLATE
 our $PacketFactory_CPP_Template =<< "PACKETFACTORY_CPP_TEMPLATE";
-#include <tr1/unordered_map>
-#include "Packets.h"
-#include "PacketBase.h"
-#include "PacketFactory.h"
+#include "LLPackets.h"
+#include "LLPacketFactory.h"
 
-using namespace std;
-using namespace Fanni;
+namespace Fanni {
 
-typedef tr1::unordered_map<PacketHeader::PACKET_ID_TYPE, const PacketBase*> PACKET_MAP_TYPE;
-static PACKET_MAP_TYPE PacketList;
+LLPacketFactory::LLPacketFactory() {
+    this->init();
+}
 
-PacketFactory::PacketFactory() {}
-PacketFactory::~PacketFactory() {}
+LLPacketFactory::~LLPacketFactory() {}
 
-void PacketFactory::init() {
+void LLPacketFactory::init() {
 {InitAllPackets}
 }
 
-PacketBase *PacketFactory::createPacket(PacketHeader::PACKET_ID_TYPE packet_id) const {
-    PacketBase *ret = NULL;
-    PACKET_MAP_TYPE::const_iterator it = PacketList.find(packet_id);
-    if(it != PacketList.end()){
-        ret = it->second->clone();
-    }
-    return ret;
+PacketSerializer *CreateLLPacketSerializer() {
+    return new PacketSerializer(&LLPacketFactorySingleton::get());
 }
 
-PacketBase *PacketFactory::createPacketCopy(PacketHeader::PACKET_ID_TYPE packet_id, const PacketBase *packet) const {
-    PacketBase *ret = NULL;
-    PACKET_MAP_TYPE::const_iterator it = PacketList.find(packet_id);
-    if(it != PacketList.end()){
-        ret = it->second->clone(packet);
-    }
-    return ret;
-}
-
-PacketFactory *PacketFactory::GetInstance() {
-    static PacketFactory *factory;
-    if (factory == NULL){
-        factory = new PacketFactory();
-        factory->init();
-    }
-    return factory;
 }
 
 PACKETFACTORY_CPP_TEMPLATE
+
+# #######################
+# PACKETFACTORY_H_TEMPLATE
+our $PacketFactory_H_Template =<< "PACKETFACTORY_H_TEMPLATE";
+#ifndef LLPACKETFACTORY_H_
+#define LLPACKETFACTORY_H_
+
+#include "fanni/Serializable.h"
+#include "fanni/SingletonTemplate.h"
+
+#include "Packets/PacketFactory.h"
+#include "Packets/PacketSerializer.h"
+
+namespace Fanni {
+
+class LLPacketFactory : public PacketFactory {
+public:
+    LLPacketFactory();
+    virtual ~LLPacketFactory();
+    virtual void init();
+};
+
+typedef Singleton<LLPacketFactory> LLPacketFactorySingleton;
+
+PacketSerializer *CreateLLPacketSerializer();
+
+}
+
+#endif /* LLPACKETFACTORY_H_ */
+
+PACKETFACTORY_H_TEMPLATE
 
 # ###################
 # C# test data generation program

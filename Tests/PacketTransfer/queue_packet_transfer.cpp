@@ -49,19 +49,6 @@ public:
 	}
 };
 
-class PacketTransfer_ThreadHandler : public ThreadHandlerBase {
-private:
-	Event_UDP &peer;
-public:
-	PacketTransfer_ThreadHandler(Event_UDP &peer) : peer(peer) {}
-	virtual void setArg(void *arg) {}
-	virtual void operator()() {
-		this->peer.start();
-	}
-};
-
-typedef ThreadTemplate<PacketTransfer_ThreadHandler> PacketTransfer_Thread;
-
 static SequenceGenerator *sg = SequenceGeneratorFactory::GetInstance()->createGenerator();
 class Event_UDPClient : public Event_UDP {
 private:
@@ -126,8 +113,7 @@ int main(int argc, char **argv) {
 			recevier_manager->registerHandler(StartPingCheck_ID, new StartPingCheckPacketHandler());
 			peer.setOnRecvHandler(new PacketTransfer_OnRecvHandler(recevier_manager));
 			// start UDP server
-			PacketTransfer_ThreadHandler thread_handler(peer);
-			PacketTransfer_Thread thread(&thread_handler);
+			SimpleThreadTemplate<Event_UDP> thread(peer);
 			thread.kick();
 			thread.join();
 		} else {
@@ -142,8 +128,7 @@ int main(int argc, char **argv) {
 			recevier_manager->registerHandler(CompletePingCheck_ID, new CompletePingCheckPacketHandler());
 			peer.setOnRecvHandler(new PacketTransfer_OnRecvHandler(recevier_manager));
 			// start UDP client
-			PacketTransfer_ThreadHandler thread_handler(peer);
-			PacketTransfer_Thread thread(&thread_handler);
+			SimpleThreadTemplate<Event_UDP> thread(peer);
 			thread.kick();
 
 			sleep(1);
