@@ -158,6 +158,11 @@ public:
 		}
 		return ost.str();
 	};
+
+	int getFixedLength() const {
+		return FixedLength;
+	}
+
 };
 
 /*

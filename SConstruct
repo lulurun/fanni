@@ -17,6 +17,7 @@ env.SConscript('Framework/Threads/SConscript')
 env.SConscript('Framework/Network/SConscript')
 env.SConscript('Framework/Packets/SConscript')
 env.SConscript('Protocol/LLPackets/SConscript')
+env.SConscript('Protocol/FileTransferPackets/SConscript')
 
 # Programs
 

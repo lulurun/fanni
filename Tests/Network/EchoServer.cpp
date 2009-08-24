@@ -26,6 +26,8 @@ public:
 		udp_server(udp_server){};
 
 	virtual void operator() (PacketBuffer *buffer, const EndPoint *ep) {
+		cout << "recv: " << buffer->getFixedLength() << endl;
+		cout << "recv: " << buffer->to_debug_string() << endl;
 		FanniSock::SendPacket(this->udp_server.getSocket(), buffer->getLength(), buffer->getBuffer(), ep->getSockAddr());
 	}
 };

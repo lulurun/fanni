@@ -5,7 +5,7 @@
  *      Author: lulu
  */
 
-#include "LLPackets/LLPacketFactory.h"
+#include "FileTransferPackets/FileTransferPacketFactory.h"
 #include "ReceiverBase.h"
 #include "PacketServer.h"
 
@@ -17,7 +17,7 @@ using namespace Fanni::Network;
 // RecevierBase
 ReceiverBase::ReceiverBase(PacketHandlerFactory &phf, PacketTransferBase *transfer_peer) :
 	packet_handler_factory(phf), transfer_peer(transfer_peer) {
-	this->packet_serializer = CreateLLPacketSerializer();
+	this->packet_serializer = CreateFileTransferPacketSerializer();
 }
 
 ReceiverBase::~ReceiverBase() {

@@ -68,8 +68,8 @@ BLOCKCLASS_TEMPLATE
 # #######################
 # PACKETSID_H_TEMPLATE
 our $PacketsID_H_Template =<< "PACKETSID_H_TEMPLATE";
-#ifndef LLPACKET_ID_H_
-#define LLPACKET_ID_H_
+#ifndef {IMPL_PREFIX}PACKET_ID_H_
+#define {IMPL_PREFIX}PACKET_ID_H_
 
 namespace Fanni {
 
@@ -77,21 +77,21 @@ namespace Fanni {
 
 };
 
-#endif // LLPACKET_ID_H
+#endif // {IMPL_PREFIX}PACKET_ID_H
 
 PACKETSID_H_TEMPLATE
 
 # #######################
 # PACKETS_H_TEMPLATE
 our $Packets_H_Template =<< "PACKETS_H_TEMPLATE";
-#ifndef LLPACKET_IMPL_H_
-#define LLPACKET_IMPL_H_
+#ifndef {IMPL_PREFIX}PACKET_IMPL_H_
+#define {IMPL_PREFIX}PACKET_IMPL_H_
 
 #include "fanni/Exception.h"
 
 #include "Packets/PacketBaseTypes.h"
 #include "Packets/PacketBase.h"
-#include "LLPacketsID.h"
+#include "{IMPL_PREFIX}PacketsID.h"
 
 namespace Fanni {
 
@@ -99,30 +99,30 @@ namespace Fanni {
 
 };
 
-#endif // LLPACKET_IMPL_H
+#endif // {IMPL_PREFIX}PACKET_IMPL_H
 
 PACKETS_H_TEMPLATE
 
 # #######################
 # PACKETFACTORY_CPP_TEMPLATE
 our $PacketFactory_CPP_Template =<< "PACKETFACTORY_CPP_TEMPLATE";
-#include "LLPackets.h"
-#include "LLPacketFactory.h"
+#include "{IMPL_PREFIX}Packets.h"
+#include "{IMPL_PREFIX}PacketFactory.h"
 
 namespace Fanni {
 
-LLPacketFactory::LLPacketFactory() {
+{IMPL_PREFIX}PacketFactory::{IMPL_PREFIX}PacketFactory() {
     this->init();
 }
 
-LLPacketFactory::~LLPacketFactory() {}
+{IMPL_PREFIX}PacketFactory::~{IMPL_PREFIX}PacketFactory() {}
 
-void LLPacketFactory::init() {
+void {IMPL_PREFIX}PacketFactory::init() {
 {InitAllPackets}
 }
 
-PacketSerializer *CreateLLPacketSerializer() {
-    return new PacketSerializer(&LLPacketFactorySingleton::get());
+PacketSerializer *Create{IMPL_PREFIX}PacketSerializer() {
+    return new PacketSerializer(&{IMPL_PREFIX}PacketFactorySingleton::get());
 }
 
 }
@@ -132,8 +132,8 @@ PACKETFACTORY_CPP_TEMPLATE
 # #######################
 # PACKETFACTORY_H_TEMPLATE
 our $PacketFactory_H_Template =<< "PACKETFACTORY_H_TEMPLATE";
-#ifndef LLPACKETFACTORY_H_
-#define LLPACKETFACTORY_H_
+#ifndef {IMPL_PREFIX}PACKETFACTORY_H_
+#define {IMPL_PREFIX}PACKETFACTORY_H_
 
 #include "fanni/Serializable.h"
 #include "fanni/SingletonTemplate.h"
@@ -143,20 +143,20 @@ our $PacketFactory_H_Template =<< "PACKETFACTORY_H_TEMPLATE";
 
 namespace Fanni {
 
-class LLPacketFactory : public PacketFactory {
+class {IMPL_PREFIX}PacketFactory : public PacketFactory {
 public:
-    LLPacketFactory();
-    virtual ~LLPacketFactory();
+    {IMPL_PREFIX}PacketFactory();
+    virtual ~{IMPL_PREFIX}PacketFactory();
     virtual void init();
 };
 
-typedef Singleton<LLPacketFactory> LLPacketFactorySingleton;
+typedef Singleton<{IMPL_PREFIX}PacketFactory> {IMPL_PREFIX}PacketFactorySingleton;
 
-PacketSerializer *CreateLLPacketSerializer();
+PacketSerializer *Create{IMPL_PREFIX}PacketSerializer();
 
 }
 
-#endif /* LLPACKETFACTORY_H_ */
+#endif /* {IMPL_PREFIX}PACKETFACTORY_H_ */
 
 PACKETFACTORY_H_TEMPLATE
 

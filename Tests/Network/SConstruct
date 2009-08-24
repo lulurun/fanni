@@ -6,7 +6,7 @@ test_env.Program("echo_server",
 		LIBS = [
 		"framework_network", "basic", "event",
 		"framework_threads", "pthread", "log4cxx"],
-		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
+		CPPPATH = ["./", "../../Framework", "../../Protocol", "../../include"],
 		LIBPATH = ["../../lib"],
 		)
 

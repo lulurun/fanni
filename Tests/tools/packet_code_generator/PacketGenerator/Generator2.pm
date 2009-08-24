@@ -54,9 +54,9 @@ sub _generate_serializable_classes {
 	my $class_name = $packet->{name} . "Packet";
 	# packet info
 	my $packet_info = "        this->setID(" . $packet->{name} . "_ID);\n";
-	if ($packet->{reliable} eq "true") {
-	    $packet_info .= "        this->setFlag(PacketHeader::FLAG_RELIABLE);";
-	}
+	#if ($packet->{reliable} eq "true") {
+	#    $packet_info .= "        this->setFlag(PacketHeader::FLAG_RELIABLE);";
+	#}
 	if ($packet->{zerocoded} eq "Zerocoded") {
 	    $packet_info .= "        this->setFlag(PacketHeader::FLAG_ZEROCODED);";
 	}

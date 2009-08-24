@@ -63,7 +63,7 @@ public:
 	virtual void operator()() { this->start(); }
 };
 
-static const uint32_t ELAPSE_CHECK_INTERVAL = 1000 * 1000; /* microseconds, I am using usleep! */
+static const uint32_t ELAPSE_CHECK_INTERVAL = 2 * 1000 * 1000; /* microseconds, I am using usleep! */
 class OneTimeTask : public TimeOutTaskBase {
 public:
 	OneTimeTask(int milliseconds, const OnTimerElapsedHandler *handler) :

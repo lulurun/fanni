@@ -28,7 +28,7 @@ sub parse_template {
 	$this->{name} = $name || die "bad template, not name: $text";
 	$this->{freq} = $freq || die "bad template, not freq: $text";
 	$this->{id} = $id || die "bad template, not id: $text";
-	$this->{reliable} = $reliable eq "NotTrusted" ? "false" : "true";
+	$this->{reliable} = $reliable eq "Trusted" ? "true" : "false";
 	$this->{zerocoded} = $zerocoded || die "bad template, not name: $text";
 	my $state = OUT_BLOCK;
 	my $count = 0;

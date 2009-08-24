@@ -8,6 +8,7 @@
 #include <iostream>
 #include "fanni/Logger.h"
 #include "PacketServer.h"
+#include "PacketServer.h"
 
 using namespace std;
 using namespace Fanni;
@@ -24,6 +25,7 @@ int start_server() {
 		PacketServer server(DEFAULT_ADDR, DEFAULT_PORT, thread_number);
 		server.init();
 		server.start();
+		server.join();
 	} catch (ErrorException &e) {
 		ERROR_LOG("ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
 	}
@@ -33,9 +35,19 @@ int start_server() {
 int start_client() {
 	TRACE_LOG("enter");
 	try {
-		PacketServer server(DEFAULT_ADDR, DEFAULT_PORT, thread_number);
+		PacketServer server("0.0.0.0", 0, thread_number);
 		server.init();
 		server.start();
+
+		EndPoint connect_to_ep(DEFAULT_ADDR, DEFAULT_PORT);
+		server.openConnection(connect_to_ep);
+
+		server.sendFile("test.jpg", connect_to_ep);
+		::sleep(6);
+
+		server.closeConnection(connect_to_ep);
+
+		server.join();
 	} catch (ErrorException &e) {
 		ERROR_LOG("ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
 	}

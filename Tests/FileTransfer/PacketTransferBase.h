@@ -44,6 +44,7 @@ public:
 
 	virtual void init();
 	virtual void start();
+	virtual void join();
 	virtual void sendPacket(PacketBase *packet, const EndPoint *ep);
 
 	// Reliable Packet Transfer

@@ -22,7 +22,7 @@
 <builder cleanBuildTarget="-c" command="scons" id="cdt.managedbuild.target.gnu.builder.base.349109976" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.base"/>
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.1916014223" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1846822438" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
-<option id="gnu.cpp.compiler.option.include.paths.950848298" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+<option id="gnu.cpp.compiler.option.include.paths.950848298" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/fanni/Framework}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/fanni/Protocol}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/fanni/Network}&quot;"/>
@@ -296,6 +296,8 @@
 </profile>
 </scannerConfigBuildInfo>
 </storageModule>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cconfiguration>
 </storageModule>
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">

@@ -13,7 +13,7 @@
 
 #include "fanni/EndPoint.h"
 #include "Packets/PacketBase.h"
-#include "LLPackets/LLPacketsID.h"
+#include "FileTransferPackets/FileTransferPacketsID.h"
 
 #include "PacketTransferBase.h"
 
@@ -26,6 +26,7 @@ private:
 	CLIENT_CONNECTION_MAP_TYPE client_connection_map;
 	Mutex client_connection_map_lock;
 	static const PacketHeader::PACKET_ID_TYPE OPEN_CONNECTION_PACKET = UseCircuitCode_ID;
+	static const PacketHeader::PACKET_ID_TYPE CLOSE_CONNECTION_PACKET = CloseCircuit_ID;
 
 public:
 	PacketServer(const std::string &addr, int port, int thread_number);
@@ -43,6 +44,11 @@ public:
 
 	virtual void checkACK();
 	virtual void checkRESEND();
+
+	// specified (client) methods
+	void openConnection(const EndPoint &ep);
+	void closeConnection(const EndPoint &ep);
+	void sendFile(const string &file_path, const EndPoint &ep);
 };
 
 }

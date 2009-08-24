@@ -91,10 +91,12 @@ void PacketTransferBase::start() {
 
 	this->check_ACK_timer_thread->kick();
 	this->check_RESEND_timer_thread->kick();
+	TRACE_LOG("exit");
+}
 
+void PacketTransferBase::join() {
 	// TODO @@@ join join ...
 	this->udp_thread->join();
-	TRACE_LOG("exit");
 }
 
 void  PacketTransferBase::sendPacket(PacketBase *packet, const EndPoint *ep) {
