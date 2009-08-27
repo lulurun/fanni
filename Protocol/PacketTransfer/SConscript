@@ -1,0 +1,19 @@
+# TODO: should not import
+Import("env")
+
+env.SharedLibrary("../../lib/packet_transfer",
+		[
+		"PacketHandlerFactory.cpp",
+		"ReceiverBase.cpp",
+		"SenderBase.cpp",
+		"PacketTransferBase.cpp",
+		"ClientConnectionBase.cpp",
+		],
+		LIBS = [
+			"framework_network", "basic", "event",
+			"framework_threads", "pthread", "packets",
+			"log4cxx", "filetransferpackets", "boost_thread-mt"],
+		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
+		LIBPATH = ["../../lib"],
+		)
+		
