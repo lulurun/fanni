@@ -207,8 +207,11 @@ public:
 	virtual ~SerializableVariable2() { };
 	virtual void serialize(PacketBuffer &buffer) const;
 	virtual void deserialize(PacketBuffer &buffer);
-	const char* operator*() const {
-		return reinterpret_cast<const char *>(&this->val[0]);
+	const char *c_str() const {
+		char *c_str = new char[this->val.size() + 1];
+		::memcpy(c_str, &this->val[0], this->val.size());
+		c_str[this->val.size()] = '\0';
+		return c_str;
 	}
 	void operator=(PacketBuffer &buffer) {
 		this->val.resize(buffer.getLength());

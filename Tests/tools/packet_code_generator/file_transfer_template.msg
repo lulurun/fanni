@@ -2,8 +2,16 @@
 	FileInfo Low 154 NotTrusted Unencoded
 	{
 		FileInfo		Single
-		{	TransferID		LLUUID	}
 		{	Size			S32	}
+		{	Name			Variable	2	}
+	}
+}
+
+{
+	FileInfoReply Low 155 NotTrusted Unencoded
+	{
+		FileInfo		Single
+		{	TransferID		LLUUID	}
 		{	Name			Variable	2	}
 	}
 }

@@ -4,17 +4,14 @@ Import("test_env")
 test_env.Program("file_transfer",
 		[
 		"file_transfer.cpp",
-		"PacketHandlerFactory.cpp",
-		"ReceiverBase.cpp",
-		"SenderBase.cpp",
-		"PacketTransferBase.cpp",
-		"PacketServer.cpp",
-		"ClientConnection.cpp",
+		"FileTransferNode.cpp",
+		"FileTransferClientConnection.cpp",
 		],
 		LIBS = [
 			"framework_network", "basic", "event",
 			"framework_threads", "pthread", "packets",
-			"log4cxx", "filetransferpackets", "boost_thread-mt"],
+			"log4cxx", "filetransferpackets", "boost_thread-mt",
+			"packet_transfer"],
 		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
 		LIBPATH = ["../../lib"],
 		)

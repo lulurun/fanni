@@ -13,8 +13,9 @@
 #include "FileTransferPackets/FileTransferPackets.h"
 #include "FileTransferPackets/FileTransferPacketFactory.h"
 
-#include "PacketServer.h"
-#include "PacketHandlerFactory.h"
+#include "PacketTransfer/PacketHandlerFactory.h"
+#include "FileTransferClientConnection.h"
+#include "FileTransferNode.h"
 
 namespace Fanni {
 namespace Tests {
@@ -28,14 +29,44 @@ public:
 			ERROR_LOG("unexpected packet type");
 			return;
 		}
-		UUID transfer_id = file_info_packet->FileInfo.TransferID.val;
-		int file_size = file_info_packet->FileInfo.Size;
-		string file_name = *file_info_packet->FileInfo.Name;
+		uint32_t file_size = file_info_packet->FileInfo.Size;
+		string file_name = file_info_packet->FileInfo.Name.c_str();
+
+		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
+		// TODO @@@ asset(connection); // !!
+		connection->OnFileInfo(file_size, file_name, connection);
+		TRACE_LOG("exit");
+	};
+};
+
+class FileInfoReplyPacketHandler : public PacketHandlerBase {
+public:
+	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const {
+		TRACE_LOG("enter");
+		const FileInfoReplyPacket *file_info_reply_packet = dynamic_cast<const FileInfoReplyPacket *> (packet);
+		if (file_info_reply_packet == NULL) {
+			ERROR_LOG("unexpected packet type");
+			return;
+		}
+		UUID transfer_id = file_info_reply_packet->FileInfo.TransferID.val;
+		string file_name = file_info_reply_packet->FileInfo.Name.c_str();
 
 		DEBUG_LOG("transfer_id: " << transfer_id.toString());
-		DEBUG_LOG("size: " << file_size);
 		DEBUG_LOG("name: " << file_name);
 
+		TRACE_LOG("exit");
+	};
+};
+
+class FileDataPacketHandler : public PacketHandlerBase {
+public:
+	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const {
+		TRACE_LOG("enter");
+		const FileDataPacket *file_data_packet = dynamic_cast<const FileDataPacket *> (packet);
+		if (file_data_packet == NULL) {
+			ERROR_LOG("unexpected packet type");
+			return;
+		}
 		TRACE_LOG("exit");
 	};
 };

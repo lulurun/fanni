@@ -17,19 +17,16 @@ public:
     class FileInfoBlock : public PacketSerializable {
     public:
         // FileInfoBlock Member List
-        SerializableUUID TransferID;
         SerializableS32 Size;
         SerializableVariable2 Name;
     public:
         FileInfoBlock() {};
         virtual ~FileInfoBlock() {};
         virtual void serialize(PacketBuffer &buffer) const {
-            TransferID.serialize(buffer);
             Size.serialize(buffer);
             Name.serialize(buffer);
         }
         virtual void deserialize(PacketBuffer &buffer) {
-            TransferID.deserialize(buffer);
             Size.deserialize(buffer);
             Name.deserialize(buffer);
         }
@@ -58,6 +55,55 @@ public:
             FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
         }
         return new FileInfoPacket(*FileInfoPacket_packet);
+    }
+};
+
+// FileInfoReplyPacket
+class FileInfoReplyPacket : public PacketBase {
+public:
+
+    // Block Class List
+    class FileInfoBlock : public PacketSerializable {
+    public:
+        // FileInfoBlock Member List
+        SerializableUUID TransferID;
+        SerializableVariable2 Name;
+    public:
+        FileInfoBlock() {};
+        virtual ~FileInfoBlock() {};
+        virtual void serialize(PacketBuffer &buffer) const {
+            TransferID.serialize(buffer);
+            Name.serialize(buffer);
+        }
+        virtual void deserialize(PacketBuffer &buffer) {
+            TransferID.deserialize(buffer);
+            Name.deserialize(buffer);
+        }
+    };
+    // FileInfoReplyPacket Member List
+    FileInfoBlock FileInfo;
+
+public:
+    FileInfoReplyPacket() {
+        this->setID(FileInfoReply_ID);
+    };
+    virtual ~FileInfoReplyPacket() {};
+
+    virtual void serialize(PacketBuffer &buffer) const {
+        FileInfo.serialize(buffer);
+    }
+    virtual void deserialize(PacketBuffer &buffer) {
+        FileInfo.deserialize(buffer);
+    }
+    virtual PacketBase *clone() const {
+        return new FileInfoReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const FileInfoReplyPacket *FileInfoReplyPacket_packet = dynamic_cast<const FileInfoReplyPacket *>(packet);
+        if (FileInfoReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new FileInfoReplyPacket(*FileInfoReplyPacket_packet);
     }
 };
 

@@ -74,8 +74,16 @@ namespace PacketTest
         static void FileInfo_gen()
         {
             FileInfoPacket packet = new FileInfoPacket();
-                packet.FileInfo.TransferID = DefaultValues.LLUUID;
                 packet.FileInfo.Size = DefaultValues.S32;
+                packet.FileInfo.Name = DefaultValues.Variable2;
+
+            output(packet.ToBytes());
+        }
+        
+        static void FileInfoReply_gen()
+        {
+            FileInfoReplyPacket packet = new FileInfoReplyPacket();
+                packet.FileInfo.TransferID = DefaultValues.LLUUID;
                 packet.FileInfo.Name = DefaultValues.Variable2;
 
             output(packet.ToBytes());
@@ -127,6 +135,7 @@ namespace PacketTest
         static void Main(string[] args)
         {
             FileInfo_gen();
+            FileInfoReply_gen();
             FileData_gen();
             PacketAck_gen();
             UseCircuitCode_gen();
