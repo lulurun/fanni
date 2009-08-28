@@ -41,7 +41,7 @@ int start_client(const string &file_name) {
 		EndPoint connect_to_ep(DEFAULT_ADDR, DEFAULT_PORT);
 		node.openConnection(connect_to_ep);
 
-		node.sendFile(file_name, connect_to_ep);
+		node.startSendFile(file_name, connect_to_ep);
 		::sleep(6);
 
 		node.closeConnection(connect_to_ep);

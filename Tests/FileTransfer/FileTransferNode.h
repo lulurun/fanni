@@ -32,7 +32,7 @@ public:
 	// specified (client) methods
 	void openConnection(const EndPoint &ep);
 	void closeConnection(const EndPoint &ep);
-	void sendFile(const string &file_path, const EndPoint &ep);
+	void startSendFile(const string &file_path, const EndPoint &ep);
 
 	virtual ClientConnectionBase *createClientConnection(uint32_t circuit_code, const EndPoint *ep);
 	virtual bool ignoreInProcessIncomingPacket(PacketHeader::PACKET_ID_TYPE packet_id);

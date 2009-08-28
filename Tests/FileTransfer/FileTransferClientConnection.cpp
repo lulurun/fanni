@@ -49,7 +49,14 @@ void FileTransferClientConnection::OnFileInfoEvent::operator ()(uint32_t file_si
 }
 
 void FileTransferClientConnection::OnFileInfoReplyEvent::operator ()(UUID &transfer_id, const std::string &file_name, FileTransferClientConnection *transfer_peer) {
-	;
+	TRACE_LOG("enter");
+	DEBUG_LOG("transfer_id: " << transfer_id.toString());
+	DEBUG_LOG("name: " << file_name);
+
+	// read file, split
+	// send file data packets
+
+	TRACE_LOG("exit");
 }
 
 void FileTransferClientConnection::OnFileDataEvent::operator ()(UUID &transfer_id, const std::string &file_name, FileTransferClientConnection *transfer_peer) {

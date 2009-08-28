@@ -23,6 +23,8 @@ void FileTransferNode::init() {
 	this->getReceiverManager()->registerHandler(UseCircuitCode_ID, new UseCircuitCodePacketHandler());
 	this->getReceiverManager()->registerHandler(CloseCircuit_ID, new CloseCircuitPacketHandler());
 	this->getReceiverManager()->registerHandler(FileInfo_ID, new FileInfoPacketHandler());
+	this->getReceiverManager()->registerHandler(FileInfoReply_ID, new FileInfoReplyPacketHandler());
+	this->getReceiverManager()->registerHandler(FileData_ID, new FileDataPacketHandler());
 }
 
 ClientConnectionBase *FileTransferNode::createClientConnection(uint32_t circuit_code, const EndPoint *ep) {
@@ -56,7 +58,7 @@ void FileTransferNode::closeConnection(const EndPoint &ep) {
 	this->removeConnection(&ep);
 }
 
-void FileTransferNode::sendFile(const string &file_path, const EndPoint &ep) {
+void FileTransferNode::startSendFile(const string &file_path, const EndPoint &ep) {
 	// send a FileInfoPacket
 	PacketBase *packet = FileTransferPacketFactorySingleton::get().createPacket(FileInfo_ID);
 	FileInfoPacket *file_info_packet = dynamic_cast<FileInfoPacket *>(packet);

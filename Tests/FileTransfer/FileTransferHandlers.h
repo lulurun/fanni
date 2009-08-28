@@ -51,9 +51,9 @@ public:
 		UUID transfer_id = file_info_reply_packet->FileInfo.TransferID.val;
 		string file_name = file_info_reply_packet->FileInfo.Name.c_str();
 
-		DEBUG_LOG("transfer_id: " << transfer_id.toString());
-		DEBUG_LOG("name: " << file_name);
-
+		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
+		// TODO @@@ asset(connection); // !!
+		connection->OnFileInfoReply(transfer_id, file_name, connection);
 		TRACE_LOG("exit");
 	};
 };
