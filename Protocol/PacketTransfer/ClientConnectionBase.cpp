@@ -5,8 +5,6 @@
  *      Author: lulu
  */
 
-#include <ctime>
-
 #include "ClientConnectionBase.h"
 #include "PacketTransferBase.h"
 #include "FileTransferPackets/FileTransferPackets.h"
@@ -20,12 +18,23 @@ static const int MAX_ACK_NUMBER = 250;
 ClientConnectionBase::ClientConnectionBase() {
 	this->circuit_code = 0;
 	this->transfer_peer = NULL;
+	this->updateLastReceived();
 }
 
 ClientConnectionBase::ClientConnectionBase(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase *transfer_peer) :
-	circuit_code(circuit_code), ep(ep), transfer_peer(transfer_peer) {}
+	circuit_code(circuit_code), ep(ep), transfer_peer(transfer_peer) {
+	this->updateLastReceived();
+}
 
-ClientConnectionBase::~ClientConnectionBase() {}
+ClientConnectionBase::~ClientConnectionBase() {
+	for(RESEND_PACKET_MAP_TYPE::iterator it=this->resend_packet_map.begin(); it!=this->resend_packet_map.end(); it++) {
+		delete it->second;
+	}
+}
+
+void ClientConnectionBase::updateLastReceived() {
+	this->last_packet_received = time(NULL);
+}
 
 void ClientConnectionBase::checkACK() {
 	if (this->ack_packet_queue.empty()) return;
@@ -53,7 +62,16 @@ void ClientConnectionBase::checkRESEND() {
 	}
 }
 
+bool ClientConnectionBase::checkAlive() {
+	time_t now = time(NULL);
+	if ((now - this->last_packet_received) > CONNECTION_TIMEOUT) {
+		return true;
+	}
+	return false;
+}
+
 void ClientConnectionBase::processIncomingPacket(const PacketBase *packet) {
+	this->updateLastReceived();
 	if (packet->header.isReliable()) {
 		S_MUTEX_LOCK l;
 		l.lock(&this->ack_lock);

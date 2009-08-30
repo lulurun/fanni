@@ -50,11 +50,17 @@ protected:
 
 	uint64_t period_ns;
 	const OnTimerElapsedHandler *handler;
+	uint32_t check_elapsed_interval_us;
 
 public:
-	TimeOutTaskBase(int milliseconds, const OnTimerElapsedHandler *handler) {
+	TimeOutTaskBase(int milliseconds, const OnTimerElapsedHandler *handler, int check_elapsed_interval = 0) {
 		this->period_ns = milliseconds  * NANOSEC_PER_MILLISEC;
 		this->handler = handler;
+		if (check_elapsed_interval > 0) {
+			this->check_elapsed_interval_us = milliseconds * 1000 / 2 - 10;
+		} else {
+			this->check_elapsed_interval_us = 1000 * 1000;
+		}
 	};
 	~TimeOutTaskBase() {};
 	// from ThreadHandlerBase
@@ -63,7 +69,6 @@ public:
 	virtual void operator()() { this->start(); }
 };
 
-static const uint32_t ELAPSE_CHECK_INTERVAL = 2 * 1000 * 1000; /* microseconds, I am using usleep! */
 class OneTimeTask : public TimeOutTaskBase {
 public:
 	OneTimeTask(int milliseconds, const OnTimerElapsedHandler *handler) :
@@ -80,7 +85,7 @@ public:
 				}
 				break;
 			}
-			::usleep(ELAPSE_CHECK_INTERVAL);
+			::usleep(this->check_elapsed_interval_us);
 		}
 	}
 };
@@ -118,7 +123,7 @@ private:
 				}
 				// TODO @@@ implement stop !!
 			}
-			::usleep(ELAPSE_CHECK_INTERVAL);
+			::usleep(this->check_elapsed_interval_us);
 		}
 	}
 
@@ -134,7 +139,7 @@ private:
 				}
 				// TODO @@@ implement stop !!
 			}
-			::usleep(ELAPSE_CHECK_INTERVAL);
+			::usleep(this->check_elapsed_interval_us);
 		}
 	}
 };

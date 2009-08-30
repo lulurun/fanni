@@ -11,7 +11,7 @@ test_env.Program("file_transfer",
 			"framework_network", "basic", "event",
 			"framework_threads", "pthread", "packets",
 			"log4cxx", "filetransferpackets", "boost_thread-mt",
-			"packet_transfer"],
+			"packet_transfer", "uuid"],
 		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
 		LIBPATH = ["../../lib"],
 		)

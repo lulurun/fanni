@@ -31,7 +31,7 @@ int start_server() {
 	return 0;
 }
 
-int start_client(const string &file_name) {
+int start_client(const string &file_path) {
 	TRACE_LOG("enter");
 	try {
 		FileTransferNode node("0.0.0.0", 0, thread_number);
@@ -39,13 +39,7 @@ int start_client(const string &file_name) {
 		node.start();
 
 		EndPoint connect_to_ep(DEFAULT_ADDR, DEFAULT_PORT);
-		node.openConnection(connect_to_ep);
-
-		node.startSendFile(file_name, connect_to_ep);
-		::sleep(6);
-
-		node.closeConnection(connect_to_ep);
-
+		node.startSendFile(file_path, connect_to_ep);
 		node.join();
 	} catch (ErrorException &e) {
 		ERROR_LOG("ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());

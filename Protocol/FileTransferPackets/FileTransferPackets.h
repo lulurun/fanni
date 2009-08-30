@@ -17,16 +17,19 @@ public:
     class FileInfoBlock : public PacketSerializable {
     public:
         // FileInfoBlock Member List
+        SerializableUUID SenderTransferID;
         SerializableS32 Size;
         SerializableVariable2 Name;
     public:
         FileInfoBlock() {};
         virtual ~FileInfoBlock() {};
         virtual void serialize(PacketBuffer &buffer) const {
+            SenderTransferID.serialize(buffer);
             Size.serialize(buffer);
             Name.serialize(buffer);
         }
         virtual void deserialize(PacketBuffer &buffer) {
+            SenderTransferID.deserialize(buffer);
             Size.deserialize(buffer);
             Name.deserialize(buffer);
         }
@@ -66,18 +69,18 @@ public:
     class FileInfoBlock : public PacketSerializable {
     public:
         // FileInfoBlock Member List
-        SerializableUUID TransferID;
-        SerializableVariable2 Name;
+        SerializableUUID ReceiverTransferID;
+        SerializableUUID SenderTransferID;
     public:
         FileInfoBlock() {};
         virtual ~FileInfoBlock() {};
         virtual void serialize(PacketBuffer &buffer) const {
-            TransferID.serialize(buffer);
-            Name.serialize(buffer);
+            ReceiverTransferID.serialize(buffer);
+            SenderTransferID.serialize(buffer);
         }
         virtual void deserialize(PacketBuffer &buffer) {
-            TransferID.deserialize(buffer);
-            Name.deserialize(buffer);
+            ReceiverTransferID.deserialize(buffer);
+            SenderTransferID.deserialize(buffer);
         }
     };
     // FileInfoReplyPacket Member List
@@ -115,19 +118,19 @@ public:
     class FileDataBlock : public PacketSerializable {
     public:
         // FileDataBlock Member List
-        SerializableUUID TransferID;
+        SerializableUUID ReceiverTransferID;
         SerializableS32 DataNumber;
         SerializableVariable2 Data;
     public:
         FileDataBlock() {};
         virtual ~FileDataBlock() {};
         virtual void serialize(PacketBuffer &buffer) const {
-            TransferID.serialize(buffer);
+            ReceiverTransferID.serialize(buffer);
             DataNumber.serialize(buffer);
             Data.serialize(buffer);
         }
         virtual void deserialize(PacketBuffer &buffer) {
-            TransferID.deserialize(buffer);
+            ReceiverTransferID.deserialize(buffer);
             DataNumber.deserialize(buffer);
             Data.deserialize(buffer);
         }
@@ -206,82 +209,122 @@ public:
     }
 };
 
-// UseCircuitCodePacket
-class UseCircuitCodePacket : public PacketBase {
+// OpenConnectionPacket
+class OpenConnectionPacket : public PacketBase {
 public:
 
     // Block Class List
-    class CircuitCodeBlock : public PacketSerializable {
+    class OpenConnectionBlock : public PacketSerializable {
     public:
-        // CircuitCodeBlock Member List
+        // OpenConnectionBlock Member List
         SerializableU32 Code;
-        SerializableUUID SessionID;
-        SerializableUUID ID;
     public:
-        CircuitCodeBlock() {};
-        virtual ~CircuitCodeBlock() {};
+        OpenConnectionBlock() {};
+        virtual ~OpenConnectionBlock() {};
         virtual void serialize(PacketBuffer &buffer) const {
             Code.serialize(buffer);
-            SessionID.serialize(buffer);
-            ID.serialize(buffer);
         }
         virtual void deserialize(PacketBuffer &buffer) {
             Code.deserialize(buffer);
-            SessionID.deserialize(buffer);
-            ID.deserialize(buffer);
         }
     };
-    // UseCircuitCodePacket Member List
-    CircuitCodeBlock CircuitCode;
+    // OpenConnectionPacket Member List
+    OpenConnectionBlock OpenConnection;
 
 public:
-    UseCircuitCodePacket() {
-        this->setID(UseCircuitCode_ID);
+    OpenConnectionPacket() {
+        this->setID(OpenConnection_ID);
     };
-    virtual ~UseCircuitCodePacket() {};
+    virtual ~OpenConnectionPacket() {};
 
     virtual void serialize(PacketBuffer &buffer) const {
-        CircuitCode.serialize(buffer);
+        OpenConnection.serialize(buffer);
     }
     virtual void deserialize(PacketBuffer &buffer) {
-        CircuitCode.deserialize(buffer);
+        OpenConnection.deserialize(buffer);
     }
     virtual PacketBase *clone() const {
-        return new UseCircuitCodePacket(*this);
+        return new OpenConnectionPacket(*this);
     }
     virtual PacketBase *clone(const PacketBase *packet) const {
-        const UseCircuitCodePacket *UseCircuitCodePacket_packet = dynamic_cast<const UseCircuitCodePacket *>(packet);
-        if (UseCircuitCodePacket_packet == NULL) {
+        const OpenConnectionPacket *OpenConnectionPacket_packet = dynamic_cast<const OpenConnectionPacket *>(packet);
+        if (OpenConnectionPacket_packet == NULL) {
             FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
         }
-        return new UseCircuitCodePacket(*UseCircuitCodePacket_packet);
+        return new OpenConnectionPacket(*OpenConnectionPacket_packet);
     }
 };
 
-// CloseCircuitPacket
-class CloseCircuitPacket : public PacketBase {
+// OpenConnectionReplyPacket
+class OpenConnectionReplyPacket : public PacketBase {
 public:
 
     // Block Class List
-    // CloseCircuitPacket Member List
+    class OpenConnectionReplyBlock : public PacketSerializable {
+    public:
+        // OpenConnectionReplyBlock Member List
+        SerializableU32 Code;
+    public:
+        OpenConnectionReplyBlock() {};
+        virtual ~OpenConnectionReplyBlock() {};
+        virtual void serialize(PacketBuffer &buffer) const {
+            Code.serialize(buffer);
+        }
+        virtual void deserialize(PacketBuffer &buffer) {
+            Code.deserialize(buffer);
+        }
+    };
+    // OpenConnectionReplyPacket Member List
+    OpenConnectionReplyBlock OpenConnectionReply;
 
 public:
-    CloseCircuitPacket() {
-        this->setID(CloseCircuit_ID);
+    OpenConnectionReplyPacket() {
+        this->setID(OpenConnectionReply_ID);
     };
-    virtual ~CloseCircuitPacket() {};
+    virtual ~OpenConnectionReplyPacket() {};
+
+    virtual void serialize(PacketBuffer &buffer) const {
+        OpenConnectionReply.serialize(buffer);
+    }
+    virtual void deserialize(PacketBuffer &buffer) {
+        OpenConnectionReply.deserialize(buffer);
+    }
+    virtual PacketBase *clone() const {
+        return new OpenConnectionReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const OpenConnectionReplyPacket *OpenConnectionReplyPacket_packet = dynamic_cast<const OpenConnectionReplyPacket *>(packet);
+        if (OpenConnectionReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new OpenConnectionReplyPacket(*OpenConnectionReplyPacket_packet);
+    }
+};
+
+// CloseConnectionPacket
+class CloseConnectionPacket : public PacketBase {
+public:
+
+    // Block Class List
+    // CloseConnectionPacket Member List
+
+public:
+    CloseConnectionPacket() {
+        this->setID(CloseConnection_ID);
+    };
+    virtual ~CloseConnectionPacket() {};
 
     virtual void serialize(PacketBuffer &buffer) const {}
     virtual void deserialize(PacketBuffer &buffer) {}
     virtual PacketBase *clone() const {
-        return new CloseCircuitPacket(*this);
+        return new CloseConnectionPacket(*this);
     }
     virtual PacketBase *clone(const PacketBase *packet) const {
-        const CloseCircuitPacket *CloseCircuitPacket_packet = dynamic_cast<const CloseCircuitPacket *>(packet);
-        if (CloseCircuitPacket_packet == NULL) {
+        const CloseConnectionPacket *CloseConnectionPacket_packet = dynamic_cast<const CloseConnectionPacket *>(packet);
+        if (CloseConnectionPacket_packet == NULL) {
             FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
         }
-        return new CloseCircuitPacket(*CloseCircuitPacket_packet);
+        return new CloseConnectionPacket(*CloseConnectionPacket_packet);
     }
 };
 

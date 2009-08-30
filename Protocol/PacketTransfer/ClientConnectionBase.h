@@ -28,22 +28,28 @@ protected:
     uint32_t circuit_code;
 	const EndPoint ep;
 	PacketTransferBase *transfer_peer;
+	time_t last_packet_received;
 
 public:
+	static const int CONNECTION_TIMEOUT = 100; // 100 seconds
+
 	ClientConnectionBase();
 	ClientConnectionBase(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase *transfer_base);
 	virtual ~ClientConnectionBase();
 
 	uint32_t getCircuitCode() const { return this->circuit_code; }
 	const EndPoint &getEndPoint() const { return this->ep; }
-
-	void checkACK();
-	void checkRESEND();
-
-	void processIncomingPacket(const PacketBase *packet);
-	void processOutgoingPacket(const PacketBase *packet);
-
 	void sendPacket(PacketBase *packet);
+
+	void updateLastReceived();
+
+	virtual void checkACK();
+	virtual void checkRESEND();
+	virtual bool checkAlive();
+
+	virtual void processIncomingPacket(const PacketBase *packet);
+	virtual void processOutgoingPacket(const PacketBase *packet);
+
 private:
 	// ACK, RESEND management
 	Mutex resend_lock;

@@ -2,8 +2,9 @@
 	FileInfo Low 154 NotTrusted Unencoded
 	{
 		FileInfo		Single
-		{	Size			S32	}
-		{	Name			Variable	2	}
+		{	SenderTransferID	LLUUID			}
+		{	Size				S32				}
+		{	Name				Variable	2	}
 	}
 }
 
@@ -11,8 +12,8 @@
 	FileInfoReply Low 155 NotTrusted Unencoded
 	{
 		FileInfo		Single
-		{	TransferID		LLUUID	}
-		{	Name			Variable	2	}
+		{	ReceiverTransferID	LLUUID	}
+		{	SenderTransferID	LLUUID	}
 	}
 }
 
@@ -20,7 +21,7 @@
 	FileData High 17 NotTrusted Unencoded
 	{
 		FileData Single
-		{	TransferID	LLUUID	}
+		{	ReceiverTransferID	LLUUID	}
 		{	DataNumber	S32	}
 		{	Data		Variable 2	}
 	}
@@ -36,17 +37,22 @@
 }
 
 {
-	UseCircuitCode Low 3 NotTrusted Unencoded
+	OpenConnection Low 3 NotTrusted Unencoded
 	{
-		CircuitCode		Single
+		OpenConnection		Single
 		{	Code		U32		}
-		{	SessionID	LLUUID	}
-		{	ID			LLUUID	} // agent id
 	}
 }
 
 {
-	CloseCircuit Fixed 0xFFFFFFFD NotTrusted Unencoded
+	OpenConnectionReply Low 4 NotTrusted Unencoded
+	{
+		OpenConnectionReply		Single
+		{	Code		U32		}
+	}
 }
 
+{
+	CloseConnection Low 5 NotTrusted Unencoded
+}
 

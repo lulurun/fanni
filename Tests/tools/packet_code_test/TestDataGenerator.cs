@@ -74,6 +74,7 @@ namespace PacketTest
         static void FileInfo_gen()
         {
             FileInfoPacket packet = new FileInfoPacket();
+                packet.FileInfo.SenderTransferID = DefaultValues.LLUUID;
                 packet.FileInfo.Size = DefaultValues.S32;
                 packet.FileInfo.Name = DefaultValues.Variable2;
 
@@ -83,8 +84,8 @@ namespace PacketTest
         static void FileInfoReply_gen()
         {
             FileInfoReplyPacket packet = new FileInfoReplyPacket();
-                packet.FileInfo.TransferID = DefaultValues.LLUUID;
-                packet.FileInfo.Name = DefaultValues.Variable2;
+                packet.FileInfo.ReceiverTransferID = DefaultValues.LLUUID;
+                packet.FileInfo.SenderTransferID = DefaultValues.LLUUID;
 
             output(packet.ToBytes());
         }
@@ -92,7 +93,7 @@ namespace PacketTest
         static void FileData_gen()
         {
             FileDataPacket packet = new FileDataPacket();
-                packet.FileData.TransferID = DefaultValues.LLUUID;
+                packet.FileData.ReceiverTransferID = DefaultValues.LLUUID;
                 packet.FileData.DataNumber = DefaultValues.S32;
                 packet.FileData.Data = DefaultValues.Variable2;
 
@@ -113,19 +114,25 @@ namespace PacketTest
             output(packet.ToBytes());
         }
         
-        static void UseCircuitCode_gen()
+        static void OpenConnection_gen()
         {
-            UseCircuitCodePacket packet = new UseCircuitCodePacket();
-                packet.CircuitCode.Code = DefaultValues.U32;
-                packet.CircuitCode.SessionID = DefaultValues.LLUUID;
-                packet.CircuitCode.ID = DefaultValues.LLUUID;
+            OpenConnectionPacket packet = new OpenConnectionPacket();
+                packet.OpenConnection.Code = DefaultValues.U32;
 
             output(packet.ToBytes());
         }
         
-        static void CloseCircuit_gen()
+        static void OpenConnectionReply_gen()
         {
-            CloseCircuitPacket packet = new CloseCircuitPacket();
+            OpenConnectionReplyPacket packet = new OpenConnectionReplyPacket();
+                packet.OpenConnectionReply.Code = DefaultValues.U32;
+
+            output(packet.ToBytes());
+        }
+        
+        static void CloseConnection_gen()
+        {
+            CloseConnectionPacket packet = new CloseConnectionPacket();
 
             output(packet.ToBytes());
         }
@@ -138,8 +145,9 @@ namespace PacketTest
             FileInfoReply_gen();
             FileData_gen();
             PacketAck_gen();
-            UseCircuitCode_gen();
-            CloseCircuit_gen();
+            OpenConnection_gen();
+            OpenConnectionReply_gen();
+            CloseConnection_gen();
 
         }
 

@@ -26,6 +26,7 @@ private:
 	SimpleThreadTemplate<Fanni::Network::Event_UDP> *udp_thread;
 	PeriodicTaskThread *check_ACK_timer_thread;
 	PeriodicTaskThread *check_RESEND_timer_thread;
+	PeriodicTaskThread *check_ALIVE_timer_thread;
 	ReceiverManager *receiver_manager;
 	SenderManager *sender_manager;
 
@@ -40,6 +41,9 @@ protected:
 	CLIENT_CONNECTION_MAP_TYPE client_connection_map;
 	Mutex client_connection_map_lock;
 
+	virtual void removeConnection_withnolock(const EndPoint *ep);
+	virtual ClientConnectionBase *getConnection_withnolock(const EndPoint *ep);
+
 public:
 	PacketTransferBase(const std::string &addr, int port, int thread_number);
 	virtual ~PacketTransferBase();
@@ -50,7 +54,7 @@ public:
 	virtual void sendPacket(PacketBase *packet, const EndPoint *ep);
 
 	// Client Connection management
-	virtual void addConnection(uint32_t circuit_code, const EndPoint *ep);
+	virtual ClientConnectionBase* addConnection(uint32_t circuit_code, const EndPoint *ep);
 	virtual void removeConnection(const EndPoint *ep);
 	virtual ClientConnectionBase *getConnection(const EndPoint *ep);
 
@@ -63,6 +67,7 @@ public:
 
 	virtual void checkACK();
 	virtual void checkRESEND();
+	virtual void checkAlive();
 
 };
 

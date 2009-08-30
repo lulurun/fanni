@@ -5,8 +5,8 @@
  *      Author: lulu
  */
 
+#include <list>
 #include "fanni/ThreadTemplate.h"
-
 #include "PacketTransferBase.h"
 
 namespace Fanni {
@@ -27,6 +27,7 @@ public:
 // ACK, RESEND management
 static const int ACK_TIME_OUT = 4000; // 4 seconds
 static const int RESEND_TIME_OUT = 15000; // 15 seconds
+static const int ALIVE_TIME_OUT = 50000; // 50 seconds
 
 class OnTimerElapsedHandler_CheckACK: public OnTimerElapsedHandler {
 	PacketTransferBase *peer;
@@ -40,6 +41,13 @@ class OnTimerElapsedHandler_CheckResend: public OnTimerElapsedHandler {
 public:
 	OnTimerElapsedHandler_CheckResend(PacketTransferBase *peer) : peer(peer) {}
 	virtual void operator()() const { this->peer->checkRESEND(); }
+};
+
+class OnTimerElapsedHandler_CheckAlive: public OnTimerElapsedHandler {
+	PacketTransferBase *peer;
+public:
+	OnTimerElapsedHandler_CheckAlive(PacketTransferBase *peer) : peer(peer) {}
+	virtual void operator()() const { this->peer->checkAlive(); }
 };
 
 }
@@ -79,7 +87,11 @@ void PacketTransferBase::init() {
 		OnTimerElapsedHandler_CheckResend *check_resend_handler = new OnTimerElapsedHandler_CheckResend(this);
 		PeriodicTask *check_resend_timer = new PeriodicTask(RESEND_TIME_OUT, check_resend_handler);
 		this->check_RESEND_timer_thread = new PeriodicTaskThread(check_resend_timer);
-	}
+
+		OnTimerElapsedHandler_CheckAlive *check_alive_handler = new OnTimerElapsedHandler_CheckAlive(this);
+		PeriodicTask *check_alive_timer = new PeriodicTask(ALIVE_TIME_OUT, check_alive_handler);
+		this->check_ALIVE_timer_thread = new PeriodicTaskThread(check_alive_timer);
+}
 	TRACE_LOG("exit");
 }
 
@@ -91,6 +103,7 @@ void PacketTransferBase::start() {
 
 	this->check_ACK_timer_thread->kick();
 	this->check_RESEND_timer_thread->kick();
+	this->check_ALIVE_timer_thread->kick();
 	TRACE_LOG("exit");
 }
 
@@ -106,18 +119,23 @@ void  PacketTransferBase::sendPacket(PacketBase *packet, const EndPoint *ep) {
 
 // ================
 // PacketTransfer Management
-void PacketTransferBase::addConnection(uint32_t circuit_code, const EndPoint *ep) {
+ClientConnectionBase* PacketTransferBase::addConnection(uint32_t circuit_code, const EndPoint *ep) {
 	DEBUG_LOG("add connection: " << ep->getAddrStr() << ":" << ep->getPort());
 	ClientConnectionBase *client_connection = this->createClientConnection(circuit_code, ep);
 	S_MUTEX_LOCK l;
 	l.lock(&this->client_connection_map_lock);
 	client_connection_map[ep->getIPv4HashKey()] = client_connection;
+	return client_connection;
 }
 
 ClientConnectionBase *PacketTransferBase::getConnection(const EndPoint *ep) {
-	uint64_t ep_key = ep->getIPv4HashKey();
 	S_MUTEX_LOCK l;
 	l.lock(&this->client_connection_map_lock);
+	return this->getConnection_withnolock(ep);
+}
+
+ClientConnectionBase *PacketTransferBase::getConnection_withnolock(const EndPoint *ep) {
+	uint64_t ep_key = ep->getIPv4HashKey();
 	CLIENT_CONNECTION_MAP_TYPE::iterator it = this->client_connection_map.find(ep_key);
 	if (it == this->client_connection_map.end()) {
 		// not found
@@ -128,9 +146,13 @@ ClientConnectionBase *PacketTransferBase::getConnection(const EndPoint *ep) {
 }
 
 void PacketTransferBase::removeConnection(const EndPoint *ep) {
-	DEBUG_LOG("remove connection: " << ep->getAddrStr() << ":" << ep->getPort());
 	S_MUTEX_LOCK l;
 	l.lock(&this->client_connection_map_lock);
+	this->removeConnection_withnolock(ep);
+}
+
+void PacketTransferBase::removeConnection_withnolock(const EndPoint *ep) {
+	DEBUG_LOG("remove connection: " << ep->getAddrStr() << ":" << ep->getPort());
 	ClientConnectionBase *client_connection = this->getConnection(ep);
 	if (client_connection != NULL) {
 		this->client_connection_map.erase(ep->getIPv4HashKey());
@@ -140,7 +162,6 @@ void PacketTransferBase::removeConnection(const EndPoint *ep) {
 
 void PacketTransferBase::checkACK() {
 	TRACE_LOG("enter");
-	DEBUG_LOG("checking ACK for " << this->client_connection_map.size() << " connections");
 	for (CLIENT_CONNECTION_MAP_TYPE::iterator it = this->client_connection_map.begin();
 		it != this->client_connection_map.end(); it++) {
 		it->second->checkACK();
@@ -150,10 +171,31 @@ void PacketTransferBase::checkACK() {
 
 void PacketTransferBase::checkRESEND() {
 	TRACE_LOG("enter");
-	DEBUG_LOG("checking RESEND for " << this->client_connection_map.size() << " connections");
 	for (CLIENT_CONNECTION_MAP_TYPE::iterator it = this->client_connection_map.begin();
 		it != this->client_connection_map.end(); it++) {
 		it->second->checkRESEND();
+	}
+	TRACE_LOG("exit");
+}
+
+void PacketTransferBase::checkAlive() {
+	TRACE_LOG("enter");
+	DEBUG_LOG("checking Alive for " << this->client_connection_map.size() << " connections");
+	list<const EndPoint *> remove_connection_list;
+	S_MUTEX_LOCK l;
+	l.lock(&this->client_connection_map_lock);
+	for (CLIENT_CONNECTION_MAP_TYPE::iterator it = this->client_connection_map.begin();
+		it != this->client_connection_map.end(); it++) {
+		if (it->second->checkAlive()) {
+			remove_connection_list.push_back(&(it->second->getEndPoint()));
+		}
+	}
+	if (remove_connection_list.size() > 0) {
+		INFO_LOG("remove " << remove_connection_list.size() << " client connection");
+		for (list<const EndPoint *>::iterator it = remove_connection_list.begin();
+			it != remove_connection_list.end(); it++) {
+			this->removeConnection_withnolock(*it);
+		}
 	}
 	TRACE_LOG("exit");
 }

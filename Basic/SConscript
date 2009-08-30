@@ -3,6 +3,7 @@ Import("env")
 files = ["ExceptionBase.cpp",
 		 "Exception.cpp",
 		 "UUID.cpp",
+		 "FanniUUID.cpp",
 		 ]
 
 env.SharedLibrary("../lib/basic",

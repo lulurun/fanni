@@ -8,6 +8,7 @@
 #ifndef PACKETHANDLERS_H_
 #define PACKETHANDLERS_H_
 
+#include <cassert>
 #include "fanni/UUID.h"
 #include "fanni/Logger.h"
 #include "FileTransferPackets/FileTransferPackets.h"
@@ -20,6 +21,41 @@
 namespace Fanni {
 namespace Tests {
 
+class OpenConnectionPacketHandler : public PacketHandlerBase {
+public:
+	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const {
+		const OpenConnectionPacket *open_conn_packet = dynamic_cast<const OpenConnectionPacket *> (packet);
+		assert(open_conn_packet);
+		transfer_peer->addConnection(open_conn_packet->OpenConnection.Code, ep);
+		// send reply
+		OpenConnectionReplyPacket *reply_packet = dynamic_cast<OpenConnectionReplyPacket *>(FileTransferPacketFactorySingleton::get().createPacket(OpenConnectionReply_ID));
+		assert(reply_packet);
+		reply_packet->OpenConnectionReply.Code = open_conn_packet->OpenConnection.Code;
+		transfer_peer->sendPacket(reply_packet, ep);
+		delete packet;
+	};
+};
+
+class OpenConnectionReplyPacketHandler : public PacketHandlerBase {
+public:
+	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const {
+		const OpenConnectionReplyPacket *open_conn_reply_packet = dynamic_cast<const OpenConnectionReplyPacket *> (packet);
+		assert(open_conn_reply_packet);
+		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->addConnection(open_conn_reply_packet->OpenConnectionReply.Code, ep));
+		assert(connection);
+		connection->OnOpenConnectionReply(connection);
+		delete packet;
+	};
+};
+
+class CloseConnectionPacketHandler : public PacketHandlerBase {
+public:
+	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const {
+		delete packet;
+		transfer_peer->removeConnection(ep);
+	};
+};
+
 class FileInfoPacketHandler : public PacketHandlerBase {
 public:
 	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const {
@@ -29,12 +65,10 @@ public:
 			ERROR_LOG("unexpected packet type");
 			return;
 		}
-		uint32_t file_size = file_info_packet->FileInfo.Size;
-		string file_name = file_info_packet->FileInfo.Name.c_str();
-
 		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
 		// TODO @@@ asset(connection); // !!
-		connection->OnFileInfo(file_size, file_name, connection);
+		connection->OnFileInfo(file_info_packet->FileInfo.Size, file_info_packet->FileInfo.Name.c_str(), file_info_packet->FileInfo.SenderTransferID.val, connection);
+		delete packet;
 		TRACE_LOG("exit");
 	};
 };
@@ -48,12 +82,14 @@ public:
 			ERROR_LOG("unexpected packet type");
 			return;
 		}
-		UUID transfer_id = file_info_reply_packet->FileInfo.TransferID.val;
-		string file_name = file_info_reply_packet->FileInfo.Name.c_str();
-
+		UUID receiver_transfer_id = file_info_reply_packet->FileInfo.ReceiverTransferID.val;
+		UUID sender_transfer_id = file_info_reply_packet->FileInfo.SenderTransferID.val;
+		DEBUG_LOG("receiver_transfer_id: " << receiver_transfer_id.toString());
+		DEBUG_LOG("sender_transfer_id: " << sender_transfer_id.toString());
 		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
-		// TODO @@@ asset(connection); // !!
-		connection->OnFileInfoReply(transfer_id, file_name, connection);
+		assert(connection);
+		connection->OnFileInfoReply(receiver_transfer_id, sender_transfer_id, connection);
+		delete packet;
 		TRACE_LOG("exit");
 	};
 };
@@ -67,32 +103,8 @@ public:
 			ERROR_LOG("unexpected packet type");
 			return;
 		}
+		delete packet;
 		TRACE_LOG("exit");
-	};
-};
-
-class UseCircuitCodePacketHandler : public PacketHandlerBase {
-public:
-	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const {
-		const UseCircuitCodePacket *circuit_code_packet = dynamic_cast<const UseCircuitCodePacket *> (packet);
-		if (circuit_code_packet == NULL) {
-			ERROR_LOG("unexpected packet type");
-			return;
-		}
-		uint32_t circuit_code = circuit_code_packet->CircuitCode.Code;
-		transfer_peer->addConnection(circuit_code, ep);
-	};
-};
-
-class CloseCircuitPacketHandler : public PacketHandlerBase {
-public:
-	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const {
-		const CloseCircuitPacket *close_circuit_packet = dynamic_cast<const CloseCircuitPacket *> (packet);
-		if (close_circuit_packet == NULL) {
-			ERROR_LOG("unexpected packet type");
-			return;
-		}
-		transfer_peer->removeConnection(ep);
 	};
 };
 

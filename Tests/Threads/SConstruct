@@ -3,7 +3,7 @@ Import("test_env")
 
 test_env.Program("test_thread_manager",
 		"test_thread_manager.cpp",
-		LIBS = ["framework_threads", "basic", "pthread", "log4cxx"],
+		LIBS = ["framework_threads", "basic", "pthread", "log4cxx", "uuid"],
 		CPPPATH = ["../../Framework", "../../include"],
 		LIBPATH = ["../../lib"],
 		)

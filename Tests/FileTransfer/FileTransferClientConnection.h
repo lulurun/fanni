@@ -18,14 +18,16 @@ namespace Fanni {
 namespace Tests {
 
 struct FileTransferStatus {
-	uint32_t file_size;
+	size_t file_size;
 	const std::string file_name;
-	UUID TransferID;
-	uint32_t transfered_size;
+	UUID ReceiverTransferID;
+	UUID SenderTransferID;
+	size_t transfered_size;
 	time_t start_time;
-	FileTransferStatus(uint32_t file_size, const std::string file_name) :
+	FileTransferStatus(uint32_t file_size, const std::string file_name, const UUID &receiver_transfer_id, const UUID &sender_transfer_id) :
 		file_size(file_size), file_name(file_name){
-		this->TransferID = UUID::New();
+		this->ReceiverTransferID = receiver_transfer_id;
+		this->SenderTransferID = sender_transfer_id;
 		this->transfered_size = 0;
 		this->start_time = ::time(NULL);
 	}
@@ -34,27 +36,39 @@ struct FileTransferStatus {
 class FileTransferClientConnection : public ClientConnectionBase {
 private:
 	typedef std::tr1::unordered_map<std::string, FileTransferStatus *> FILE_TRANSFER_STATUS_MAP_TYPE;
-	FILE_TRANSFER_STATUS_MAP_TYPE file_transfer_status_map;
-	Mutex file_transfer_status_map_lock;
+	FILE_TRANSFER_STATUS_MAP_TYPE receive_transfer_status_map;
+	Mutex receive_transfer_status_map_lock;
+	FILE_TRANSFER_STATUS_MAP_TYPE send_transfer_status_map;
+	Mutex send_transfer_status_map_lock;
 
+	struct OnOpenConnectionReplyEvent {
+		void operator()(FileTransferClientConnection *connection);
+	};
 	struct OnFileInfoEvent {
-		void operator()(uint32_t file_size, const std::string &file_name, FileTransferClientConnection *connection);
+		void operator()(uint32_t file_size, const std::string &file_name, const UUID &sender_tranfer_id, FileTransferClientConnection *connection);
 	};
 	struct OnFileInfoReplyEvent {
-		void operator()(UUID &transfer_id, const std::string &file_name, FileTransferClientConnection *connection);
+		void operator()(const UUID &receiver_transfer_id, const UUID &sender_transfer_id, FileTransferClientConnection *connection);
 	};
 	struct OnFileDataEvent {
-		void operator()(UUID &transfer_id, const std::string &file_name, FileTransferClientConnection *connection);
+		void operator()(const UUID &receiver_transfer_id, const std::string &file_name, FileTransferClientConnection *connection);
 	};
 	struct OnFileTransferCompleteEvent  {
-		void operator()(UUID &transfer_id, FileTransferClientConnection *connection);
+		void operator()(const UUID &sender_transfer_id, FileTransferClientConnection *connection);
 	};
 
-	void addFileTransfer(FileTransferStatus *status);
+	void addReceiveFileTransfer(FileTransferStatus *status);
+	FileTransferStatus *getReceiveFileTransfer(const UUID &receiver_transfer_id);
+	void addSendFileTransfer(FileTransferStatus *status);
+	FileTransferStatus *getSendFileTransfer(const UUID &sender_transfer_id);
+
 public:
+	static const size_t FILE_PART_SIZE = 1200;
+
 	FileTransferClientConnection(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase *transfer_base);
 	virtual ~FileTransferClientConnection();
 
+	OnOpenConnectionReplyEvent OnOpenConnectionReply;
 	OnFileInfoEvent OnFileInfo;
 	OnFileInfoReplyEvent OnFileInfoReply;
 	OnFileDataEvent OnFileData;

@@ -5,7 +5,16 @@ test_env.Program("test_timer",
 		[
 		"timer.cpp",
 		],
-		LIBS = ["framework_network", "basic", "event", "framework_threads", "pthread", "log4cxx"],
+		LIBS = ["framework_network", "basic", "event", "framework_threads", "pthread", "log4cxx", "uuid"],
+		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
+		LIBPATH = ["../../lib"],
+		)
+
+test_env.Program("test_uuid",
+		[
+		"UUID.cpp",
+		],
+		LIBS = ["basic", "pthread", "log4cxx", "boost_thread-mt", "uuid"],
 		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
 		LIBPATH = ["../../lib"],
 		)

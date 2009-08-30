@@ -1,112 +1,276 @@
-#include <cctype> // for isxdigit ...
-#include <cstring> // for isxdigit ...
+/*
+ **  OSSP uuid - Universally Unique Identifier
+ **  Copyright (c) 2004-2008 Ralf S. Engelschall <rse@engelschall.com>
+ **  Copyright (c) 2004-2008 The OSSP Project <http://www.ossp.org/>
+ **
+ **  This file is part of OSSP uuid, a library for the generation
+ **  of UUIDs which can found at http://www.ossp.org/pkg/lib/uuid/
+ **
+ **  Permission to use, copy, modify, and distribute this software for
+ **  any purpose with or without fee is hereby granted, provided that
+ **  the above copyright notice and this permission notice appear in all
+ **  copies.
+ **
+ **  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ **  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ **  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ **  IN NO EVENT SHALL THE AUTHORS AND COPYRIGHT HOLDERS AND THEIR
+ **  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ **  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ **  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ **  USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ **  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ **  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ **  OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ **  SUCH DAMAGE.
+ **
+ **  uuid++.cc: library C++ API implementation
+ */
+
+#include <string.h>
+#include <stdarg.h>
 
 #include "fanni/UUID.h"
-#include "fanni/Exception.h"
 
-// TODO @@@ temporary for UUID::New
-#include <cstdlib>
-#include <ctime>
-
-using namespace std;
-using namespace Fanni;
-
-// constructor
-UUID::UUID(){
-	::memset(this->data, 0, UUID_SIZE);
+/*  standard constructor */
+uuid::uuid() {
+	uuid_rc_t rc;
+	if ((rc = uuid_create(&ctx)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
 }
 
-UUID::UUID(const UUID &uuid) {
-	::memcpy(this->data, uuid.data, UUID_SIZE);
+/*  copy constructor */
+uuid::uuid(const uuid &obj) {
+	/* Notice: the copy constructor is the same as the assignment
+	 operator (with the object as the argument) below, except that
+	 (1) no check for self-assignment is required, (2) no existing
+	 internals have to be destroyed and (3) no return value is given back. */
+	uuid_rc_t rc;
+	if ((rc = uuid_clone(obj.ctx, &ctx)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return;
 }
 
-UUID::UUID(const UUID_DATA_TYPE &uuid) {
-	::memcpy(this->data, uuid, UUID_SIZE);
+/*  extra constructor via C API object */
+uuid::uuid(const uuid_t *obj) {
+	uuid_rc_t rc;
+	if (obj == NULL)
+		throw uuid_error_t(UUID_RC_ARG);
+	if ((rc = uuid_clone(obj, &ctx)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return;
 }
 
-UUID::UUID(const std::string &data) {
-	this->parse(data);
+/*  extra constructor via binary representation */
+uuid::uuid(const void *bin) {
+	uuid_rc_t rc;
+	if (bin == NULL)
+		throw uuid_error_t(UUID_RC_ARG);
+	if ((rc = uuid_create(&ctx)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	import(bin);
+	return;
 }
 
-UUID::~UUID(){};
-
-// operator
-bool UUID::operator==(const UUID &uuid) {
-	return ::memcmp(this->data, uuid.data, UUID_SIZE) ? false : true;
+/*  extra constructor via string representation */
+uuid::uuid(const char *str) {
+	uuid_rc_t rc;
+	if (str == NULL)
+		throw uuid_error_t(UUID_RC_ARG);
+	if ((rc = uuid_create(&ctx)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	import(str);
+	return;
 }
 
-UUID::operator const UUID_DATA_TYPE&() const {
-	return this->data;
+/*  standard destructor */
+uuid::~uuid() {
+	uuid_destroy(ctx);
+	return;
 }
 
-UUID::operator unsigned char *(){
-	return &this->data[0];
+/*  assignment operator: import of other C++ API object */
+uuid &uuid::operator=(const uuid &obj) {
+	uuid_rc_t rc;
+	if (this == &obj)
+		return *this;
+	if ((rc = uuid_destroy(ctx)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	if ((rc = uuid_clone(obj.ctx, &ctx)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return *this;
 }
 
-UUID::operator std::string() {
-	return this->toString();
+/*  assignment operator: import of other C API object */
+uuid &uuid::operator=(const uuid_t *obj) {
+	uuid_rc_t rc;
+	if (obj == NULL)
+		throw uuid_error_t(UUID_RC_ARG);
+	if ((rc = uuid_clone(obj, &ctx)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return *this;
 }
 
-
-// member function
-const string UUID::toString() const {
-	static const char *fmt_uuid_string = "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x";
-	char out_str[UUID_STRING_SIZE];
-	::snprintf(out_str, UUID_STRING_SIZE, fmt_uuid_string,
-			this->data[0], this->data[1], this->data[2], this->data[3],
-			this->data[4], this->data[5], this->data[6], this->data[7],
-			this->data[8], this->data[9], this->data[10], this->data[11],
-			this->data[12], this->data[13], this->data[14], this->data[15]);
-	string out(out_str);
-	return out;
-};
-
-void remove_string(string &s, const string& p) {
-	size_t n = p.length();
-	for(size_t i=s.find(p); i!=string::npos; i=s.find(p))
-		s.erase(i, n);
+/*  assignment operator: import of binary representation */
+uuid &uuid::operator=(const void *bin) {
+	if (bin == NULL)
+		throw uuid_error_t(UUID_RC_ARG);
+	import(bin);
+	return *this;
 }
 
-void UUID::parse(const std::string &data) {
-	string parse_data = data;
-	remove_string(parse_data, "-");
-	if (parse_data.size() != UUID_STRING_SIZE) {
-		ErrorException::throw_exception(Fanni::EXP_UUID, EXP_PRE_MSG, "bad uuid string format: size");
-	}
-	// check "isxdigit"
-	const char *cp = parse_data.c_str();
-	for (size_t i=0; i < UUID_STRING_SIZE; i++,cp++) {
-		if (!isxdigit(*cp)) {
-			ErrorException::throw_exception(Fanni::EXP_UUID, EXP_PRE_MSG, "bad uuid string format: isxdigit");
-		}
-	}
-	// copy
-	size_t i=0;
-	const char *data_ptr = parse_data.c_str();
-	while(i<UUID_SIZE) {
-		char c1 = *data_ptr;
-		data_ptr++;
-		char c2 = *data_ptr;
-		data_ptr++;
-		this->data[i] = (c1 << 4) + c2;
-		i++;
-	}
+/*  assignment operator: import of string representation */
+uuid &uuid::operator=(const char *str) {
+	if (str == NULL)
+		throw uuid_error_t(UUID_RC_ARG);
+	import(str);
+	return *this;
 }
 
-const UUID UUID::Zero() {
-	UUID uuid;
-	return uuid;
+/*  method: clone object */
+uuid uuid::clone(void) {
+	return new uuid(this);
 }
 
+/*  method: loading existing UUID by name */
+void uuid::load(const char *name) {
+	uuid_rc_t rc;
+	if (name == NULL)
+		throw uuid_error_t(UUID_RC_ARG);
+	if ((rc = uuid_load(ctx, name)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return;
+}
 
-const UUID UUID::New() {
-	// TODO @@@ fix me first - use real UUID !!!
-	srand(time(NULL));
-	UUID_DATA_TYPE _uuid;
-	for(size_t i=0; i<UUID_SIZE; i++) {
-		_uuid[i] = rand() % 256;
-	}
-	UUID ret(_uuid);
-	return ret;
+/*  method: making new UUID one from scratch */
+void uuid::make(unsigned int mode, ...) {
+	uuid_rc_t rc;
+	va_list ap;
+
+	va_start(ap, mode);
+	if ((mode & UUID_MAKE_V3) || (mode & UUID_MAKE_V5)) {
+		const uuid *ns = (const uuid *) va_arg(ap, const uuid *);
+		const char *name = (const char *) va_arg(ap, char *);
+		if (ns == NULL || name == NULL)
+			throw uuid_error_t(UUID_RC_ARG);
+		rc = uuid_make(ctx, mode, ns->ctx, name);
+	} else
+		rc = uuid_make(ctx, mode);
+	va_end(ap);
+	if (rc != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return;
+}
+
+/*  method: comparison for Nil UUID */
+int uuid::isnil(void) {
+	uuid_rc_t rc;
+	int rv;
+
+	if ((rc = uuid_isnil(ctx, &rv)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return rv;
+}
+
+/*  method: comparison against other object */
+int uuid::compare(const uuid &obj) {
+	uuid_rc_t rc;
+	int rv;
+
+	if ((rc = uuid_compare(ctx, obj.ctx, &rv)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return rv;
+}
+
+/*  method: comparison for equality */
+int uuid::operator==(const uuid &obj) {
+	return (compare(obj) == 0);
+}
+
+/*  method: comparison for inequality */
+int uuid::operator!=(const uuid &obj) {
+	return (compare(obj) != 0);
+}
+
+/*  method: comparison for lower-than */
+int uuid::operator<(const uuid &obj) {
+	return (compare(obj) < 0);
+}
+
+/*  method: comparison for lower-than-or-equal */
+int uuid::operator<=(const uuid &obj) {
+	return (compare(obj) <= 0);
+}
+
+/*  method: comparison for greater-than */
+int uuid::operator>(const uuid &obj) {
+	return (compare(obj) > 0);
+}
+
+/*  method: comparison for greater-than-or-equal */
+int uuid::operator>=(const uuid &obj) {
+	return (compare(obj) >= 0);
+}
+
+/*  method: import binary representation */
+void uuid::import(const void *bin) {
+	uuid_rc_t rc;
+	if ((rc = uuid_import(ctx, UUID_FMT_BIN, bin, UUID_LEN_BIN)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return;
+}
+
+/*  method: import string or single integer value representation */
+void uuid::import(const char *str) {
+	uuid_rc_t rc;
+	if ((rc = uuid_import(ctx, UUID_FMT_STR, str, UUID_LEN_STR)) != UUID_RC_OK)
+		if ((rc = uuid_import(ctx, UUID_FMT_SIV, str, UUID_LEN_SIV))
+				!= UUID_RC_OK)
+			throw uuid_error_t(rc);
+	return;
+}
+
+/*  method: export binary representation */
+void *uuid::binary(void) const {
+	uuid_rc_t rc;
+	void *bin = NULL;
+	if ((rc = uuid_export(ctx, UUID_FMT_BIN, &bin, NULL)) != UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return bin;
+}
+
+/*  method: export string representation */
+char *uuid::string(void) const {
+	uuid_rc_t rc;
+	char *str = NULL;
+	if ((rc = uuid_export(ctx, UUID_FMT_STR, (void **) &str, NULL))
+			!= UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return str;
+}
+
+/*  method: export single integer value representation */
+char *uuid::integer(void) const {
+	uuid_rc_t rc;
+	char *str = NULL;
+	if ((rc = uuid_export(ctx, UUID_FMT_SIV, (void **) &str, NULL))
+			!= UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return str;
+}
+
+/*  method: export textual summary representation */
+char *uuid::summary(void) const {
+	uuid_rc_t rc;
+	char *txt = NULL;
+	if ((rc = uuid_export(ctx, UUID_FMT_TXT, (void **) &txt, NULL))
+			!= UUID_RC_OK)
+		throw uuid_error_t(rc);
+	return txt;
+}
+
+/*  method: return library version */
+unsigned long uuid::version(void) const {
+	return uuid_version();
 }
 
