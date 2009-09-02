@@ -10,6 +10,7 @@
 
 #include "fanni/ThreadTemplate.h"
 #include "fanni/Timer.h"
+#include "Threads/SeqGenerator.h"
 #include "Network/Event_UDP.h"
 #include "Threads/ThreadWorker.h"
 #include "Threads/ThreadManager.h"
@@ -29,6 +30,8 @@ private:
 	PeriodicTaskThread *check_ALIVE_timer_thread;
 	ReceiverManager *receiver_manager;
 	SenderManager *sender_manager;
+
+	SequenceGenerator *seq_gen;
 
 protected:
 	Fanni::Network::Event_UDP *udp_server;
@@ -62,8 +65,8 @@ public:
 	virtual bool ignoreInProcessIncomingPacket(PacketHeader::PACKET_ID_TYPE packet_id) = 0;
 
 	// Reliable Packet Transfer
-	virtual void processIncomingPacket(const PacketBase *packet, const EndPoint *ep);
-	virtual void processOutgoingPacket(const PacketBase *packet, const EndPoint *ep);
+	virtual void processIncomingPacket(PacketBase *packet, const EndPoint *ep);
+	virtual void processOutgoingPacket(PacketBase *packet, const EndPoint *ep);
 
 	virtual void checkACK();
 	virtual void checkRESEND();

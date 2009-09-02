@@ -35,14 +35,14 @@ FileTransferClientConnection::~FileTransferClientConnection() {
 
 void FileTransferClientConnection::addReceiveFileTransfer(FileTransferStatus *status) {
 	S_MUTEX_LOCK l;
-	l.lock(&this->receive_transfer_status_map_lock);
-	this->receive_transfer_status_map[status->ReceiverTransferID.toString()] = status;
+	l.lock(&this->receive_transfer_status_map.getMutex());
+	this->receive_transfer_status_map[status->getReceiverTransferID().toString()] = status;
 }
 
 FileTransferStatus *FileTransferClientConnection::getReceiveFileTransfer(const UUID &receiver_transfer_id) {
 	S_MUTEX_LOCK l;
-	l.lock(&this->receive_transfer_status_map_lock);
-	FILE_TRANSFER_STATUS_MAP_TYPE::iterator it = this->receive_transfer_status_map.find(receiver_transfer_id.toString());
+	l.lock(&this->receive_transfer_status_map.getMutex());
+	LOCKABLE_FILE_TRANSFER_STATUS_MAP_TYPE::iterator it = this->receive_transfer_status_map.find(receiver_transfer_id.toString());
 	if (it == this->receive_transfer_status_map.end()) {
 		// not found
 		return NULL;
@@ -53,16 +53,16 @@ FileTransferStatus *FileTransferClientConnection::getReceiveFileTransfer(const U
 
 void FileTransferClientConnection::addSendFileTransfer(FileTransferStatus *status) {
 	S_MUTEX_LOCK l;
-	l.lock(&this->send_transfer_status_map_lock);
-	TRACE_LOG("adding sender transfer id: " << status->SenderTransferID.toString());
-	this->send_transfer_status_map[status->SenderTransferID.toString()] = status;
+	l.lock(&this->send_transfer_status_map.getMutex());
+	TRACE_LOG("adding sender transfer id: " << status->getSenderTransferID().toString());
+	this->send_transfer_status_map[status->getSenderTransferID().toString()] = status;
 }
 
 FileTransferStatus *FileTransferClientConnection::getSendFileTransfer(const UUID &sender_transfer_id) {
 	S_MUTEX_LOCK l;
-	l.lock(&this->send_transfer_status_map_lock);
+	l.lock(&this->send_transfer_status_map.getMutex());
 	TRACE_LOG("getting sender transfer id: " << sender_transfer_id.toString());
-	FILE_TRANSFER_STATUS_MAP_TYPE::iterator it = this->send_transfer_status_map.find(sender_transfer_id.toString());
+	LOCKABLE_FILE_TRANSFER_STATUS_MAP_TYPE::iterator it = this->send_transfer_status_map.find(sender_transfer_id.toString());
 	if (it == this->send_transfer_status_map.end()) {
 		// not found
 		return NULL;
@@ -83,9 +83,9 @@ void FileTransferClientConnection::OnOpenConnectionReplyEvent::operator ()(FileT
 	// send a FileInfoPacket
 	PacketBase *packet = FileTransferPacketFactorySingleton::get().createPacket(FileInfo_ID);
 	FileInfoPacket *file_info_packet = dynamic_cast<FileInfoPacket *>(packet);
-	file_info_packet->FileInfo.SenderTransferID = status->SenderTransferID;
-	file_info_packet->FileInfo.Size = status->file_size;
-	PacketBuffer buffer(reinterpret_cast<const unsigned char*>(status->file_name.c_str()), status->file_name.size());
+	file_info_packet->FileInfo.SenderTransferID = status->getSenderTransferID();
+	file_info_packet->FileInfo.Size = status->getFileSize();
+	PacketBuffer buffer(reinterpret_cast<const unsigned char*>(status->getFileName().c_str()), status->getFileName().size());
 	file_info_packet->FileInfo.Name = buffer;
 	connection->sendPacket(file_info_packet);
 }
@@ -98,8 +98,8 @@ void FileTransferClientConnection::OnFileInfoEvent::operator ()(uint32_t file_si
 	// send reply packet
 	PacketBase *packet = FileTransferPacketFactorySingleton::get().createPacket(FileInfoReply_ID);
 	FileInfoReplyPacket *file_info_reply_packet = dynamic_cast<FileInfoReplyPacket *>(packet);
-	file_info_reply_packet->FileInfo.ReceiverTransferID = status->ReceiverTransferID;
-	file_info_reply_packet->FileInfo.SenderTransferID = status->SenderTransferID;
+	file_info_reply_packet->FileInfo.ReceiverTransferID = status->getReceiverTransferID();
+	file_info_reply_packet->FileInfo.SenderTransferID = status->getSenderTransferID();
 	connection->sendPacket(file_info_reply_packet);
 	TRACE_LOG("exit");
 }
@@ -112,18 +112,20 @@ void FileTransferClientConnection::OnFileInfoReplyEvent::operator ()(const UUID 
 		ERROR_LOG( "can not find file transfer status for " << sender_transfer_id.toString());
 		return;
 	}
-
-	ifstream fs(status->file_name.c_str(), ios::binary);
+	// update receiver transfer id
+	status->setReceiverTransferID(receiver_transfer_id);
+	// read file , send
+	ifstream fs(status->getFileName().c_str(), ios::binary);
 	if (fs.fail()) {
-		ERROR_LOG( "unable to open file for reading" << status->file_name);
+		ERROR_LOG( "unable to open file for reading" << status->getFileName());
 		return;
 	}
 
-	INFO_LOG("start transferring file: " << status->file_name);
-	size_t total_size = status->file_size;
+	INFO_LOG("start transferring file: " << status->getFileName() << " " << status->getFileSize());
+	size_t total_size = status->getFileSize();
 	size_t left_size = total_size;
 	int data_number = 0;
-	while(left_size) {
+	while(left_size > 0) {
 		int read_size = left_size > FILE_PART_SIZE ? FILE_PART_SIZE : left_size;
 		PacketBuffer buffer;
 		fs.read(reinterpret_cast<char*>(buffer.getBuffer()), read_size);
@@ -133,9 +135,11 @@ void FileTransferClientConnection::OnFileInfoReplyEvent::operator ()(const UUID 
 		buffer.setLength(fs.gcount());
 		// send file data packet
 		FileDataPacket *packet = dynamic_cast<FileDataPacket *>(FileTransferPacketFactorySingleton::get().createPacket(FileData_ID));
-		packet->FileData.ReceiverTransferID = status->ReceiverTransferID;
+		packet->FileData.ReceiverTransferID = status->getReceiverTransferID();
 		packet->FileData.DataNumber = data_number++;
 		packet->FileData.Data = buffer;
+		packet->setFlag(PacketHeader::FLAG_RELIABLE);
+		connection->sendPacket(packet);
 		left_size -= read_size;
 	}
 	fs.close();
@@ -143,8 +147,15 @@ void FileTransferClientConnection::OnFileInfoReplyEvent::operator ()(const UUID 
 	TRACE_LOG("exit");
 }
 
-void FileTransferClientConnection::OnFileDataEvent::operator ()(const UUID &receiver_transfer_id, const std::string &file_name, FileTransferClientConnection *connection) {
-	;
+void FileTransferClientConnection::OnFileDataEvent::operator ()(const UUID &receiver_transfer_id, int data_number, const vector<unsigned char> &data_buf, FileTransferClientConnection *connection) {
+	FileTransferStatus *status = connection->getReceiveFileTransfer(receiver_transfer_id);
+	if (status == NULL) {
+		ERROR_LOG("unknown transfer id: " << receiver_transfer_id.toString());
+		return;
+	}
+	if (status->update(data_number, &data_buf[0], data_buf.size())) {
+		INFO_LOG("TransferComplete: " << status->getFileName() << " " << status->getReceiverTransferID().toString());
+	}
 }
 
 void FileTransferClientConnection::OnFileTransferCompleteEvent::operator ()(const UUID &sender_transfer_id, FileTransferClientConnection *connection) {

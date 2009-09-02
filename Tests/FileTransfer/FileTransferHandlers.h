@@ -66,7 +66,7 @@ public:
 			return;
 		}
 		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
-		// TODO @@@ asset(connection); // !!
+		assert(connection);
 		connection->OnFileInfo(file_info_packet->FileInfo.Size, file_info_packet->FileInfo.Name.c_str(), file_info_packet->FileInfo.SenderTransferID.val, connection);
 		delete packet;
 		TRACE_LOG("exit");
@@ -82,13 +82,9 @@ public:
 			ERROR_LOG("unexpected packet type");
 			return;
 		}
-		UUID receiver_transfer_id = file_info_reply_packet->FileInfo.ReceiverTransferID.val;
-		UUID sender_transfer_id = file_info_reply_packet->FileInfo.SenderTransferID.val;
-		DEBUG_LOG("receiver_transfer_id: " << receiver_transfer_id.toString());
-		DEBUG_LOG("sender_transfer_id: " << sender_transfer_id.toString());
 		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
 		assert(connection);
-		connection->OnFileInfoReply(receiver_transfer_id, sender_transfer_id, connection);
+		connection->OnFileInfoReply(file_info_reply_packet->FileInfo.ReceiverTransferID.val, file_info_reply_packet->FileInfo.SenderTransferID.val, connection);
 		delete packet;
 		TRACE_LOG("exit");
 	};
@@ -103,6 +99,10 @@ public:
 			ERROR_LOG("unexpected packet type");
 			return;
 		}
+
+		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
+		assert(connection);
+		connection->OnFileData(file_data_packet->FileData.ReceiverTransferID.val, file_data_packet->FileData.DataNumber, file_data_packet->FileData.Data.val, connection);
 		delete packet;
 		TRACE_LOG("exit");
 	};

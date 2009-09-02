@@ -50,15 +50,19 @@ void ClientConnectionBase::checkACK() {
 		this->ack_packet_queue.pop();
 		if (++count == MAX_ACK_NUMBER) break;
 	}
-	this->transfer_peer->sendPacket(packet, &this->ep);
+	this->sendPacket(packet);
 }
 
 void ClientConnectionBase::checkRESEND() {
 	if (this->resend_packet_map.empty()) return;
 	S_MUTEX_LOCK l;
 	l.lock(&this->resend_lock);
+	DEBUG_LOG("number of resend packets: " << this->resend_packet_map.size());
 	for(RESEND_PACKET_MAP_TYPE::iterator it=this->resend_packet_map.begin(); it!=this->resend_packet_map.end(); it++) {
 		; // RESEND unACKed packets
+		PacketBase *packet = it->second;
+		packet->setFlag(PacketHeader::FLAG_RESENT);
+		this->sendPacket(packet);
 	}
 }
 
@@ -70,7 +74,7 @@ bool ClientConnectionBase::checkAlive() {
 	return false;
 }
 
-void ClientConnectionBase::processIncomingPacket(const PacketBase *packet) {
+void ClientConnectionBase::processIncomingPacket(PacketBase *packet) {
 	this->updateLastReceived();
 	if (packet->header.isReliable()) {
 		S_MUTEX_LOCK l;
@@ -85,10 +89,18 @@ void ClientConnectionBase::processIncomingPacket(const PacketBase *packet) {
 			this->remove_resend_packet(*it);
 		}
 	}
+	if (packet->header.getPacketID() == PacketAck_ID) {
+		PacketAckPacket *ack_packet = dynamic_cast<PacketAckPacket *>(packet);
+		assert(ack_packet);
+		for(vector<PacketAckPacket::PacketsBlock>::iterator it = ack_packet->Packets.val.begin(); it!=ack_packet->Packets.val.end(); it++) {
+			this->remove_resend_packet(it->ID);
+		}
+
+	}
 }
 
-void ClientConnectionBase::processOutgoingPacket(const PacketBase *packet) {
-	if (packet->header.isReliable()) {
+void ClientConnectionBase::processOutgoingPacket(PacketBase *packet) {
+	if (packet->header.isReliable() && !packet->header.isResent()) {
 		S_MUTEX_LOCK l;
 		l.lock(&this->resend_lock);
 		this->add_resend_packet(packet);
@@ -104,7 +116,7 @@ void ClientConnectionBase::remove_resend_packet(uint32_t seq) {
 	}
 }
 
-void ClientConnectionBase::add_resend_packet(const PacketBase* packet) {
+void ClientConnectionBase::add_resend_packet(PacketBase* packet) {
 	uint32_t seq_key = packet->header.sequence;
 	// @@@ take a copy of the packet
 	this->resend_packet_map[seq_key] = FileTransferPacketFactorySingleton::get().createPacketCopy(

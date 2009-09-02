@@ -45,7 +45,7 @@ public:
 		}
 		// @@@ bad interface! do not forget me !!
 		buffer->setLength(recv_len);
-		DEBUG_LOG("recv: \n" << buffer->to_debug_string());
+		TRACE_LOG("recv: \n" << buffer->to_debug_string());
 
 		if (this->_udp_OnRecv_handler != NULL) {
 			this->_udp_OnRecv_handler->operator ()(buffer, &ep);

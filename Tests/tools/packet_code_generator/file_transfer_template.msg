@@ -18,6 +18,14 @@
 }
 
 {
+	TransferComplete Low 156 NotTrusted Unencoded
+	{
+		FileData Single
+		{	ReceiverTransferID	LLUUID	}
+	}
+}
+
+{
 	FileData High 17 NotTrusted Unencoded
 	{
 		FileData Single

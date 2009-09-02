@@ -110,6 +110,52 @@ public:
     }
 };
 
+// TransferCompletePacket
+class TransferCompletePacket : public PacketBase {
+public:
+
+    // Block Class List
+    class FileDataBlock : public PacketSerializable {
+    public:
+        // FileDataBlock Member List
+        SerializableUUID ReceiverTransferID;
+    public:
+        FileDataBlock() {};
+        virtual ~FileDataBlock() {};
+        virtual void serialize(PacketBuffer &buffer) const {
+            ReceiverTransferID.serialize(buffer);
+        }
+        virtual void deserialize(PacketBuffer &buffer) {
+            ReceiverTransferID.deserialize(buffer);
+        }
+    };
+    // TransferCompletePacket Member List
+    FileDataBlock FileData;
+
+public:
+    TransferCompletePacket() {
+        this->setID(TransferComplete_ID);
+    };
+    virtual ~TransferCompletePacket() {};
+
+    virtual void serialize(PacketBuffer &buffer) const {
+        FileData.serialize(buffer);
+    }
+    virtual void deserialize(PacketBuffer &buffer) {
+        FileData.deserialize(buffer);
+    }
+    virtual PacketBase *clone() const {
+        return new TransferCompletePacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const TransferCompletePacket *TransferCompletePacket_packet = dynamic_cast<const TransferCompletePacket *>(packet);
+        if (TransferCompletePacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new TransferCompletePacket(*TransferCompletePacket_packet);
+    }
+};
+
 // FileDataPacket
 class FileDataPacket : public PacketBase {
 public:

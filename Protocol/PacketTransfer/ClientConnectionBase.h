@@ -19,7 +19,7 @@
 namespace Fanni {
 
 typedef std::queue<uint32_t> ACK_PACKET_QUEUE_TYPE;
-typedef std::tr1::unordered_map<uint32_t, const PacketBase *> RESEND_PACKET_MAP_TYPE;
+typedef std::tr1::unordered_map<uint32_t, PacketBase *> RESEND_PACKET_MAP_TYPE;
 typedef std::tr1::unordered_map<uint32_t, std::time_t> RESEND_STATUS_MAP_TYPE;
 
 class PacketTransferBase;
@@ -47,8 +47,8 @@ public:
 	virtual void checkRESEND();
 	virtual bool checkAlive();
 
-	virtual void processIncomingPacket(const PacketBase *packet);
-	virtual void processOutgoingPacket(const PacketBase *packet);
+	virtual void processIncomingPacket(PacketBase *packet);
+	virtual void processOutgoingPacket(PacketBase *packet);
 
 private:
 	// ACK, RESEND management
@@ -61,7 +61,7 @@ private:
 	// MEMO @@@ these methods are not thread safe
 	// locked by caller from "this"
 	void remove_resend_packet(uint32_t seq);
-	void add_resend_packet(const PacketBase* packet);
+	void add_resend_packet(PacketBase* packet);
 };
 
 }

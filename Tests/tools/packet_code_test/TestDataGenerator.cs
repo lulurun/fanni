@@ -90,6 +90,14 @@ namespace PacketTest
             output(packet.ToBytes());
         }
         
+        static void TransferComplete_gen()
+        {
+            TransferCompletePacket packet = new TransferCompletePacket();
+                packet.FileData.ReceiverTransferID = DefaultValues.LLUUID;
+
+            output(packet.ToBytes());
+        }
+        
         static void FileData_gen()
         {
             FileDataPacket packet = new FileDataPacket();
@@ -143,6 +151,7 @@ namespace PacketTest
         {
             FileInfo_gen();
             FileInfoReply_gen();
+            TransferComplete_gen();
             FileData_gen();
             PacketAck_gen();
             OpenConnection_gen();

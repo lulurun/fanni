@@ -61,6 +61,7 @@ using namespace Fanni::Network;
 PacketTransferBase::PacketTransferBase(const std::string &addr, int port, int thread_number) {
 	this->udp_server = new Event_UDP(addr, port);
 	this->thread_number = thread_number;
+	this->seq_gen = SequenceGeneratorFactory::GetInstance()->createGenerator();
 }
 
 PacketTransferBase::~PacketTransferBase() {
@@ -113,6 +114,9 @@ void PacketTransferBase::join() {
 }
 
 void  PacketTransferBase::sendPacket(PacketBase *packet, const EndPoint *ep) {
+	if (!packet->header.isResent()) {
+		packet->setSequence(this->seq_gen->next());
+	}
 	TransferDataPacket *data = new TransferDataPacket(packet, ep);
 	this->sender_manager->deliverTask(data);
 }
@@ -200,7 +204,7 @@ void PacketTransferBase::checkAlive() {
 	TRACE_LOG("exit");
 }
 
-void PacketTransferBase::processIncomingPacket(const PacketBase *packet, const EndPoint *ep) {
+void PacketTransferBase::processIncomingPacket(PacketBase *packet, const EndPoint *ep) {
 	TRACE_LOG("enter");
 	if (this->ignoreInProcessIncomingPacket(packet->header.getPacketID())) {
 		TRACE_LOG("exit 1");
@@ -215,7 +219,7 @@ void PacketTransferBase::processIncomingPacket(const PacketBase *packet, const E
 	TRACE_LOG("exit 0");
 }
 
-void PacketTransferBase::processOutgoingPacket(const PacketBase *packet, const EndPoint *ep) {
+void PacketTransferBase::processOutgoingPacket(PacketBase *packet, const EndPoint *ep) {
 	TRACE_LOG("enter");
 	ClientConnectionBase *client_connection = this->getConnection(ep);
 	if (client_connection) {

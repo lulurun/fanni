@@ -12,6 +12,7 @@ FileTransferPacketFactory::~FileTransferPacketFactory() {}
 void FileTransferPacketFactory::init() {
     PacketList[FileInfo_ID] = new FileInfoPacket();
     PacketList[FileInfoReply_ID] = new FileInfoReplyPacket();
+    PacketList[TransferComplete_ID] = new TransferCompletePacket();
     PacketList[FileData_ID] = new FileDataPacket();
     PacketList[PacketAck_ID] = new PacketAckPacket();
     PacketList[OpenConnection_ID] = new OpenConnectionPacket();
