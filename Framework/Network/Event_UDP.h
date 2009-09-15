@@ -1,15 +1,53 @@
 #ifndef EVENT_UDPSERVER_H_
 #define EVENT_UDPSERVER_H_
 
+#include <memory>
 #include <string>
 #include "fanni/Event++.h"
 #include "fanni/Exception.h"
-
+#include "fanni/EndPoint.h"
+#include "fanni/Logger.h"
+#include "fanni/PacketBuffer.h"
 #include "UDPBase.h"
-#include "Event_OnRecvHandler.h"
+#include "FanniSock.h"
 
 namespace Fanni {
 namespace Network {
+
+class Event_OnRecvHandler: public EventHandlerBase {
+private:
+	UDP_OnRecvHandlerBase *_udp_OnRecv_handler;
+
+public:
+	Event_OnRecvHandler(UDP_OnRecvHandlerBase *handler) {
+		this->_udp_OnRecv_handler = handler;
+	}
+
+	virtual void operator()(int fd, short flags) {
+		TRACE_LOG("enter");
+
+		std::auto_ptr<PacketBuffer> buffer(new PacketBuffer());
+		std::auto_ptr<EndPoint> ep(new EndPoint());
+
+		int recv_len = FanniSock::GetPacket(fd, buffer->getBuffer(),
+				reinterpret_cast<sockaddr *> (ep.get()));
+		// TODO @@@ non-blocking ?
+		if (recv_len == -1) {
+			ERROR_LOG("recvfrom() returned -1");
+			return;
+		} else if (recv_len == 0) {
+			ERROR_LOG("Connection Close");
+			return;
+		}
+		// @@@ bad interface! do not forget me !!
+		buffer->setLength(recv_len);
+		if (this->_udp_OnRecv_handler != NULL) {
+			this->_udp_OnRecv_handler->operator ()(buffer.release(), ep.release());
+		}
+
+		TRACE_LOG("exit");
+	}
+};
 
 class Event_UDP : public UDPBase {
 private:

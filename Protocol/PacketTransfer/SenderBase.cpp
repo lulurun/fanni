@@ -5,6 +5,7 @@
  *      Author: lulu
  */
 
+#include <cassert>
 #include "fanni/Exception.h"
 #include "FileTransferPackets/FileTransferPacketFactory.h"
 
@@ -28,14 +29,11 @@ SenderBase::~SenderBase() {
 
 void SenderBase::loop() {
 	while (1) {
-		const ThreadTask *task = this->queue->pop();
 		TRACE_LOG("get sending packet");
+		const ThreadTask *task = this->queue->pop();
 		const TransferDataPacket *const_queue_data = dynamic_cast<const TransferDataPacket *> (task);
-		if (!const_queue_data) {
-			FatalException::throw_exception(EXP_TEST, EXP_PRE_MSG,"unexpected queue data type" );
-		}
-		std::auto_ptr<const TransferDataPacket> auto_queue_data(const_queue_data);
-
+		assert(const_queue_data);
+		std::auto_ptr<const TransferDataPacket> data_ptr(const_queue_data);
 		int len = 0;
 		const unsigned char *resp_buf = this->packet_serializer->serialize(const_queue_data->data, &len);
 		this->transfer_peer->processOutgoingPacket(const_queue_data->data, const_queue_data->ep);

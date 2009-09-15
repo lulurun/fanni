@@ -101,10 +101,16 @@ public:
 	void stop() {};
 
 	virtual void start() const {
-		if (max_time > 0) {
-			this->_start_limited();
-		} else {
-			this->_start_forever();
+		try {
+			if (max_time > 0) {
+				this->_start_limited();
+			} else {
+				this->_start_forever();
+			}
+		} catch (ErrorException &e) {
+			ERROR_LOG("PeriodicTask failed: " << e.get_msg());
+		} catch (FatalException &e) {
+			FATAL_LOG("PeriodicTask failed: " << e.get_msg());
 		}
 	}
 

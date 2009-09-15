@@ -118,15 +118,15 @@ public:
     class FileDataBlock : public PacketSerializable {
     public:
         // FileDataBlock Member List
-        SerializableUUID ReceiverTransferID;
+        SerializableUUID SenderTransferID;
     public:
         FileDataBlock() {};
         virtual ~FileDataBlock() {};
         virtual void serialize(PacketBuffer &buffer) const {
-            ReceiverTransferID.serialize(buffer);
+            SenderTransferID.serialize(buffer);
         }
         virtual void deserialize(PacketBuffer &buffer) {
-            ReceiverTransferID.deserialize(buffer);
+            SenderTransferID.deserialize(buffer);
         }
     };
     // TransferCompletePacket Member List

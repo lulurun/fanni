@@ -33,7 +33,9 @@ public:
 		this->setAddr(ipaddr);
 		this->setPort(port);
 	};
-	~EndPoint() {};
+	~EndPoint() {
+		TRACE_LOG("enter");
+	};
 
 	void setAddr(const std::string &ipaddr) {
 		in_addr_t addr = ::inet_addr(ipaddr.c_str());

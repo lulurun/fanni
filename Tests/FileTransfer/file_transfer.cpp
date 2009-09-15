@@ -16,7 +16,7 @@ using namespace Fanni::Tests;
 
 static const string DEFAULT_ADDR = "127.0.0.1";
 static const int DEFAULT_PORT = 9001;
-static const int thread_number = 1;
+static const int thread_number = 10;
 
 int start_server() {
 	try {

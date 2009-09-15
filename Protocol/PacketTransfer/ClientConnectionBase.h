@@ -1,3 +1,4 @@
+
 /*
  * ClientConnectionBase.h
  *
@@ -47,8 +48,8 @@ public:
 	virtual void checkRESEND();
 	virtual bool checkAlive();
 
-	virtual void processIncomingPacket(PacketBase *packet);
-	virtual void processOutgoingPacket(PacketBase *packet);
+	virtual void processIncomingPacket(const PacketBase *packet);
+	virtual void processOutgoingPacket(const PacketBase *packet);
 
 private:
 	// ACK, RESEND management
@@ -58,10 +59,11 @@ private:
 	RESEND_PACKET_MAP_TYPE resend_packet_map;
 	RESEND_STATUS_MAP_TYPE resend_status_map;
 
+private:
 	// MEMO @@@ these methods are not thread safe
 	// locked by caller from "this"
-	void remove_resend_packet(uint32_t seq);
-	void add_resend_packet(PacketBase* packet);
+	void remove_resend_packet_nolock(uint32_t seq);
+	void add_resend_packet_nolock(const PacketBase* packet);
 };
 
 }

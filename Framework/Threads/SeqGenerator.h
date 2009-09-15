@@ -45,7 +45,7 @@ public:
 			delete &it;
 		}
 	};
-	SequenceGenerator *createGenerator(int max = 100000) { // TODO: replace with INT_MAX or sth. ...
+	SequenceGenerator *createGenerator(int max = 0xffffffff) { // TODO: replace with INT_MAX or sth. ...
 		SequenceGenerator *gen = new SequenceGenerator(max);
 		this->gen_list.push_back(gen);
 		return gen;

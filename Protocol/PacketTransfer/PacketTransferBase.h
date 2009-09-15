@@ -44,14 +44,14 @@ protected:
 	CLIENT_CONNECTION_MAP_TYPE client_connection_map;
 	Mutex client_connection_map_lock;
 
-	virtual void removeConnection_withnolock(const EndPoint *ep);
-	virtual ClientConnectionBase *getConnection_withnolock(const EndPoint *ep);
+	virtual void removeConnection_nolock(const EndPoint *ep);
+	virtual ClientConnectionBase *getConnection_nolock(const EndPoint *ep);
 
 public:
 	PacketTransferBase(const std::string &addr, int port, int thread_number);
 	virtual ~PacketTransferBase();
 
-	virtual void init();
+	virtual void init(const PacketFactory *packet_factory, const PacketHandlerFactory *packet_handler_factory);
 	virtual void start();
 	virtual void join();
 	virtual void sendPacket(PacketBase *packet, const EndPoint *ep);
@@ -62,11 +62,12 @@ public:
 	virtual ClientConnectionBase *getConnection(const EndPoint *ep);
 
 	virtual ClientConnectionBase *createClientConnection(uint32_t circuit_code, const EndPoint *ep) = 0;
-	virtual bool ignoreInProcessIncomingPacket(PacketHeader::PACKET_ID_TYPE packet_id) = 0;
+	virtual bool skipProcessIncomingPacket(PacketHeader::PACKET_ID_TYPE packet_id) = 0;
+	virtual bool skipHandlePacket(PacketHeader::PACKET_ID_TYPE packet_id) = 0;
 
 	// Reliable Packet Transfer
-	virtual void processIncomingPacket(PacketBase *packet, const EndPoint *ep);
-	virtual void processOutgoingPacket(PacketBase *packet, const EndPoint *ep);
+	virtual void processIncomingPacket(const PacketBase *packet, const EndPoint *ep);
+	virtual void processOutgoingPacket(const PacketBase *packet, const EndPoint *ep);
 
 	virtual void checkACK();
 	virtual void checkRESEND();

@@ -53,6 +53,7 @@ public:
 		this->_tail = this->_head + len;
 	};
 	~FixedLengthBuffer() {
+		delete this->_head;
 	};
 
 	unsigned char operator[](int i) const {

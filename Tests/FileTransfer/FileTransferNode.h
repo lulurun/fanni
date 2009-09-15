@@ -14,6 +14,7 @@
 #include "fanni/EndPoint.h"
 #include "Packets/PacketBase.h"
 #include "PacketTransfer/PacketTransferBase.h"
+#include "FileTransferPackets/FileTransferPacketFactory.h"
 #include "FileTransferPackets/FileTransferPacketsID.h"
 
 namespace Fanni {
@@ -28,13 +29,18 @@ private:
 	void openConnection(const EndPoint &ep);
 	void closeConnection(const EndPoint &ep);
 
+	// MEMO @@@ get from Singleton
+	const FileTransferPacketFactory &packet_factory;
+	PacketHandlerFactory packet_handler_factory;
+
 public:
 	FileTransferNode(const std::string &addr, int port, int thread_number);
 	virtual ~FileTransferNode();
 	virtual void init();
 
 	virtual ClientConnectionBase *createClientConnection(uint32_t circuit_code, const EndPoint *ep);
-	virtual bool ignoreInProcessIncomingPacket(PacketHeader::PACKET_ID_TYPE packet_id);
+	virtual bool skipProcessIncomingPacket(PacketHeader::PACKET_ID_TYPE packet_id);
+	virtual bool skipHandlePacket(PacketHeader::PACKET_ID_TYPE packet_id);
 
 	void startSendFile(const string &file_path, const EndPoint &ep);
 	const std::string &getSendFile() const {

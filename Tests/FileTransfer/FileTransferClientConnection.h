@@ -32,7 +32,10 @@ private:
 	size_t transfered_size;
 	time_t start_time;
 	unsigned char *file_buffer;
+	int block_size;
 	bool *data_block_map;
+
+	int internal_count;
 
 public:
 	FileTransferStatus(uint32_t file_size, const std::string file_name, const UUID &receiver_transfer_id, const UUID &sender_transfer_id) :
@@ -42,11 +45,18 @@ public:
 		this->transfered_size = 0;
 		this->start_time = ::time(NULL);
 		this->file_buffer = new unsigned char[file_size];
-		int data_block_size = (int)(file_size/FILE_PART_SIZE) + 1;
-		this->data_block_map = new bool[data_block_size];
-		::memset(this->data_block_map, 0, sizeof(bool) * data_block_size);
+		this->block_size = (int)(file_size/FILE_PART_SIZE) + 1;
+		this->data_block_map = new bool[block_size];
+		::memset(this->data_block_map, 0, sizeof(bool) * block_size);
+
+		this->internal_count = 0;
 	}
 
+	~FileTransferStatus() {
+		DEBUG_LOG("release status memory !!");
+		if (this->file_buffer) delete this->file_buffer;
+		if (this->data_block_map) delete this->data_block_map;
+	}
 	const size_t getFileSize() const { return this->file_size; }
 	const std::string &getFileName() const { return this->file_name; }
 	const UUID &getReceiverTransferID() const { return this->ReceiverTransferID; }
@@ -70,14 +80,19 @@ public:
 	bool update(int data_number, const unsigned char *data, size_t len) {
 		S_MUTEX_LOCK l;
 		l.lock(&this->m);
-		size_t start = data_number * FILE_PART_SIZE;
-		assert(start + len <= this->file_size);
-		::memcpy(this->file_buffer + start, data, len);
 		if (!this->data_block_map[data_number]) {
+			size_t start = data_number * FILE_PART_SIZE;
+			assert(start + len <= this->file_size);
+			::memcpy(this->file_buffer + start, data, len);
 			this->transfered_size += len;
 			this->data_block_map[data_number] = true;
+			this->internal_count++;
 		}
-		INFO_LOG("TransferStatus: " << this->transfered_size << "/" << this->file_size);
+		if ( ((this->file_size - this->transfered_size) < FILE_PART_SIZE * 2000 ) ||
+			  internal_count % 1000 == 0
+		){
+			INFO_LOG("TransferStatus: " << this->transfered_size << "/" << this->file_size);
+		}
 		return (this->transfered_size == this->file_size);
 	}
 };
@@ -107,8 +122,13 @@ private:
 
 	void addReceiveFileTransfer(FileTransferStatus *status);
 	FileTransferStatus *getReceiveFileTransfer(const UUID &receiver_transfer_id);
+	FileTransferStatus *_getReceiveFileTransfer_nolock(const UUID &receiver_transfer_id);
+	void closeReceiveTransfer(const UUID &receiver_transfer_id);
+
 	void addSendFileTransfer(FileTransferStatus *status);
 	FileTransferStatus *getSendFileTransfer(const UUID &sender_transfer_id);
+	FileTransferStatus *_getSendFileTransfer_nolock(const UUID &sender_transfer_id);
+	void closeSendTransfer(const UUID &sender_transfer_id);
 
 public:
 

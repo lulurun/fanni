@@ -5,7 +5,6 @@
  *      Author: lulu
  */
 
-#include "FileTransferPackets/FileTransferPacketFactory.h"
 #include "ReceiverBase.h"
 #include "PacketTransferBase.h"
 
@@ -13,9 +12,12 @@ using namespace Fanni;
 
 // ==========
 // RecevierBase
-ReceiverBase::ReceiverBase(PacketHandlerFactory &phf, PacketTransferBase *transfer_peer) :
-	packet_handler_factory(phf), transfer_peer(transfer_peer) {
-	this->packet_serializer = CreateFileTransferPacketSerializer();
+ReceiverBase::ReceiverBase(PacketTransferBase *transfer_peer,
+		const PacketHandlerFactory *packet_handler_factory,
+		const PacketFactory *packet_factory) :
+	transfer_peer(transfer_peer),
+			packet_handler_factory(packet_handler_factory) {
+	this->packet_serializer = new PacketSerializer(packet_factory);
 }
 
 ReceiverBase::~ReceiverBase() {
@@ -24,20 +26,22 @@ ReceiverBase::~ReceiverBase() {
 
 void ReceiverBase::loop() {
 	while (1) {
-		const ThreadTask *task = this->queue->pop();
-		const TransferDataBuffer *const_queue_data = dynamic_cast<const TransferDataBuffer *> (task);
-		if (!const_queue_data) {
-			FatalException::throw_exception(EXP_TEST, EXP_PRE_MSG,"unexpected queue data type" );
-		}
+		auto_ptr<const TransferDataBuffer> transfer_data(
+				dynamic_cast<const TransferDataBuffer *> (this->queue->pop()));
+		assert(transfer_data.get());
 		try {
-			auto_ptr<const TransferDataBuffer> auto_queue_data();
-			PacketBase *packet = this->packet_serializer->deserialize(*(const_queue_data->data));
+			auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(
+					*(transfer_data->data)));
+			assert(packet.get());
+			if ( !this->transfer_peer->skipHandlePacket( packet->header.getPacketID() ) ) {
+				// dispatch packet handler
+				const PacketHandlerBase *packet_handler = this->packet_handler_factory->getPacketHandler(packet->header.getPacketID());
+				// MEMO @@@ (inside getPacketHandler:) packet_handler never be null;
+				packet_handler->operator()(packet.get(), transfer_data->ep,this->transfer_peer);
+			}
 			// RESEND, ACK management
-			this->transfer_peer->processIncomingPacket(packet, const_queue_data->ep);
-			// dispatch packet handler
-			const PacketHandlerBase *packet_handler = this->packet_handler_factory.getPacketHandler(packet->header.getPacketID());
-			// MEMO @@@ (inside getPacketHandler:) packet_handler can not be null;
-			packet_handler->operator()(packet, const_queue_data->ep, this->transfer_peer);
+			this->transfer_peer->processIncomingPacket(packet.get(), transfer_data->ep);
+			// MEMO @@@ TransferDataBuffer(packet, ep) will be deleted here
 		} catch (ErrorException &e) {
 			ERROR_LOG("packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
 		} catch (WarnException &e) {
@@ -55,21 +59,20 @@ void ReceiverBase::stop() {
 
 // ==========
 // RecevierManager
-ReceiverManager::ReceiverManager(int thread_number, PacketTransferBase *transfer_peer) :
-	thread_number(thread_number), transfer_peer(transfer_peer) {}
-
-void ReceiverManager::registerHandler(PacketHeader::PACKET_ID_TYPE packet_id, const PacketHandlerBase *handler) {
-	this->packet_handler_factory.registerPacketHandler(packet_id, handler);
-};
+ReceiverManager::ReceiverManager(int thread_number,
+		PacketTransferBase *transfer_peer, const PacketFactory *packet_factory,
+		const PacketHandlerFactory *packet_handler_factory) :
+	thread_number(thread_number), transfer_peer(transfer_peer), packet_factory(
+			packet_factory), packet_handler_factory(packet_handler_factory) {
+}
 
 void ReceiverManager::init() {
 	// TODO @@@ register handlers ?
 	// init workers
 	for (int i = 0; i < this->thread_number; i++) {
-		ReceiverBase *worker = new ReceiverBase(this->packet_handler_factory, this->transfer_peer);
+		ReceiverBase *worker = new ReceiverBase(this->transfer_peer, this->packet_handler_factory, this->packet_factory);
 		this->addWorker(worker);
 		worker->kick();
 	}
 }
-
 

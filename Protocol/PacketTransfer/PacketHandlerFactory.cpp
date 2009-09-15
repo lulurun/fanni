@@ -45,7 +45,8 @@ void PacketHandlerFactory::registerPacketHandler(PacketHeader::PACKET_ID_TYPE pa
 const PacketHandlerBase *PacketHandlerFactory::getPacketHandler(PacketHeader::PACKET_ID_TYPE packet_id) const {
     PACKET_HANDLER_MAP_TYPE::const_iterator it = PacketHandlerList.find(packet_id);
     if(it != PacketHandlerList.end()){
-		return it->second;
+    	// MEMO @@@ do not copy
+    	return it->second;
     }
     return &null_handler;
 }

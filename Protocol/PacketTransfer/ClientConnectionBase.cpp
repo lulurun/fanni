@@ -37,20 +37,25 @@ void ClientConnectionBase::updateLastReceived() {
 }
 
 void ClientConnectionBase::checkACK() {
-	if (this->ack_packet_queue.empty()) return;
-	PacketAckPacket *packet = new PacketAckPacket();
-	S_MUTEX_LOCK l;
-	l.lock(&this->ack_lock);
+    if (this->ack_packet_queue.empty()) return;
+    S_MUTEX_LOCK l;
+    l.lock(&this->ack_lock);
+    int total_count = 0;
+    while (!this->ack_packet_queue.empty()) {
 	int count = 0;
+	PacketAckPacket *packet = new PacketAckPacket();
 	while (!this->ack_packet_queue.empty()) {
-		PacketAckPacket::PacketsBlock packets_block;
-		packets_block.ID = this->ack_packet_queue.front();
-		// TODO @@@ memory reallocate inside "push" + coping packets_block
-		packet->Packets.push(packets_block);
-		this->ack_packet_queue.pop();
-		if (++count == MAX_ACK_NUMBER) break;
+	    PacketAckPacket::PacketsBlock packets_block;
+	    packets_block.ID = this->ack_packet_queue.front();
+	    // TODO @@@ memory reallocate/copy inside "push" + coping packets_block
+	    packet->Packets.push(packets_block);
+	    this->ack_packet_queue.pop();
+	    if (++count == MAX_ACK_NUMBER) break;
 	}
 	this->sendPacket(packet);
+	total_count += count;
+    }
+    DEBUG_LOG("ACKed " << total_count << " packets");
 }
 
 void ClientConnectionBase::checkRESEND() {
@@ -59,9 +64,11 @@ void ClientConnectionBase::checkRESEND() {
 	l.lock(&this->resend_lock);
 	DEBUG_LOG("number of resend packets: " << this->resend_packet_map.size());
 	for(RESEND_PACKET_MAP_TYPE::iterator it=this->resend_packet_map.begin(); it!=this->resend_packet_map.end(); it++) {
-		; // RESEND unACKed packets
-		PacketBase *packet = it->second;
+		// MEMO @@@ need copy this packet, because the packet will be deleted after sending
+		PacketBase *packet = FileTransferPacketFactorySingleton::get().createPacketCopy(
+		    it->second->header.getPacketID(), it->second);
 		packet->setFlag(PacketHeader::FLAG_RESENT);
+		packet->setFlag(PacketHeader::FLAG_RELIABLE);
 		this->sendPacket(packet);
 	}
 }
@@ -74,49 +81,53 @@ bool ClientConnectionBase::checkAlive() {
 	return false;
 }
 
-void ClientConnectionBase::processIncomingPacket(PacketBase *packet) {
+void ClientConnectionBase::processIncomingPacket(const PacketBase *packet) {
+	TRACE_LOG("enter");
 	this->updateLastReceived();
 	if (packet->header.isReliable()) {
 		S_MUTEX_LOCK l;
 		l.lock(&this->ack_lock);
 		this->ack_packet_queue.push(packet->header.getSequenceNumber());
 	}
+	// process resend
+	S_MUTEX_LOCK l;
+	l.lock(&this->resend_lock);
 	if (packet->header.isAppendedAcks()) {
-		S_MUTEX_LOCK l;
-		l.lock(&this->resend_lock);
 		PacketBase::ACK_LIST_TYPE::const_iterator it = packet->appended_acks.begin();
 		for (; it != packet->appended_acks.end(); it++) {
-			this->remove_resend_packet(*it);
+			this->remove_resend_packet_nolock(*it);
 		}
 	}
 	if (packet->header.getPacketID() == PacketAck_ID) {
-		PacketAckPacket *ack_packet = dynamic_cast<PacketAckPacket *>(packet);
+		const PacketAckPacket *ack_packet = dynamic_cast<const PacketAckPacket *>(packet);
 		assert(ack_packet);
-		for(vector<PacketAckPacket::PacketsBlock>::iterator it = ack_packet->Packets.val.begin(); it!=ack_packet->Packets.val.end(); it++) {
-			this->remove_resend_packet(it->ID);
+		int debug_count = 0;
+		for(vector<PacketAckPacket::PacketsBlock>::const_iterator it = ack_packet->Packets.val.begin(); it!=ack_packet->Packets.val.end(); it++) {
+			this->remove_resend_packet_nolock(it->ID);
+			debug_count++;
 		}
-
 	}
+	TRACE_LOG("exit");
 }
 
-void ClientConnectionBase::processOutgoingPacket(PacketBase *packet) {
+void ClientConnectionBase::processOutgoingPacket(const PacketBase *packet) {
 	if (packet->header.isReliable() && !packet->header.isResent()) {
 		S_MUTEX_LOCK l;
 		l.lock(&this->resend_lock);
-		this->add_resend_packet(packet);
+		this->add_resend_packet_nolock(packet);
 	}
 }
 
-void ClientConnectionBase::remove_resend_packet(uint32_t seq) {
+void ClientConnectionBase::remove_resend_packet_nolock(uint32_t seq) {
 	RESEND_PACKET_MAP_TYPE::const_iterator it = this->resend_packet_map.find(seq);
 	if (it != this->resend_packet_map.end()) {
-		this->resend_packet_map.erase(seq);
 		if (it->second != NULL) delete it->second;
-		this->resend_status_map.erase(seq);
+		this->resend_packet_map.erase(seq);
+		//this->resend_status_map.erase(seq); // TODO @@@ !!!
 	}
 }
 
-void ClientConnectionBase::add_resend_packet(PacketBase* packet) {
+void ClientConnectionBase::add_resend_packet_nolock(const PacketBase* packet) {
 	uint32_t seq_key = packet->header.sequence;
 	// @@@ take a copy of the packet
 	this->resend_packet_map[seq_key] = FileTransferPacketFactorySingleton::get().createPacketCopy(
@@ -125,6 +136,6 @@ void ClientConnectionBase::add_resend_packet(PacketBase* packet) {
 }
 
 void ClientConnectionBase::sendPacket(PacketBase *packet) {
-	this->transfer_peer->sendPacket(packet,& this->ep);
+	this->transfer_peer->sendPacket(packet, &this->ep);
 }
 

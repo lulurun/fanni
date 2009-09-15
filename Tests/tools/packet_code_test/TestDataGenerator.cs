@@ -93,7 +93,7 @@ namespace PacketTest
         static void TransferComplete_gen()
         {
             TransferCompletePacket packet = new TransferCompletePacket();
-                packet.FileData.ReceiverTransferID = DefaultValues.LLUUID;
+                packet.FileData.SenderTransferID = DefaultValues.LLUUID;
 
             output(packet.ToBytes());
         }
