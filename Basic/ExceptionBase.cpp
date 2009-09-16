@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <string.h>
 #include "fanni/ExceptionBase.h"
 
 using namespace Fanni;
@@ -6,7 +6,7 @@ using namespace Fanni;
 ExceptionBase::ExceptionBase(int lv, const char *pf, int pl, const char *m)
 	 : level(lv), pref_func(pf), pref_line(pl)
 {
-	::sprintf(this->msg, m);
+    ::strcpy(this->msg, m);
 }
 
 ExceptionBase::~ExceptionBase(){

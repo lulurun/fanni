@@ -2,6 +2,7 @@
 #define FP_EXCEPTION_BASE_H
 
 #define EXP_PRE_MSG __PRETTY_FUNCTION__,__LINE__
+// MEMO @@@ !! should be enough, dont make message too long :)
 #define EXCEPTION_MSG_LEN 1024
 
 namespace Fanni{
