@@ -21,7 +21,7 @@ static const int thread_number = 10;
 int start_server() {
 	try {
 		DEBUG_LOG("enter Server mode");
-		FileTransferNode node(DEFAULT_ADDR, DEFAULT_PORT, thread_number);
+		FileTransferNode node("0.0.0.0", DEFAULT_PORT, thread_number);
 		node.init();
 		node.start();
 		node.join();
