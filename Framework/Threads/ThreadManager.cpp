@@ -6,7 +6,6 @@ using namespace Fanni;
 ThreadManager::ThreadManager() {
 	this->delivery_counter = 0;
 	this->worker_number = 0;
-	this->worker_sequence = SequenceGeneratorFactory::GetInstance()->createGenerator();
 }
 
 ThreadManager::~ThreadManager() {
@@ -49,7 +48,7 @@ ThreadWorker *ThreadManager::findWorkerById(WORKER_ID_TYPE id) {
 }
 
 void ThreadManager::addWorker(ThreadWorker *worker) {
-	WORKER_ID_TYPE id = this->worker_sequence->next();
+	WORKER_ID_TYPE id = this->seq_gen.next();
 	worker->init(id);
 	WORKER_MAP_TYPE::value_type val(id, worker);
 	this->worker_list.insert(val);

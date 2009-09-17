@@ -49,7 +49,7 @@ public:
 	}
 };
 
-static SequenceGenerator *sg = SequenceGeneratorFactory::GetInstance()->createGenerator();
+static SequenceGenerator sg;
 class Event_UDPClient : public Event_UDP {
 private:
 	EndPoint current_server;
@@ -62,7 +62,7 @@ private:
 			FatalException::throw_exception(EXP_TEST, EXP_PRE_MSG,"wrong implementation" );
 		}
 		start_ping_packet->PingID.PingID = ping_id;
-		start_ping_packet->setSequence(sg->next());
+		start_ping_packet->setSequence(sg.next());
 		TransferDataPacket *transfer_packet = new TransferDataPacket(start_ping_packet, &this->current_server);
 		this->packet_transfer_manager->deliverTask(transfer_packet);
 	};

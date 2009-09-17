@@ -13,10 +13,9 @@ using namespace Fanni;
 // ==========
 // RecevierBase
 ReceiverBase::ReceiverBase(PacketTransferBase *transfer_peer,
-		const PacketHandlerFactory *packet_handler_factory,
-		const PacketFactory *packet_factory) :
-	transfer_peer(transfer_peer),
-			packet_handler_factory(packet_handler_factory) {
+		const PacketFactory *packet_factory,
+		const PacketHandlerFactory *packet_handler_factory) :
+	transfer_peer(transfer_peer), packet_handler_factory(packet_handler_factory) {
 	this->packet_serializer = new PacketSerializer(packet_factory);
 }
 
@@ -30,17 +29,16 @@ void ReceiverBase::loop() {
 				dynamic_cast<const TransferDataBuffer *> (this->queue->pop()));
 		assert(transfer_data.get());
 		try {
-			auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(
-					*(transfer_data->data)));
+			auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(*(transfer_data->data)));
 			assert(packet.get());
+			// RESEND, ACK management
+			this->transfer_peer->processIncomingPacket(packet.get(), transfer_data->ep);
 			if ( !this->transfer_peer->skipHandlePacket( packet->header.getPacketID() ) ) {
 				// dispatch packet handler
 				const PacketHandlerBase *packet_handler = this->packet_handler_factory->getPacketHandler(packet->header.getPacketID());
 				// MEMO @@@ (inside getPacketHandler:) packet_handler never be null;
 				packet_handler->operator()(packet.get(), transfer_data->ep,this->transfer_peer);
 			}
-			// RESEND, ACK management
-			this->transfer_peer->processIncomingPacket(packet.get(), transfer_data->ep);
 			// MEMO @@@ TransferDataBuffer(packet, ep) will be deleted here
 		} catch (ErrorException &e) {
 			ERROR_LOG("packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
@@ -70,7 +68,7 @@ void ReceiverManager::init() {
 	// TODO @@@ register handlers ?
 	// init workers
 	for (int i = 0; i < this->thread_number; i++) {
-		ReceiverBase *worker = new ReceiverBase(this->transfer_peer, this->packet_handler_factory, this->packet_factory);
+		ReceiverBase *worker = new ReceiverBase(this->transfer_peer, this->packet_factory, this->packet_handler_factory);
 		this->addWorker(worker);
 		worker->kick();
 	}

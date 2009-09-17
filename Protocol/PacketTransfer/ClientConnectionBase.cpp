@@ -13,7 +13,7 @@
 using namespace std;
 using namespace Fanni;
 
-static const int MAX_ACK_NUMBER = 250;
+static const int MAX_ACK_NUMBER = 0xff;
 
 ClientConnectionBase::ClientConnectionBase() {
 	this->circuit_code = 0;
@@ -63,14 +63,25 @@ void ClientConnectionBase::checkRESEND() {
 	S_MUTEX_LOCK l;
 	l.lock(&this->resend_lock);
 	DEBUG_LOG("number of resend packets: " << this->resend_packet_map.size());
+	list<uint32_t> delete_list;
+	int resend_count = 0;
 	for(RESEND_PACKET_MAP_TYPE::iterator it=this->resend_packet_map.begin(); it!=this->resend_packet_map.end(); it++) {
 		// MEMO @@@ need copy this packet, because the packet will be deleted after sending
-		PacketBase *packet = FileTransferPacketFactorySingleton::get().createPacketCopy(
-		    it->second->header.getPacketID(), it->second);
-		packet->setFlag(PacketHeader::FLAG_RESENT);
-		packet->setFlag(PacketHeader::FLAG_RELIABLE);
-		this->sendPacket(packet);
+		if ( it->second->shouldResend() ) {
+			PacketBase *packet = it->second->get();
+			packet->setFlag(PacketHeader::FLAG_RESENT);
+			packet->setFlag(PacketHeader::FLAG_RELIABLE);
+			this->sendPacket(packet);
+			resend_count++;
+		} else if (it->second->shouldGiveup() ) {
+			WARN_LOG("give up resending packet: " << it->second->get()->header.getPacketID());
+			delete_list.push_back(it->first);
+		}
 	}
+	for(list<uint32_t>::const_iterator it=delete_list.begin(); it!=delete_list.end(); it++ ) {
+		this->remove_resend_packet_nolock(*it);
+	}
+	DEBUG_LOG("resending " << resend_count << " packets");
 }
 
 bool ClientConnectionBase::checkAlive() {
@@ -128,11 +139,7 @@ void ClientConnectionBase::remove_resend_packet_nolock(uint32_t seq) {
 }
 
 void ClientConnectionBase::add_resend_packet_nolock(const PacketBase* packet) {
-	uint32_t seq_key = packet->header.sequence;
-	// @@@ take a copy of the packet
-	this->resend_packet_map[seq_key] = FileTransferPacketFactorySingleton::get().createPacketCopy(
-			packet->header.getPacketID(), packet);
-	this->resend_status_map[seq_key] = ::time(NULL);
+	this->resend_packet_map[packet->header.sequence] = new ResendPacket(packet);
 }
 
 void ClientConnectionBase::sendPacket(PacketBase *packet) {

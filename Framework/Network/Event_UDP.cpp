@@ -25,30 +25,33 @@ using namespace Fanni;
 using namespace Network;
 
 Event_UDP::Event_UDP() :
-	UDPBase() { this->_init(); }
-
-Event_UDP::Event_UDP(const std::string &addr, int port) :
-	UDPBase(addr, port) { this->_init(); }
-
-void Event_UDP::_init() {
-	this->socket = FanniSock::OpenUDPSocket(this->ep);
-	if (this->socket == FanniSock::INVALID_SOCKET) {
-		ErrorException::throw_exception(Fanni::EXP_UUID, EXP_PRE_MSG, "invalid socket");
-	}
+	UDPBase() {
+	this->init();
 }
 
-Event_UDP::~Event_UDP() { }
+Event_UDP::Event_UDP(const std::string &addr, int port) :
+	UDPBase(addr, port) {
+	this->init();
+}
+
+void Event_UDP::init() {
+	UDPBase::init();
+	this->_libevent_OnRecv_handler = NULL;
+}
+
+Event_UDP::~Event_UDP() {
+	if (this->_libevent_OnRecv_handler) delete this->_libevent_OnRecv_handler;
+}
 
 void Event_UDP::start() {
 	TRACE_LOG("enter");
 	try {
-		if (this->recv_handler == NULL) {
+		if (this->recv_handler_ptr == NULL) {
 			ERROR_LOG("recv handler is NULL");
 			return;
 		}
-		this->_libevent_OnRecv_handler = new Event_OnRecvHandler(this->recv_handler);
-		EventBase<Event_OnRecvHandler> e(this->socket, EV_READ| EV_PERSIST,
-				this->_libevent_OnRecv_handler);
+		this->_libevent_OnRecv_handler = new Event_OnRecvHandler(this->recv_handler_ptr);
+		EventBase<Event_OnRecvHandler> e(this->socket, EV_READ| EV_PERSIST, this->_libevent_OnRecv_handler);
 		this->em.add(&e);
 		this->em.dispatch();
 	} catch (WarnException &e) {

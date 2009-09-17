@@ -13,7 +13,7 @@ class ConsumerManager;
 class ProducerManager;
 
 static const int start_number = 0;
-static SequenceGenerator *seq_gen = SequenceGeneratorFactory::GetInstance()->createGenerator(100000000);
+static SequenceGenerator seq_gen;
 
 class IntData : public ThreadTask {
 public:
@@ -87,7 +87,7 @@ public:
 	virtual void loop() {
 		int i = 0;
 		while(i++ < this->loop_number) {
-			int new_int = seq_gen->next();
+			int new_int = seq_gen.next();
 			IntData *data = new IntData(new_int);
 			// call handler
 			printf("producer[%d]: %d\n", this->id, new_int);

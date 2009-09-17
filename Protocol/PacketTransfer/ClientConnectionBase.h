@@ -19,9 +19,46 @@
 
 namespace Fanni {
 
+static const int CONNECTION_TIMEOUT = 100; // 100 sec
+static const int RESEND_TIMEOUT = 10; // 4 sec
+static const int MAX_RESENDING_TRIES = 0xffff; // will give up transferring after trying to resend 4 times
+
+// MEMO @@@ supposed to be write from only one thread
+class ResendPacket {
+private:
+	const PacketBase *packet;
+	std::time_t last_sent;
+	int resend_count;
+
+public:
+	ResendPacket(const PacketBase *packet) : packet(packet){
+		this->packet = packet->clone();
+		this->last_sent = ::time(NULL);
+		this->resend_count = 0;
+	}
+
+	~ResendPacket() {
+		delete this->packet;
+	}
+
+	bool shouldResend() {
+		return (::time(NULL) - this->last_sent ) > RESEND_TIMEOUT;
+	}
+
+	bool shouldGiveup() {
+		return this->resend_count >= MAX_RESENDING_TRIES;
+	}
+
+	PacketBase *get() {
+		this->last_sent = ::time(NULL);
+		this->resend_count++;
+		return this->packet->clone();
+	}
+
+};
+
 typedef std::queue<uint32_t> ACK_PACKET_QUEUE_TYPE;
-typedef std::tr1::unordered_map<uint32_t, PacketBase *> RESEND_PACKET_MAP_TYPE;
-typedef std::tr1::unordered_map<uint32_t, std::time_t> RESEND_STATUS_MAP_TYPE;
+typedef std::tr1::unordered_map<uint32_t, ResendPacket *> RESEND_PACKET_MAP_TYPE;
 
 class PacketTransferBase;
 class ClientConnectionBase {
@@ -32,8 +69,6 @@ protected:
 	time_t last_packet_received;
 
 public:
-	static const int CONNECTION_TIMEOUT = 100; // 100 seconds
-
 	ClientConnectionBase();
 	ClientConnectionBase(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase *transfer_base);
 	virtual ~ClientConnectionBase();
@@ -53,11 +88,10 @@ public:
 
 private:
 	// ACK, RESEND management
-	Mutex resend_lock;
 	Mutex ack_lock;
 	ACK_PACKET_QUEUE_TYPE ack_packet_queue;
+	Mutex resend_lock;
 	RESEND_PACKET_MAP_TYPE resend_packet_map;
-	RESEND_STATUS_MAP_TYPE resend_status_map;
 
 private:
 	// MEMO @@@ these methods are not thread safe

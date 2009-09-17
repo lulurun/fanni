@@ -6,13 +6,15 @@
 
 namespace Fanni {
 
+static const uint32_t SEQ_GEN_MAX = 0xffffffff;
+
 class SequenceGenerator {
 private:
 	uint32_t counter;
 	uint32_t max;
 	Mutex counter_lock;
 public:
-	SequenceGenerator(int max = 100000) { // TODO: replace with INT_MAX or sth. ...
+	SequenceGenerator(uint32_t max = SEQ_GEN_MAX) {
 		this->counter = 0;
 		this->max = max;
 	};
@@ -32,30 +34,6 @@ public:
 	}
 	void reset() {
 		this->counter = 0;
-	}
-};
-
-class SequenceGeneratorFactory {
-private:
-	std::list<SequenceGenerator *> gen_list;
-public:
-	SequenceGeneratorFactory() {};
-	~SequenceGeneratorFactory() {
-		for(std::list<SequenceGenerator *>::iterator it=this->gen_list.begin(); it!=this->gen_list.end(); it++) {
-			delete &it;
-		}
-	};
-	SequenceGenerator *createGenerator(int max = 0xffffffff) { // TODO: replace with INT_MAX or sth. ...
-		SequenceGenerator *gen = new SequenceGenerator(max);
-		this->gen_list.push_back(gen);
-		return gen;
-	}
-	static SequenceGeneratorFactory *GetInstance() {
-		static SequenceGeneratorFactory *ptr = NULL;
-		if (ptr == NULL) {
-			ptr = new SequenceGeneratorFactory();
-		}
-		return ptr;
 	}
 };
 

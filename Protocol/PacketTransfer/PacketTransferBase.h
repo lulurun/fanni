@@ -22,16 +22,35 @@
 namespace Fanni {
 
 class PacketTransferBase {
+
+	class OnRecvHandler: public Fanni::Network::UDP_OnRecvHandlerBase {
+	private:
+		ReceiverManager *recevier_manager_ptr;
+
+	public:
+		OnRecvHandler(ReceiverManager *recevier_manager) :
+			recevier_manager_ptr(recevier_manager) {
+		}
+		virtual void operator()(PacketBuffer *buffer, const EndPoint *ep) {
+			TransferDataBuffer *recv_data = new TransferDataBuffer(buffer, ep);
+			this->recevier_manager_ptr->deliverTask(recv_data);
+		}
+	};
+
+
 private:
-	// Threads handled by "this"
-	SimpleThreadTemplate<Fanni::Network::Event_UDP> *udp_thread;
-	PeriodicTaskThread *check_ACK_timer_thread;
-	PeriodicTaskThread *check_RESEND_timer_thread;
-	PeriodicTaskThread *check_ALIVE_timer_thread;
+	SimpleThreadTemplate<Fanni::Network::Event_UDP> *udp_server_thread;
 	ReceiverManager *receiver_manager;
 	SenderManager *sender_manager;
 
-	SequenceGenerator *seq_gen;
+	// timer threads
+	PeriodicTaskThread *check_ACK_timer_thread;
+	PeriodicTaskThread *check_RESEND_timer_thread;
+	PeriodicTaskThread *check_ALIVE_timer_thread;
+
+	OnRecvHandler *_udp_server_on_recv;
+
+	SequenceGenerator seq_gen;
 
 protected:
 	Fanni::Network::Event_UDP *udp_server;

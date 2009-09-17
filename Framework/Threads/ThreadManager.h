@@ -17,7 +17,7 @@ protected:
 	WORKER_MAP_TYPE worker_list;
 	uint32_t delivery_counter;
 	int worker_number;
-	SequenceGenerator *worker_sequence;
+	SequenceGenerator seq_gen;
 	ThreadWorker *findWorkerById(WORKER_ID_TYPE id);
 
 	ThreadManager();

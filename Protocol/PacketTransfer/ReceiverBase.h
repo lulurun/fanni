@@ -28,7 +28,9 @@ private:
 	PacketSerializer *packet_serializer;
 
 public:
-	ReceiverBase(PacketTransferBase *transfer_peer, const PacketHandlerFactory *packet_handler_factory, const PacketFactory *packet_factory);
+	ReceiverBase(PacketTransferBase *transfer_peer,
+			const PacketFactory *packet_factory,
+			const PacketHandlerFactory *packet_handler_factory);
 	~ReceiverBase();
 	virtual void loop();
 	virtual void stop();
@@ -43,7 +45,8 @@ private:
 
 public:
 	ReceiverManager(int thread_number, PacketTransferBase *transfer_peer,
-			const PacketFactory *packet_factory, const PacketHandlerFactory *packet_handler_factory);
+			const PacketFactory *packet_factory,
+			const PacketHandlerFactory *packet_handler_factory);
 	virtual void init();
 };
 

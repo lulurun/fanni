@@ -30,11 +30,11 @@ public:
 class TransferDataPacket : public ThreadTask {
 public:
 	PacketBase *data;
-	const EndPoint *ep;
+	const EndPoint *ep_ptr;
 
-	TransferDataPacket(PacketBase *data, const EndPoint *ep) : data(data), ep(ep) {};
+	TransferDataPacket(PacketBase *data, const EndPoint *ep) : data(data), ep_ptr(ep) {};
 	~TransferDataPacket() {
-		// TODO @@@ how solve the "delete" problem more wisely ?
+		// TODO @@@ how to solve the "delete" problem more wisely ?
 	        if (this->data) delete this->data;
 		//if (this->ep) delete this->ep; // TODO @@@ can not delete this, now!!
 	}

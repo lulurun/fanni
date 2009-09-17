@@ -34,28 +34,36 @@ class UDPBase {
 protected:
 	EndPoint ep;
     SOCKET socket;
-    UDP_OnRecvHandlerBase *recv_handler;
+    UDP_OnRecvHandlerBase *recv_handler_ptr;
 
 public:
 	UDPBase() {
+		// use by client side APP
 		this->ep.setAddr(_UDPBASE_DEFAULT_ADDR);
 		this->ep.setPort(_UDPBASE_DEFAULT_PORT);
 		this->socket = 0;
-		this->recv_handler = NULL;
+		this->recv_handler_ptr = NULL;
 	};
 
 	UDPBase(const std::string &addr, int server_port) {
 		this->ep.setAddr(addr);
 		this->ep.setPort(server_port);
 		this->socket = 0;
-		this->recv_handler = NULL;
+		this->recv_handler_ptr = NULL;
 	};
 	virtual ~UDPBase() {
 		this->shutdown();
 	};
 
+	virtual void init() {
+		this->socket = FanniSock::OpenUDPSocket(this->ep);
+		if (this->socket == FanniSock::INVALID_SOCKET) {
+			ErrorException::throw_exception(Fanni::EXP_UUID, EXP_PRE_MSG, "invalid socket");
+		}
+	}
+
 	virtual void setOnRecvHandler(UDP_OnRecvHandlerBase *handler) {
-		this->recv_handler = handler;
+		this->recv_handler_ptr = handler;
 	};
 
 	int getPort() const { return this->ep.getPort(); };

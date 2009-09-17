@@ -75,7 +75,6 @@ void FileTransferClientConnection::closeReceiveTransfer(const UUID &receiver_tra
 void FileTransferClientConnection::addSendFileTransfer(FileTransferStatus *status) {
 	S_MUTEX_LOCK l;
 	l.lock(&this->send_transfer_status_map.getMutex());
-	TRACE_LOG("adding sender transfer id: " << status->getSenderTransferID().toString());
 	this->send_transfer_status_map[status->getSenderTransferID().toString()] = status;
 }
 
@@ -181,7 +180,10 @@ void FileTransferClientConnection::OnFileInfoReplyEvent::operator ()(const UUID 
 		packet->setFlag(PacketHeader::FLAG_RELIABLE);
 		connection->sendPacket(packet);
 		left_size -= read_size;
-		if (data_number % 10000 == 0) sleep(1);
+		if (data_number % 5000 == 0) {
+			// MEMO @@@ do not send too much
+			sleep(1);
+		}
 	}
 	fs.close();
 

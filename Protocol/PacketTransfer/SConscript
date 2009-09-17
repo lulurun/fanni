@@ -12,7 +12,7 @@ env.SharedLibrary("../../lib/packet_transfer",
 		LIBS = [
 			"framework_network", "basic", "event",
 			"framework_threads", "pthread", "packets",
-			"log4cxx", "filetransferpackets", "boost_thread-mt"],
+			"log4cxx", "boost_thread-mt"],
 		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
 		LIBPATH = ["../../lib"],
 		)

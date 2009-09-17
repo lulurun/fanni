@@ -88,11 +88,6 @@ public:
 			this->data_block_map[data_number] = true;
 			this->internal_count++;
 		}
-		if ( ((this->file_size - this->transfered_size) < FILE_PART_SIZE * 2000 ) ||
-			  internal_count % 1000 == 0
-		){
-			INFO_LOG("TransferStatus: " << this->transfered_size << "/" << this->file_size);
-		}
 		return (this->transfered_size == this->file_size);
 	}
 };

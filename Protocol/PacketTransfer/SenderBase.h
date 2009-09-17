@@ -10,6 +10,7 @@
 
 #include "Threads/ThreadWorker.h"
 #include "Threads/ThreadManager.h"
+#include "Threads/SeqGenerator.h"
 #include "Network/Event_UDP.h"
 #include "Packets/PacketSerializer.h"
 
@@ -20,12 +21,13 @@ namespace Fanni {
 class PacketTransferBase;
 class SenderBase : public ThreadWorker {
 private:
+	SequenceGenerator seq_gen;
 	PacketSerializer *packet_serializer;
 	const Fanni::Network::Event_UDP &udp_server;
 	PacketTransferBase *transfer_peer;
 
 public:
-	SenderBase(const Fanni::Network::Event_UDP &udp_server, PacketTransferBase *peer);
+	SenderBase(const Fanni::Network::Event_UDP &udp_server, PacketTransferBase *transfer_peer, const PacketFactory *packet_factory);
 	~SenderBase();
 	virtual void loop();
 	virtual void stop();
@@ -34,13 +36,14 @@ public:
 
 class SenderManager: public ThreadManager {
 private:
-	PacketHandlerFactory packet_handler_factory;
 	int thread_number;
-	const Fanni::Network::Event_UDP &udp_server;
 	PacketTransferBase *transfer_peer;
+	const PacketFactory* packet_factory;
+	const Fanni::Network::Event_UDP &udp_server;
 
 public:
-	SenderManager(int thread_number, const Fanni::Network::Event_UDP &udp_server, PacketTransferBase *peer);
+	SenderManager(int thread_number, PacketTransferBase *transfer_peer,
+			const PacketFactory *packet_factory, const Fanni::Network::Event_UDP &udp_server);
 	virtual void init();
 };
 

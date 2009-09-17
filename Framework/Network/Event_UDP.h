@@ -16,11 +16,11 @@ namespace Network {
 
 class Event_OnRecvHandler: public EventHandlerBase {
 private:
-	UDP_OnRecvHandlerBase *_udp_OnRecv_handler;
+	UDP_OnRecvHandlerBase *_udp_OnRecv_handler_ptr;
 
 public:
 	Event_OnRecvHandler(UDP_OnRecvHandlerBase *handler) {
-		this->_udp_OnRecv_handler = handler;
+		this->_udp_OnRecv_handler_ptr = handler;
 	}
 
 	virtual void operator()(int fd, short flags) {
@@ -29,8 +29,7 @@ public:
 		std::auto_ptr<PacketBuffer> buffer(new PacketBuffer());
 		std::auto_ptr<EndPoint> ep(new EndPoint());
 
-		int recv_len = FanniSock::GetPacket(fd, buffer->getBuffer(),
-				reinterpret_cast<sockaddr *> (ep.get()));
+		int recv_len = FanniSock::GetPacket(fd, buffer->getBuffer(), reinterpret_cast<sockaddr *> (ep.get()));
 		// TODO @@@ non-blocking ?
 		if (recv_len == -1) {
 			ERROR_LOG("recvfrom() returned -1");
@@ -41,8 +40,8 @@ public:
 		}
 		// @@@ bad interface! do not forget me !!
 		buffer->setLength(recv_len);
-		if (this->_udp_OnRecv_handler != NULL) {
-			this->_udp_OnRecv_handler->operator ()(buffer.release(), ep.release());
+		if (this->_udp_OnRecv_handler_ptr != NULL) {
+			this->_udp_OnRecv_handler_ptr->operator ()(buffer.release(), ep.release());
 		}
 
 		TRACE_LOG("exit");
@@ -54,13 +53,12 @@ private:
 	EventManager em;
 	Event_OnRecvHandler *_libevent_OnRecv_handler;
 
-	void _init();
-
 public:
 	Event_UDP();
 	Event_UDP(const std::string &addr, int port);
 	virtual ~Event_UDP();
 
+	virtual void init();
 	virtual void start();
 };
 
