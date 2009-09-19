@@ -5,9 +5,11 @@
  *      Author: lulu
  */
 
+#include <memory>
 #include "ReceiverBase.h"
 #include "PacketTransferBase.h"
 
+using namespace std;
 using namespace Fanni;
 
 // ==========
@@ -23,36 +25,30 @@ ReceiverBase::~ReceiverBase() {
 	delete this->packet_serializer;
 }
 
-void ReceiverBase::loop() {
-	while (1) {
-		auto_ptr<const TransferDataBuffer> transfer_data(
-				dynamic_cast<const TransferDataBuffer *> (this->queue->pop()));
-		assert(transfer_data.get());
-		try {
-			auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(*(transfer_data->data)));
-			assert(packet.get());
-			// RESEND, ACK management
-			this->transfer_peer->processIncomingPacket(packet.get(), transfer_data->ep);
-			if ( !this->transfer_peer->skipHandlePacket( packet->header.getPacketID() ) ) {
-				// dispatch packet handler
-				const PacketHandlerBase *packet_handler = this->packet_handler_factory->getPacketHandler(packet->header.getPacketID());
-				// MEMO @@@ (inside getPacketHandler:) packet_handler never be null;
-				packet_handler->operator()(packet.get(), transfer_data->ep,this->transfer_peer);
-			}
-			// MEMO @@@ TransferDataBuffer(packet, ep) will be deleted here
-		} catch (ErrorException &e) {
-			ERROR_LOG("packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
-		} catch (WarnException &e) {
-			WARN_LOG("packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
-		} catch (FatalException &e) {
-			FATAL_LOG("receiver loop terminated. FATAL ERROR: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
-			break;
+void ReceiverBase::loop_func() {
+	auto_ptr<const TransferDataBuffer> transfer_data(
+			dynamic_cast<const TransferDataBuffer *> (this->getTask()));
+	assert(transfer_data.get());
+	try {
+		auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(*(transfer_data->data)));
+		assert(packet.get());
+		// RESEND, ACK management
+		this->transfer_peer->processIncomingPacket(packet.get(), transfer_data->ep);
+		if ( !this->transfer_peer->skipHandlePacket( packet->header.getPacketID() ) ) {
+			// dispatch packet handler
+			const PacketHandlerBase *packet_handler = this->packet_handler_factory->getPacketHandler(packet->header.getPacketID());
+			// MEMO @@@ (inside getPacketHandler:) packet_handler never be null;
+			packet_handler->operator()(packet.get(), transfer_data->ep,this->transfer_peer);
 		}
+		// MEMO @@@ TransferDataBuffer(packet, ep) will be deleted here
+	} catch (ErrorException &e) {
+		ERROR_LOG("packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
+	} catch (WarnException &e) {
+		WARN_LOG("packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
+	} catch (FatalException &e) {
+		FATAL_LOG("receiver loop terminated. FATAL ERROR: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
+		this->stop();
 	}
-}
-
-void ReceiverBase::stop() {
-	// TODO @@@
 }
 
 // ==========

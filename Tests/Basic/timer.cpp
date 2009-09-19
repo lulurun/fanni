@@ -6,7 +6,7 @@
  */
 
 #include <iostream>
-#include "fanni/Timer.h"
+#include "Threads/Timer.h"
 
 namespace Fanni {
 namespace Tests {
@@ -39,29 +39,40 @@ int main() {
 	cout << "one time" << endl;
 	{ // OneTimeTask
 		OneTimeTask task(1000, handler_A);
-		task.start();
+		task.kick();
+		task.join();
 	}
+
 	cout << "periodic" << endl;
 	{ // PeriodicTask
 		PeriodicTask task(2000, handler_B, 5);
-		task.start();
+		task.kick();
+		task.join();
 	}
 
 	cout << "Thread timers" << endl;
-	PeriodicTask period_task(1000, handler_A, 7);
-	PeriodicTaskThread PeriodicTask_thread(&period_task);
-	PeriodicTask_thread.kick();
+	{
+		PeriodicTask period_task(1000, handler_A, 7);
+		period_task.kick();
 
-	OneTimeTask onetime_task(1000, handler_B);
-	OneTimeTaskThread OneTimeTask_thread(&onetime_task);
-	OneTimeTask_thread.kick();
-	OneTimeTask_thread.join();
+		OneTimeTask onetime_task(1000, handler_B);
+		onetime_task.kick();
 
-	PeriodicTask period_task2(1000, handler_B, 5);
-	PeriodicTaskThread PeriodicTask_thread2(&period_task2);
-	PeriodicTask_thread2.kick();
+		PeriodicTask period_task2(1000, handler_B, 5);
+		period_task2.kick();
 
-	PeriodicTask_thread.join();
-	PeriodicTask_thread2.join();
+		onetime_task.join();
+		period_task.join();
+		period_task2.join();
+	}
+
+	cout << "infinite timer" << endl;
+	{
+		PeriodicTask period_task(1000, handler_A);
+		period_task.kick();
+		::sleep(10);
+		period_task.stop();
+	}
+
 }
 

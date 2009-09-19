@@ -145,6 +145,13 @@ namespace PacketTest
             output(packet.ToBytes());
         }
         
+        static void CloseConnectionReply_gen()
+        {
+            CloseConnectionReplyPacket packet = new CloseConnectionReplyPacket();
+
+            output(packet.ToBytes());
+        }
+        
 
 
         static void Main(string[] args)
@@ -157,6 +164,7 @@ namespace PacketTest
             OpenConnection_gen();
             OpenConnectionReply_gen();
             CloseConnection_gen();
+            CloseConnectionReply_gen();
 
         }
 

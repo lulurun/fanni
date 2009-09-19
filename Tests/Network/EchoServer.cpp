@@ -3,7 +3,7 @@
 #include "Network/FanniSock.h"
 
 #include "fanni/Logger.h"
-#include "fanni/ThreadTemplate.h"
+#include "Threads/ThreadTemplate.h"
 #include "Threads/ThreadManager.h"
 
 // packets
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 		Event_UDP peer(::DEFAULT_ADDR, ::DEFAULT_PORT);
 		peer.setOnRecvHandler(new PacketServer_OnRecvHandler(peer));
 
-		SimpleThreadTemplate<Event_UDP> thread(peer);
+		ThreadTemplate<Event_UDP> thread(&peer);
 		thread.kick();
 		thread.join();
 	} catch (ErrorException &e) {

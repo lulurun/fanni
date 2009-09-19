@@ -12,6 +12,7 @@ typedef enum {
 	 OpenConnection_ID = 0xffff0003,
 	 OpenConnectionReply_ID = 0xffff0004,
 	 CloseConnection_ID = 0xffff0005,
+	 CloseConnectionReply_ID = 0xffff0006,
 } PacketID;
 
 

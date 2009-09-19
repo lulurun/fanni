@@ -2,7 +2,7 @@
 #define FP_SEQGENERATOR_H_
 
 #include <list>
-#include "Mutex.h"
+#include "DataControl.h"
 
 namespace Fanni {
 
@@ -12,7 +12,7 @@ class SequenceGenerator {
 private:
 	uint32_t counter;
 	uint32_t max;
-	Mutex counter_lock;
+	DataControl counter_lock;
 public:
 	SequenceGenerator(uint32_t max = SEQ_GEN_MAX) {
 		this->counter = 0;
@@ -21,7 +21,7 @@ public:
 	~SequenceGenerator() {};
 	uint32_t next() {
 		{
-			S_MUTEX_LOCK l;
+			DataControlLock l;
 			l.lock(&this->counter_lock);
 			if (this->counter > this->max) {
 				this->reset();

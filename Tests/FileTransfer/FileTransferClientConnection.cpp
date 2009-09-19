@@ -37,14 +37,14 @@ FileTransferClientConnection::~FileTransferClientConnection() {
 // ================
 // receive transfer
 void FileTransferClientConnection::addReceiveFileTransfer(FileTransferStatus *status) {
-	S_MUTEX_LOCK l;
-	l.lock(&this->receive_transfer_status_map.getMutex());
+	DataControlLock l;
+	l.lock(&this->receive_transfer_status_map.getDataControl());
 	this->receive_transfer_status_map[status->getReceiverTransferID().toString()] = status;
 }
 
 FileTransferStatus *FileTransferClientConnection::getReceiveFileTransfer(const UUID &receiver_transfer_id) {
-	S_MUTEX_LOCK l;
-	l.lock(&this->receive_transfer_status_map.getMutex());
+	DataControlLock l;
+	l.lock(&this->receive_transfer_status_map.getDataControl());
 	return this->_getReceiveFileTransfer_nolock(receiver_transfer_id);
 }
 
@@ -59,8 +59,8 @@ FileTransferStatus *FileTransferClientConnection::_getReceiveFileTransfer_nolock
 }
 
 void FileTransferClientConnection::closeReceiveTransfer(const UUID &receiver_transfer_id) {
-	S_MUTEX_LOCK l;
-	l.lock(&this->receive_transfer_status_map.getMutex());
+	DataControlLock l;
+	l.lock(&this->receive_transfer_status_map.getDataControl());
 	FileTransferStatus *status = this->_getReceiveFileTransfer_nolock(receiver_transfer_id);
 	if (status) {
 		this->receive_transfer_status_map.erase(receiver_transfer_id.toString());
@@ -73,14 +73,14 @@ void FileTransferClientConnection::closeReceiveTransfer(const UUID &receiver_tra
 // ================
 // send transfer
 void FileTransferClientConnection::addSendFileTransfer(FileTransferStatus *status) {
-	S_MUTEX_LOCK l;
-	l.lock(&this->send_transfer_status_map.getMutex());
+	DataControlLock l;
+	l.lock(&this->send_transfer_status_map.getDataControl());
 	this->send_transfer_status_map[status->getSenderTransferID().toString()] = status;
 }
 
 FileTransferStatus *FileTransferClientConnection::getSendFileTransfer(const UUID &sender_transfer_id) {
-	S_MUTEX_LOCK l;
-	l.lock(&this->send_transfer_status_map.getMutex());
+	DataControlLock l;
+	l.lock(&this->send_transfer_status_map.getDataControl());
 	return this->_getSendFileTransfer_nolock(sender_transfer_id);
 }
 
@@ -95,8 +95,8 @@ FileTransferStatus *FileTransferClientConnection::_getSendFileTransfer_nolock(co
 }
 
 void FileTransferClientConnection::closeSendTransfer(const UUID &sender_transfer_id) {
-	S_MUTEX_LOCK l;
-	l.lock(&this->send_transfer_status_map.getMutex());
+	DataControlLock l;
+	l.lock(&this->send_transfer_status_map.getDataControl());
 	FileTransferStatus *status = this->_getSendFileTransfer_nolock(sender_transfer_id);
 	if (status) {
 		this->send_transfer_status_map.erase(sender_transfer_id.toString());
@@ -224,6 +224,24 @@ void FileTransferClientConnection::OnFileTransferCompleteEvent::operator ()(cons
 	// close this transfer
 	connection->closeSendTransfer(sender_transfer_id);
 	INFO_LOG("send_transfer completed: " << sender_transfer_id.toString());
+	CloseConnectionPacket *packet = dynamic_cast<CloseConnectionPacket *>(FileTransferPacketFactorySingleton::get().createPacket(CloseConnection_ID));
+	assert(packet);
+	connection->sendPacket(packet);
 	TRACE_LOG("exit");
 }
+
+void FileTransferClientConnection::OnCloseConnectionEvent::operator ()(FileTransferClientConnection *connection) {
+	TRACE_LOG("enter");
+	CloseConnectionReplyPacket *packet = dynamic_cast<CloseConnectionReplyPacket *>(FileTransferPacketFactorySingleton::get().createPacket(CloseConnectionReply_ID));
+	assert(packet);
+	connection->sendPacket(packet);
+	TRACE_LOG("exit");
+}
+
+void FileTransferClientConnection::OnCloseConnectionReplyEvent::operator ()(FileTransferClientConnection *connection) {
+	TRACE_LOG("enter");
+	TRACE_LOG("exit");
+}
+
+
 

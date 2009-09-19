@@ -13,7 +13,7 @@
 #include <tr1/unordered_map>
 #include "fanni/UUID.h"
 #include "fanni/LockableTemplate.h"
-#include "Threads/Mutex.h"
+#include "Threads/DataControl.h"
 #include "PacketTransfer/ClientConnectionBase.h"
 
 namespace Fanni {
@@ -23,7 +23,7 @@ static const size_t FILE_PART_SIZE = 1200;
 
 class FileTransferStatus {
 private:
-	Mutex m;
+	DataControl dc;
 
 	size_t file_size;
 	const std::string file_name;
@@ -65,21 +65,21 @@ public:
 	const unsigned char *getFileBuffer() const { return this->file_buffer; }
 
 	void setReceiverTransferID(const UUID &transfer_id) {
-		S_MUTEX_LOCK l;
-		l.lock(&this->m);
+		DataControlLock l;
+		l.lock(&this->dc);
 		this->ReceiverTransferID = transfer_id;
 	}
 
 	void setSenderTransferID(const UUID &transfer_id) {
-		S_MUTEX_LOCK l;
-		l.lock(&this->m);
+		DataControlLock l;
+		l.lock(&this->dc);
 		this->SenderTransferID = transfer_id;
 	}
 
 	// return true if all data has been received
 	bool update(int data_number, const unsigned char *data, size_t len) {
-		S_MUTEX_LOCK l;
-		l.lock(&this->m);
+		DataControlLock l;
+		l.lock(&this->dc);
 		if (!this->data_block_map[data_number]) {
 			size_t start = data_number * FILE_PART_SIZE;
 			assert(start + len <= this->file_size);
@@ -109,10 +109,16 @@ private:
 		void operator()(const UUID &receiver_transfer_id, const UUID &sender_transfer_id, FileTransferClientConnection *connection);
 	};
 	struct OnFileDataEvent {
-		void operator()(const UUID &receiver_transfer_id, int data_number, const vector<unsigned char> &data_buf, FileTransferClientConnection *connection);
+		void operator()(const UUID &receiver_transfer_id, int data_number, const std::vector<unsigned char> &data_buf, FileTransferClientConnection *connection);
 	};
 	struct OnFileTransferCompleteEvent  {
 		void operator()(const UUID &sender_transfer_id, FileTransferClientConnection *connection);
+	};
+	struct OnCloseConnectionEvent {
+		void operator()(FileTransferClientConnection *connection);
+	};
+	struct OnCloseConnectionReplyEvent {
+		void operator()(FileTransferClientConnection *connection);
 	};
 
 	void addReceiveFileTransfer(FileTransferStatus *status);
@@ -135,6 +141,8 @@ public:
 	OnFileInfoReplyEvent OnFileInfoReply;
 	OnFileDataEvent OnFileData;
 	OnFileTransferCompleteEvent OnFileTransferComplete;
+	OnCloseConnectionEvent OnCloseConnection;
+	OnCloseConnectionReplyEvent OnCloseConnectionReply;
 };
 
 }

@@ -60,6 +60,7 @@ public:
 
 	virtual void init();
 	virtual void start();
+	virtual void stop();
 };
 
 }

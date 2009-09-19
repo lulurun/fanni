@@ -57,7 +57,15 @@ public:
 	int dispatch(int flags = 0) {
 		return event_base_loop(this->_event_base, flags);
 	}
-
+	int stop() {
+		DEBUG_LOG("enter");
+		struct timeval tv;
+		tv.tv_sec = 1;
+		tv.tv_usec = 0;
+		int ret = event_base_loopexit(this->_event_base, &tv);
+		DEBUG_LOG("exit");
+		return ret;
+	}
 };
 
 };

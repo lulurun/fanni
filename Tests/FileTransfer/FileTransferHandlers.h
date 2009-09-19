@@ -51,7 +51,29 @@ public:
 class CloseConnectionPacketHandler : public PacketHandlerBase {
 public:
 	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const {
+		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
+		if (!connection) {
+			ERROR_LOG("unknown connection from: " << ep->getAddrStr() << ":" << ep->getPort());
+			return;
+		}
+		INFO_LOG("reply to close connection request");
+		connection->OnCloseConnection(connection);
+		//transfer_peer->removeConnection(ep);
+	};
+};
+
+class CloseConnectionReplyPacketHandler : public PacketHandlerBase {
+public:
+	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const {
+		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
+		if (!connection) {
+			ERROR_LOG("unknown connection from: " << ep->getAddrStr() << ":" << ep->getPort());
+			return;
+		}
+		INFO_LOG("got close connection reply");
+		connection->OnCloseConnectionReply(connection);
 		transfer_peer->removeConnection(ep);
+		transfer_peer->stop(); // MEMO @@@ this is just a test
 	};
 };
 
@@ -62,7 +84,10 @@ public:
 		const FileInfoPacket *file_info_packet = dynamic_cast<const FileInfoPacket *> (packet);
 		assert(file_info_packet);
 		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
-		assert(connection);
+		if (!connection) {
+			ERROR_LOG("unknown connection from: " << ep->getAddrStr() << ":" << ep->getPort());
+			return;
+		}
 		connection->OnFileInfo(file_info_packet->FileInfo.Size, file_info_packet->FileInfo.Name.c_str(), file_info_packet->FileInfo.SenderTransferID.val, connection);
 		TRACE_LOG("exit");
 	};
@@ -75,7 +100,10 @@ public:
 		const FileInfoReplyPacket *file_info_reply_packet = dynamic_cast<const FileInfoReplyPacket *> (packet);
 		assert(file_info_reply_packet);
 		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
-		assert(connection);
+		if (!connection) {
+			ERROR_LOG("unknown connection from: " << ep->getAddrStr() << ":" << ep->getPort());
+			return;
+		}
 		connection->OnFileInfoReply(file_info_reply_packet->FileInfo.ReceiverTransferID.val, file_info_reply_packet->FileInfo.SenderTransferID.val, connection);
 		TRACE_LOG("exit");
 	};
@@ -89,7 +117,7 @@ public:
 		assert(file_data_packet);
 		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
 		if (!connection) {
-			ERROR_LOG("connection is NULL: " << ep->getAddrStr() << " " << ep->getPort());
+			ERROR_LOG("unknown connection from: " << ep->getAddrStr() << ":" << ep->getPort());
 			return;
 		}
 		assert(connection);
@@ -105,7 +133,10 @@ public:
 		const TransferCompletePacket *transfer_complete_packet = dynamic_cast<const TransferCompletePacket *>(packet);
 		assert(transfer_complete_packet);
 		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(transfer_peer->getConnection(ep));
-		assert(connection);
+		if (!connection) {
+			ERROR_LOG("unknown connection from: " << ep->getAddrStr() << ":" << ep->getPort());
+			return;
+		}
 		connection->OnFileTransferComplete(transfer_complete_packet->FileData.SenderTransferID.val, connection);
 		TRACE_LOG("exit");
 	};

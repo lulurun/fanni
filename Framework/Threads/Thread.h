@@ -1,8 +1,9 @@
-#ifndef CALFOS_THREAD_H_
-#define CALFOS_THREAD_H_
+#ifndef _THREAD_H_
+#define _THREAD_H_
 
 #include <pthread.h>
 #include <string>
+#include "DataControl.h"
 
 namespace Fanni {
 
@@ -16,24 +17,26 @@ public:
 		THREAD_PRIORITY_HIGHEST,
 	};
 	static void set_thread_priority( int priority );
-private:
+protected:
 	pthread_t th;
 	int priority;
+	DataControl dc;
+
 public:
 	ThreadBase();
 	virtual ~ThreadBase();
-	virtual void stop() = 0;
+	virtual void stop();
 
 	void kick( int priority = THREAD_PRIORITY_NOMAL );
 	void join();
 	const pthread_t getID() const;
 private:
-	static void * thread_handler( void * This );
+	static void * _thread_func( void * This );
 protected:
-	virtual void loop() = 0;
+	virtual void start();
+	virtual void loop_func() = 0;
 };
 
 } // namespace
 
-
-#endif /*CALFOS_THREAD_H_*/
+#endif /*_THREAD_H_*/

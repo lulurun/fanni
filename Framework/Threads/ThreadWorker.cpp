@@ -10,10 +10,13 @@ ThreadWorker::~ThreadWorker() {  }
 
 void ThreadWorker::init(WORKER_ID_TYPE id) {
 	this->id = id;
-	this->queue = QueueFactory::GetInstance()->createQueue();
+	this->queue = QueueFactorySingleton::get().createQueue();
 }
 
 void ThreadWorker::addTask(const ThreadTask *data) {
-	this->queue->push(data);
+	this->queue->put(data);
 }
 
+const ThreadTask *ThreadWorker::getTask() {
+	return this->queue->get();
+}

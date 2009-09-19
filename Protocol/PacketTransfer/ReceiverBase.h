@@ -32,8 +32,7 @@ public:
 			const PacketFactory *packet_factory,
 			const PacketHandlerFactory *packet_handler_factory);
 	~ReceiverBase();
-	virtual void loop();
-	virtual void stop();
+	virtual void loop_func();
 };
 
 class ReceiverManager: public ThreadManager {

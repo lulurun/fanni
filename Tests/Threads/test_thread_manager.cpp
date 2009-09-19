@@ -1,3 +1,4 @@
+#include <cassert>
 #include <string>
 #include <iostream>
 #include "fanni/Exception.h"
@@ -29,26 +30,21 @@ public:
 		// TODO @@@ do something
 	}
 
-	virtual void loop() {
-		while(1) {
-			// get data
-			const ThreadTask *task = this->queue->pop();
-			const IntData *queue_data = dynamic_cast<const IntData *>(task);
-			if (!queue_data) {
-				FatalException::throw_exception(EXP_TEST, EXP_PRE_MSG, "unexpected queue data type");
-			}
-			auto_ptr<const IntData> data(queue_data);
-			// call handler
-			printf("\t\tconsumer[%d]: %d\n", this->id, queue_data->data);
-			if (queue_data->data == 4999) {
-				printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
-				printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
-				printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
-				printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
-				printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
-				printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
-				printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
-			}
+	virtual void loop_func() {
+		// get data
+		const IntData *queue_data = dynamic_cast<const IntData *>(this->getTask());
+		assert(queue_data);
+		auto_ptr<const IntData> data(queue_data);
+		// call handler
+		printf("\t\tconsumer[%d]: %d\n", this->id, queue_data->data);
+		if (queue_data->data == 4999) {
+			printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
+			printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
+			printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
+			printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
+			printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
+			printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
+			printf("\t\tconsumer[%d]: get 4999 !!\n", this->id);
 		}
 	}
 };
@@ -74,24 +70,27 @@ class Producer : public ThreadWorker {
 private:
 	int loop_number;
 	ConsumerManager *c_mgr;
+
+	int inner_count;
 public:
 	Producer(int loop_number, ConsumerManager *c_mgr) {
 		this->loop_number = loop_number;
 		this->c_mgr = c_mgr;
+		this->inner_count = 0;
 	}
 
 	virtual void stop() {
 		// TODO @@@ do something
 	}
 
-	virtual void loop() {
-		int i = 0;
-		while(i++ < this->loop_number) {
-			int new_int = seq_gen.next();
-			IntData *data = new IntData(new_int);
-			// call handler
-			printf("producer[%d]: %d\n", this->id, new_int);
-			this->c_mgr->deliverTask(data);
+	virtual void loop_func() {
+		int new_int = seq_gen.next();
+		IntData *data = new IntData(new_int);
+		// call handler
+		printf("producer[%d]: %d\n", this->id, new_int);
+		this->c_mgr->deliverTask(data);
+		if (inner_count++ > loop_number) {
+			// TODO @@@ stop;
 		}
 	}
 };

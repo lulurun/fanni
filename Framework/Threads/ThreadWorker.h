@@ -1,5 +1,5 @@
-#ifndef FP_WORKER_H_
-#define FP_WORKER_H_
+#ifndef THREAD_WORKER_H_
+#define THREAD_WORKER_H_
 
 #include "Thread.h"
 #include "QueueFactory.h"
@@ -16,11 +16,11 @@ protected:
 public:
 	ThreadWorker();
 	virtual ~ThreadWorker();
-	virtual void loop() = 0;
-	void addTask(const ThreadTask *data);
 	void init(WORKER_ID_TYPE id);
+	void addTask(const ThreadTask *data);
+	const ThreadTask *getTask();
 };
 
 }
 
-#endif /*FP_WORKER_H_*/
+#endif /*THREAD_WORKER_H_*/

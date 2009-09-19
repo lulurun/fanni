@@ -27,6 +27,7 @@ void FileTransferNode::init() {
 	this->packet_handler_factory.registerPacketHandler(OpenConnection_ID, new OpenConnectionPacketHandler());
 	this->packet_handler_factory.registerPacketHandler(OpenConnectionReply_ID, new OpenConnectionReplyPacketHandler());
 	this->packet_handler_factory.registerPacketHandler(CloseConnection_ID, new CloseConnectionPacketHandler());
+	this->packet_handler_factory.registerPacketHandler(CloseConnectionReply_ID, new CloseConnectionReplyPacketHandler());
 	this->packet_handler_factory.registerPacketHandler(FileInfo_ID, new FileInfoPacketHandler());
 	this->packet_handler_factory.registerPacketHandler(FileInfoReply_ID, new FileInfoReplyPacketHandler());
 	this->packet_handler_factory.registerPacketHandler(FileData_ID, new FileDataPacketHandler());

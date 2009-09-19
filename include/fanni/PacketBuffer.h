@@ -13,7 +13,9 @@
 
 namespace Fanni {
 
+#ifndef PACKET_BUF_LEN
 #define PACKET_BUF_LEN 1500
+#endif
 
 typedef FixedLengthBuffer<PACKET_BUF_LEN> PacketBuffer;
 typedef Serializable<PacketBuffer> PacketSerializable;

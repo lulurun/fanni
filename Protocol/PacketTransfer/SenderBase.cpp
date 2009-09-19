@@ -26,11 +26,9 @@ SenderBase::~SenderBase() {
 	delete this->packet_serializer;
 }
 
-void SenderBase::loop() {
-	while (1) {
-		const ThreadTask *task = this->queue->pop();
-		const TransferDataPacket *const_queue_data =
-				dynamic_cast<const TransferDataPacket *> (task);
+void SenderBase::loop_func() {
+	try {
+		const TransferDataPacket *const_queue_data = dynamic_cast<const TransferDataPacket *> (this->getTask());
 		assert(const_queue_data);
 		std::auto_ptr<const TransferDataPacket> data_ptr(const_queue_data);
 		int len = 0;
@@ -41,11 +39,14 @@ void SenderBase::loop() {
 		this->transfer_peer->processOutgoingPacket(const_queue_data->data,
 				const_queue_data->ep_ptr);
 		this->udp_server.send(resp_buf, len, *const_queue_data->ep_ptr);
+	} catch (ErrorException &e) {
+		ERROR_LOG("packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
+	} catch (WarnException &e) {
+		WARN_LOG("packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
+	} catch (FatalException &e) {
+		FATAL_LOG("receiver loop terminated. FATAL ERROR: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
+		this->stop();
 	}
-}
-
-void SenderBase::stop() {
-	// TODO @@@
 }
 
 // ==========

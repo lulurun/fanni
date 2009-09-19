@@ -11,9 +11,11 @@
 #include <pthread.h>
 #include "fanni/Exception.h"
 #include "fanni/Logger.h"
+#include "Thread.h"
 
 namespace Fanni {
 
+#if 0
 class ThreadHandlerBase {
 public:
 	ThreadHandlerBase() {
@@ -24,42 +26,6 @@ public:
 	;
 	virtual void setArg(void *arg) = 0;
 	virtual void operator()() = 0;
-};
-
-template<class ThreadHandlerType>
-class ThreadTemplate {
-private:
-	pthread_t th;
-	ThreadHandlerType *handler;
-
-public:
-	ThreadTemplate(ThreadHandlerType *handler) :
-		handler(handler) {
-	}
-	virtual ~ThreadTemplate() {
-	}
-	void getID() {
-		return this->th;
-	}
-	void kick() {
-		::pthread_create(&this->th, NULL, caller, handler);
-	}
-	void join() {
-		::pthread_join(this->th, NULL);
-	}
-
-protected:
-	// @@@ arg must be derived from ThreadHandlerBase
-	static void *caller(void *arg = NULL) {
-		ThreadHandlerType *handler = reinterpret_cast<ThreadHandlerType *> (arg);
-		/* TODO @@@ assert typeof(handler) */
-		try {
-			handler->operator()();
-		} catch (ErrorException &e) {
-			ERROR_LOG("Thread terminated by catching ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
-		}
-		return NULL;
-	}
 };
 
 template<class ThreadObject>
@@ -111,6 +77,25 @@ protected:
 	}
 };
 
+#endif
+
+template<class ThreadObject>
+class ThreadTemplate : public ThreadBase {
+private:
+	ThreadObject *thread_object_ptr;
+
+public:
+	ThreadTemplate(ThreadObject *thread_object) : thread_object_ptr(thread_object){}
+	virtual void start() {
+		this->thread_object_ptr->start();
+	}
+	virtual void stop() {
+		DEBUG_LOG("enter");
+		this->thread_object_ptr->stop();
+		DEBUG_LOG("exit");
+	}
+	virtual void loop_func() {};
+};
 
 
 }

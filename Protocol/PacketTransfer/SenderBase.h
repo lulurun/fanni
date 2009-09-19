@@ -29,8 +29,7 @@ private:
 public:
 	SenderBase(const Fanni::Network::Event_UDP &udp_server, PacketTransferBase *transfer_peer, const PacketFactory *packet_factory);
 	~SenderBase();
-	virtual void loop();
-	virtual void stop();
+	virtual void loop_func();
 };
 
 

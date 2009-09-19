@@ -4,7 +4,7 @@ Import("test_env")
 test_env.Program("echo_server",
 		["EchoServer.cpp"],
 		LIBS = [
-		"framework_network", "basic", "event",
+		"framework_network", "basic", "event", "boost_thread-mt",
 		"framework_threads", "pthread", "log4cxx", "uuid"],
 		CPPPATH = ["./", "../../Framework", "../../Protocol", "../../include"],
 		LIBPATH = ["../../lib"],

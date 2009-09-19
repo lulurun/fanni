@@ -8,12 +8,13 @@
 #ifndef PACKETTRANSFERBASE_H_
 #define PACKETTRANSFERBASE_H_
 
-#include "fanni/ThreadTemplate.h"
-#include "fanni/Timer.h"
-#include "Threads/SeqGenerator.h"
 #include "Network/Event_UDP.h"
+#include "Threads/DataControl.h"
+#include "Threads/SeqGenerator.h"
 #include "Threads/ThreadWorker.h"
 #include "Threads/ThreadManager.h"
+#include "Threads/ThreadTemplate.h"
+#include "Threads/Timer.h"
 
 #include "SenderBase.h"
 #include "ReceiverBase.h"
@@ -39,14 +40,14 @@ class PacketTransferBase {
 
 
 private:
-	SimpleThreadTemplate<Fanni::Network::Event_UDP> *udp_server_thread;
+	ThreadTemplate<Fanni::Network::Event_UDP> *udp_server_thread;
 	ReceiverManager *receiver_manager;
 	SenderManager *sender_manager;
 
 	// timer threads
-	PeriodicTaskThread *check_ACK_timer_thread;
-	PeriodicTaskThread *check_RESEND_timer_thread;
-	PeriodicTaskThread *check_ALIVE_timer_thread;
+	PeriodicTask *check_ACK_timer_thread;
+	PeriodicTask *check_RESEND_timer_thread;
+	PeriodicTask *check_ALIVE_timer_thread;
 
 	OnRecvHandler *_udp_server_on_recv;
 
@@ -61,7 +62,7 @@ protected:
 
 	typedef std::tr1::unordered_map<EndPoint::IPV4_HASH_KEY_TYPE, ClientConnectionBase *> CLIENT_CONNECTION_MAP_TYPE;
 	CLIENT_CONNECTION_MAP_TYPE client_connection_map;
-	Mutex client_connection_map_lock;
+	DataControl client_connection_map_lock;
 
 	virtual void removeConnection_nolock(const EndPoint *ep);
 	virtual ClientConnectionBase *getConnection_nolock(const EndPoint *ep);
@@ -73,6 +74,7 @@ public:
 	virtual void init(const PacketFactory *packet_factory, const PacketHandlerFactory *packet_handler_factory);
 	virtual void start();
 	virtual void join();
+	virtual void stop();
 	virtual void sendPacket(PacketBase *packet, const EndPoint *ep);
 
 	// Client Connection management
@@ -90,7 +92,7 @@ public:
 
 	virtual void checkACK();
 	virtual void checkRESEND();
-	virtual void checkAlive();
+	virtual void checkALIVE();
 
 };
 

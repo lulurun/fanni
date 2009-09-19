@@ -38,7 +38,7 @@ void ClientConnectionBase::updateLastReceived() {
 
 void ClientConnectionBase::checkACK() {
     if (this->ack_packet_queue.empty()) return;
-    S_MUTEX_LOCK l;
+    DataControlLock l;
     l.lock(&this->ack_lock);
     int total_count = 0;
     while (!this->ack_packet_queue.empty()) {
@@ -60,7 +60,7 @@ void ClientConnectionBase::checkACK() {
 
 void ClientConnectionBase::checkRESEND() {
 	if (this->resend_packet_map.empty()) return;
-	S_MUTEX_LOCK l;
+	DataControlLock l;
 	l.lock(&this->resend_lock);
 	DEBUG_LOG("number of resend packets: " << this->resend_packet_map.size());
 	list<uint32_t> delete_list;
@@ -84,7 +84,7 @@ void ClientConnectionBase::checkRESEND() {
 	DEBUG_LOG("resending " << resend_count << " packets");
 }
 
-bool ClientConnectionBase::checkAlive() {
+bool ClientConnectionBase::checkALIVE() {
 	time_t now = time(NULL);
 	if ((now - this->last_packet_received) > CONNECTION_TIMEOUT) {
 		return true;
@@ -96,12 +96,12 @@ void ClientConnectionBase::processIncomingPacket(const PacketBase *packet) {
 	TRACE_LOG("enter");
 	this->updateLastReceived();
 	if (packet->header.isReliable()) {
-		S_MUTEX_LOCK l;
+		DataControlLock l;
 		l.lock(&this->ack_lock);
 		this->ack_packet_queue.push(packet->header.getSequenceNumber());
 	}
 	// process resend
-	S_MUTEX_LOCK l;
+	DataControlLock l;
 	l.lock(&this->resend_lock);
 	if (packet->header.isAppendedAcks()) {
 		PacketBase::ACK_LIST_TYPE::const_iterator it = packet->appended_acks.begin();
@@ -123,7 +123,7 @@ void ClientConnectionBase::processIncomingPacket(const PacketBase *packet) {
 
 void ClientConnectionBase::processOutgoingPacket(const PacketBase *packet) {
 	if (packet->header.isReliable() && !packet->header.isResent()) {
-		S_MUTEX_LOCK l;
+		DataControlLock l;
 		l.lock(&this->resend_lock);
 		this->add_resend_packet_nolock(packet);
 	}

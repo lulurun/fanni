@@ -14,13 +14,13 @@
 #include <tr1/unordered_map>
 
 #include "fanni/EndPoint.h"
-#include "Threads/Mutex.h"
+#include "Threads/DataControl.h"
 #include "Packets/PacketBase.h"
 
 namespace Fanni {
 
 static const int CONNECTION_TIMEOUT = 100; // 100 sec
-static const int RESEND_TIMEOUT = 10; // 4 sec
+static const int RESEND_TIMEOUT = 4; // 4 sec
 static const int MAX_RESENDING_TRIES = 0xffff; // will give up transferring after trying to resend 4 times
 
 // MEMO @@@ supposed to be write from only one thread
@@ -81,21 +81,20 @@ public:
 
 	virtual void checkACK();
 	virtual void checkRESEND();
-	virtual bool checkAlive();
+	virtual bool checkALIVE();
 
 	virtual void processIncomingPacket(const PacketBase *packet);
 	virtual void processOutgoingPacket(const PacketBase *packet);
 
 private:
 	// ACK, RESEND management
-	Mutex ack_lock;
+	DataControl ack_lock;
 	ACK_PACKET_QUEUE_TYPE ack_packet_queue;
-	Mutex resend_lock;
+	DataControl resend_lock;
 	RESEND_PACKET_MAP_TYPE resend_packet_map;
 
 private:
 	// MEMO @@@ these methods are not thread safe
-	// locked by caller from "this"
 	void remove_resend_packet_nolock(uint32_t seq);
 	void add_resend_packet_nolock(const PacketBase* packet);
 };

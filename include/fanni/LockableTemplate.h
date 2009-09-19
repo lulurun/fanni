@@ -8,13 +8,13 @@
 #ifndef LOCKABLETEMPLATE_H_
 #define LOCKABLETEMPLATE_H_
 
-#include "Threads/Mutex.h"
+#include "Threads/DataControl.h"
 
 namespace Fanni {
 
 template<class T>
 class lockable : public T {
-	Mutex m;
+	DataControl dc;
 public:
 	lockable() : T() {}
 	explicit lockable(const T &obj) : T(obj){}
@@ -25,8 +25,8 @@ public:
 			return *this;
 		}
 	}
-	Mutex &getMutex() {
-		return this->m;
+	DataControl &getDataControl() {
+		return this->dc;
 	}
 };
 

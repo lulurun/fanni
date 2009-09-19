@@ -6,13 +6,12 @@
  */
 
 #include <list>
-#include "fanni/ThreadTemplate.h"
 #include "PacketTransferBase.h"
 
 namespace Fanni {
 
 // ACK, RESEND management
-static const int ACK_TIME_OUT = 500; // 0.5 sec
+static const int ACK_TIME_OUT = 250; // 0.5 sec
 static const int RESEND_TIME_OUT = 500; // 3 sec
 static const int ALIVE_TIME_OUT = 30000; // 30 sec
 
@@ -45,7 +44,7 @@ public:
 		transfer_peer_ptr(transfer_peer) {
 	}
 	virtual void operator()() const {
-		this->transfer_peer_ptr->checkAlive();
+		this->transfer_peer_ptr->checkALIVE();
 	}
 };
 
@@ -82,20 +81,17 @@ void PacketTransferBase::init(const PacketFactory *packet_factory, const PacketH
 	{ // start UDP server thread
 		this->_udp_server_on_recv = new OnRecvHandler(this->receiver_manager);
 		this->udp_server->setOnRecvHandler(this->_udp_server_on_recv);
-		this->udp_server_thread = new SimpleThreadTemplate<Event_UDP> (*this->udp_server);
+		this->udp_server_thread = new ThreadTemplate<Event_UDP> (this->udp_server);
 	}
 	{ // init timers
 		OnTimerElapsedHandler_CheckACK *check_ack_handler = new OnTimerElapsedHandler_CheckACK(this);
-		PeriodicTask *check_ack_timer = new PeriodicTask(ACK_TIME_OUT, check_ack_handler);
-		this->check_ACK_timer_thread = new PeriodicTaskThread(check_ack_timer);
+		this->check_ACK_timer_thread = new PeriodicTask(ACK_TIME_OUT, check_ack_handler);
 
 		OnTimerElapsedHandler_CheckResend *check_resend_handler = new OnTimerElapsedHandler_CheckResend(this);
-		PeriodicTask *check_resend_timer = new PeriodicTask(RESEND_TIME_OUT, check_resend_handler);
-		this->check_RESEND_timer_thread = new PeriodicTaskThread(check_resend_timer);
+		this->check_RESEND_timer_thread = new PeriodicTask(RESEND_TIME_OUT, check_resend_handler);
 
 		OnTimerElapsedHandler_CheckAlive *check_alive_handler = new OnTimerElapsedHandler_CheckAlive(this);
-		PeriodicTask *check_alive_timer = new PeriodicTask(ALIVE_TIME_OUT, check_alive_handler);
-		this->check_ALIVE_timer_thread = new PeriodicTaskThread(check_alive_timer);
+		this->check_ALIVE_timer_thread = new PeriodicTask(ALIVE_TIME_OUT, check_alive_handler);
 	}
 	TRACE_LOG("exit");
 }
@@ -106,7 +102,7 @@ void PacketTransferBase::start() {
 	this->sender_manager->init();
 	this->udp_server_thread->kick();
 
-	this->check_ACK_timer_thread->kick();
+	this->check_ACK_timer_thread->kick(ThreadBase::THREAD_PRIORITY_HIGHT);
 	this->check_RESEND_timer_thread->kick();
 	this->check_ALIVE_timer_thread->kick();
 	TRACE_LOG("exit");
@@ -115,6 +111,18 @@ void PacketTransferBase::start() {
 void PacketTransferBase::join() {
 	// TODO @@@ join join ...
 	this->udp_server_thread->join();
+}
+
+void PacketTransferBase::stop() {
+	this->check_ACK_timer_thread->stop();
+	this->check_RESEND_timer_thread->stop();
+	this->check_ALIVE_timer_thread->stop();
+
+	this->udp_server_thread->stop();
+
+	::sleep(2);
+	//this->receiver_manager->stop();
+	//this->sender_manager->stop();
 }
 
 void PacketTransferBase::sendPacket(PacketBase *packet, const EndPoint *ep) {
@@ -132,14 +140,14 @@ ClientConnectionBase* PacketTransferBase::addConnection(uint32_t circuit_code,
 	DEBUG_LOG("add connection: " << ep->getAddrStr() << ":" << ep->getPort());
 	ClientConnectionBase *client_connection = this->createClientConnection(
 			circuit_code, ep);
-	S_MUTEX_LOCK l;
+	DataControlLock l;
 	l.lock(&this->client_connection_map_lock);
 	client_connection_map[ep->getIPv4HashKey()] = client_connection;
 	return client_connection;
 }
 
 ClientConnectionBase *PacketTransferBase::getConnection(const EndPoint *ep) {
-	S_MUTEX_LOCK l;
+	DataControlLock l;
 	l.lock(&this->client_connection_map_lock);
 	return this->getConnection_nolock(ep);
 }
@@ -158,7 +166,7 @@ ClientConnectionBase *PacketTransferBase::getConnection_nolock(
 }
 
 void PacketTransferBase::removeConnection(const EndPoint *ep) {
-	S_MUTEX_LOCK l;
+	DataControlLock l;
 	l.lock(&this->client_connection_map_lock);
 	this->removeConnection_nolock(ep);
 }
@@ -192,16 +200,16 @@ void PacketTransferBase::checkRESEND() {
 	TRACE_LOG("exit");
 }
 
-void PacketTransferBase::checkAlive() {
+void PacketTransferBase::checkALIVE() {
 	TRACE_LOG("enter");
 	DEBUG_LOG("checking Alive for " << this->client_connection_map.size() << " connections");
 	list<const EndPoint *> remove_connection_list;
-	S_MUTEX_LOCK l;
+	DataControlLock l;
 	l.lock(&this->client_connection_map_lock);
 	for (CLIENT_CONNECTION_MAP_TYPE::iterator it =
 			this->client_connection_map.begin(); it
 			!= this->client_connection_map.end(); it++) {
-		if (it->second->checkAlive()) {
+		if (it->second->checkALIVE()) {
 			remove_connection_list.push_back(&(it->second->getEndPoint()));
 		}
 	}

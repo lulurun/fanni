@@ -52,6 +52,7 @@ public:
 		this->recv_handler_ptr = NULL;
 	};
 	virtual ~UDPBase() {
+		//this->stop();
 		this->shutdown();
 	};
 
@@ -71,6 +72,7 @@ public:
 	const SOCKET &getSocket() const { return this->socket; }
 
 	virtual void start() = 0;
+	virtual void stop() = 0;
 
 	virtual void send(const PacketBuffer &buffer, const EndPoint &ep) const {
 		this->send(buffer.getConstBuffer(), buffer.getLength(), ep);

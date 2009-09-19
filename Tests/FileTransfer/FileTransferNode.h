@@ -42,7 +42,7 @@ public:
 	virtual bool skipProcessIncomingPacket(PacketHeader::PACKET_ID_TYPE packet_id);
 	virtual bool skipHandlePacket(PacketHeader::PACKET_ID_TYPE packet_id);
 
-	void startSendFile(const string &file_path, const EndPoint &ep);
+	void startSendFile(const std::string &file_path, const EndPoint &ep);
 	const std::string &getSendFile() const {
 		return this->send_file_path;
 	}

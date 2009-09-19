@@ -64,3 +64,6 @@
 	CloseConnection Low 5 NotTrusted Unencoded
 }
 
+{
+	CloseConnectionReply Low 6 NotTrusted Unencoded
+}

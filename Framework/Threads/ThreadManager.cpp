@@ -9,6 +9,8 @@ ThreadManager::ThreadManager() {
 }
 
 ThreadManager::~ThreadManager() {
+	DataControlLock l;
+	l.lock( &this->worker_list_lock );
 	WORKER_MAP_TYPE::iterator it;
 	for(it = this->worker_list.begin(); it != this->worker_list.end(); it++){
 		ThreadWorker *worker = it->second;
@@ -18,13 +20,12 @@ ThreadManager::~ThreadManager() {
 		ThreadWorker *worker = it->second;
 		delete worker;
 	}
-	// TODO @@@ leak: sequence_generator
 }
 
 void ThreadManager::deliverTask(const ThreadTask *data) {
 	ThreadWorker *worker = NULL;
 	{
-		S_MUTEX_LOCK l;
+		DataControlLock l;
 		l.lock( &this->worker_list_lock );
 		this->delivery_counter++;
 		// TODO: simple policy -> reasonable
@@ -48,6 +49,8 @@ ThreadWorker *ThreadManager::findWorkerById(WORKER_ID_TYPE id) {
 }
 
 void ThreadManager::addWorker(ThreadWorker *worker) {
+	DataControlLock l;
+	l.lock( &this->worker_list_lock );
 	WORKER_ID_TYPE id = this->seq_gen.next();
 	worker->init(id);
 	WORKER_MAP_TYPE::value_type val(id, worker);
@@ -56,6 +59,8 @@ void ThreadManager::addWorker(ThreadWorker *worker) {
 }
 
 void ThreadManager::join() {
+	DataControlLock l;
+	l.lock( &this->worker_list_lock );
 	WORKER_MAP_TYPE::iterator it;
 	for(it = this->worker_list.begin(); it != this->worker_list.end(); it++){
 		ThreadWorker *worker = it->second;

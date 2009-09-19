@@ -1,7 +1,8 @@
-#ifndef FP_MANAGER_H_
-#define FP_MANAGER_H_
+#ifndef THREAD_MANAGER_H_
+#define THREAD_MANAGER_H_
 
 #include <tr1/unordered_map>
+#include "DataControl.h"
 #include "ThreadTask.h"
 #include "ThreadWorker.h"
 #include "SeqGenerator.h"
@@ -11,9 +12,8 @@ namespace Fanni {
 // TOOD @@@ worker_id_type should be defined here
 class ThreadManager {
 protected:
-	typedef std::tr1::unordered_map<WORKER_ID_TYPE, ThreadWorker *>
-			WORKER_MAP_TYPE;
-	Mutex worker_list_lock;
+	typedef std::tr1::unordered_map<WORKER_ID_TYPE, ThreadWorker *> WORKER_MAP_TYPE;
+	DataControl worker_list_lock;
 	WORKER_MAP_TYPE worker_list;
 	uint32_t delivery_counter;
 	int worker_number;
@@ -41,7 +41,7 @@ public:
 		WORKER_MAP_TYPE::iterator it;
 		for (it = this->worker_list.begin(); it != this->worker_list.end(); it++) {
 			ThreadWorker *worker = it->second;
-			// TODO @@@ worker->stop();
+			worker->stop();
 			delete worker;
 		}
 	}
@@ -56,4 +56,4 @@ public:
 
 }
 
-#endif /*FP_MANAGER_H_*/
+#endif /*THREAD_MANAGER_H_*/

@@ -374,6 +374,33 @@ public:
     }
 };
 
+// CloseConnectionReplyPacket
+class CloseConnectionReplyPacket : public PacketBase {
+public:
+
+    // Block Class List
+    // CloseConnectionReplyPacket Member List
+
+public:
+    CloseConnectionReplyPacket() {
+        this->setID(CloseConnectionReply_ID);
+    };
+    virtual ~CloseConnectionReplyPacket() {};
+
+    virtual void serialize(PacketBuffer &buffer) const {}
+    virtual void deserialize(PacketBuffer &buffer) {}
+    virtual PacketBase *clone() const {
+        return new CloseConnectionReplyPacket(*this);
+    }
+    virtual PacketBase *clone(const PacketBase *packet) const {
+        const CloseConnectionReplyPacket *CloseConnectionReplyPacket_packet = dynamic_cast<const CloseConnectionReplyPacket *>(packet);
+        if (CloseConnectionReplyPacket_packet == NULL) {
+            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
+        }
+        return new CloseConnectionReplyPacket(*CloseConnectionReplyPacket_packet);
+    }
+};
+
 
 
 };

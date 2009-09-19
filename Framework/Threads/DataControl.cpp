@@ -1,37 +1,39 @@
-#include "Mutex.h"
+/*
+ * DataControl.cpp
+ *
+ *  Created on: Sep 18, 2009
+ *      Author: lulu
+ */
 
-#include <sys/types.h>
-#include <unistd.h>
-#include <errno.h>
-// posix
 #include <sys/time.h>
+#include "DataControl.h"
 
-using namespace std;
 using namespace Fanni;
 
-Mutex::Mutex(){
+DataControl::DataControl() {
 	::pthread_mutexattr_init(&a);
 	::pthread_mutexattr_setpshared(&a, PTHREAD_PROCESS_PRIVATE);
 	::pthread_mutexattr_settype(&a,PTHREAD_MUTEX_RECURSIVE);
 	::pthread_mutex_init(&m,&a);
 	::pthread_cond_init(&c,NULL);
+	this->active = false;
 }
 
-Mutex::~Mutex(){
+DataControl::~DataControl() {
 	::pthread_mutex_destroy(&m);
 	::pthread_cond_destroy(&c);
 	::pthread_mutexattr_destroy(&a);
 }
 
-int Mutex::lock(){
+int DataControl::lock(){
 	return ::pthread_mutex_lock(&m);
 }
 
-int Mutex::unlock(){
+int DataControl::unlock(){
 	return ::pthread_mutex_unlock(&m);
 }
 
-int Mutex::wait(long timeout){
+int DataControl::wait(long timeout){
 	int iRet;
 	if(timeout < 0){ // infinite
 		iRet = ::pthread_cond_wait(&c,&m);
@@ -51,28 +53,40 @@ int Mutex::wait(long timeout){
 	return iRet;
 }
 
-int Mutex::trigger(){
+int DataControl::trigger(){
 	return ::pthread_cond_signal(&c);
 }
 
-S_MUTEX_LOCK::S_MUTEX_LOCK(){
-	this->M = NULL;
+void DataControl::activate() {
+	this->lock();
+	this->active = true;
+	this->unlock();
+}
+
+void DataControl::deactivate() {
+	this->lock();
+	this->active = false;
+	this->unlock();
+}
+
+
+// DataControlLock
+DataControlLock::DataControlLock(){
+	this->dc_ptr = NULL;
 };
 
-S_MUTEX_LOCK::~S_MUTEX_LOCK(){
-	if(this->M)
-		this->unlock();
+DataControlLock::~DataControlLock(){
+	if(this->dc_ptr) this->unlock();
 }
 
-void S_MUTEX_LOCK::lock(Mutex *m){
-	this->M = m;
-	this->M->lock();
+void DataControlLock::lock(DataControl *dc){
+	this->dc_ptr = dc;
+	this->dc_ptr->lock();
 }
 
-void S_MUTEX_LOCK::unlock(){
-	Mutex *m = this->M;
-	this->M = NULL;
-	if(m)
-		m->unlock();
+void DataControlLock::unlock(){
+	DataControl *dc = this->dc_ptr;
+	this->dc_ptr = NULL;
+	if(dc) dc->unlock();
 }
 

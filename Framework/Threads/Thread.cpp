@@ -5,30 +5,43 @@
 using namespace Fanni;
 
 ThreadBase::ThreadBase() { }
-ThreadBase::~ThreadBase() { }
+ThreadBase::~ThreadBase() {
+	this->dc.deactivate();
+}
 
 void ThreadBase::kick( int priority ) {
+	this->dc.activate();
 	this->priority	= priority;
-	::pthread_create(&this->th, NULL, ThreadBase::thread_handler, this);
+	::pthread_create(&this->th, NULL, ThreadBase::_thread_func, this);
 }
 
 void ThreadBase::join() {
-	// TODO: timeout ?
 	void *ret;
 	::pthread_join(this->th, &ret);
 }
 
-void *ThreadBase::thread_handler(void *t) {
+void ThreadBase::stop() {
+	this->dc.deactivate();
+}
+
+void ThreadBase::start() {
+	try {
+		while(this->dc.isActive()) {
+			this->loop_func();
+		}
+		INFO_LOG("Worker Thread stopped");
+	} catch (const ErrorException &e) {
+		ERROR_LOG("ERROR Worker Thread terminated: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
+	} catch (const FatalException &e) {
+		FATAL_LOG("FATAL Worker Thread terminated: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
+	}
+}
+
+void *ThreadBase::_thread_func(void *t) {
 	TRACE_LOG("enter");
 	ThreadBase *This = reinterpret_cast<ThreadBase*>(t);
 	ThreadBase::set_thread_priority ( This->priority );
-	try {
-		This->loop();
-	} catch (const FatalException &e) {
-		ERROR_LOG("FATAL Worker Thread terminated: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
-	} catch (const ErrorException &e) {
-		ERROR_LOG("ERROR Worker Thread terminated: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
-	}
+	This->start();
 	TRACE_LOG("exit");
 	return NULL;
 }
