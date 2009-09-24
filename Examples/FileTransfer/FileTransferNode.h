@@ -9,8 +9,6 @@
 #define FILETRANSFERNODE_H_
 
 #include <string>
-#include <tr1/unordered_map>
-
 #include "fanni/EndPoint.h"
 #include "Packets/PacketBase.h"
 #include "PacketTransfer/PacketTransferBase.h"

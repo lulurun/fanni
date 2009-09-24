@@ -54,8 +54,8 @@ public:
 
 	~FileTransferStatus() {
 		DEBUG_LOG("release status memory !!");
-		if (this->file_buffer) delete this->file_buffer;
-		if (this->data_block_map) delete this->data_block_map;
+		if (this->file_buffer) delete [] this->file_buffer;
+		if (this->data_block_map) delete [] this->data_block_map;
 	}
 	const size_t getFileSize() const { return this->file_size; }
 	const std::string &getFileName() const { return this->file_name; }

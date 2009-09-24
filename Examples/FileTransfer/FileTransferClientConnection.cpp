@@ -199,6 +199,11 @@ void FileTransferClientConnection::OnFileDataEvent::operator ()(const UUID &rece
 	}
 	if (status->update(data_number, &data_buf[0], data_buf.size())) {
 		INFO_LOG("TransferComplete: " << status->getFileName() << " " << status->getReceiverTransferID().toString());
+		// send back to sender
+		TransferCompletePacket *packet = dynamic_cast<TransferCompletePacket *>(FileTransferPacketFactorySingleton::get().createPacket(TransferComplete_ID));
+		assert(packet);
+		packet->FileData.SenderTransferID = status->getSenderTransferID();
+		connection->sendPacket(packet);
 		string out_file = status->getFileName() + "_" + receiver_transfer_id.toString();
 		ofstream fs(out_file.c_str(), ios::binary);
 		if (fs.fail()) {
@@ -207,14 +212,9 @@ void FileTransferClientConnection::OnFileDataEvent::operator ()(const UUID &rece
 		}
 		fs.write(reinterpret_cast<const char *>(status->getFileBuffer()), status->getFileSize());
 		fs.close();
-		// send back to sender
-		TransferCompletePacket *packet = dynamic_cast<TransferCompletePacket *>(FileTransferPacketFactorySingleton::get().createPacket(TransferComplete_ID));
-		assert(packet);
-		packet->FileData.SenderTransferID = status->getSenderTransferID();
-		connection->sendPacket(packet);
 		// close this transfer
 		connection->closeReceiveTransfer(receiver_transfer_id);
-		INFO_LOG("receive_transfer completed: " << receiver_transfer_id.toString());
+		INFO_LOG("file transfer success: " << receiver_transfer_id.toString());
 	}
 	TRACE_LOG("exit");
 }

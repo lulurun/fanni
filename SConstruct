@@ -19,9 +19,10 @@ env.SConscript('Framework/Packets/SConscript')
 env.SConscript('Protocol/PacketTransfer/SConscript')
 env.SConscript('Protocol/LLPackets/SConscript')
 env.SConscript('Protocol/FileTransferPackets/SConscript')
-
+env.SConscript('Simulator/SConstruct')
 # Programs
 
 # Tests
 env.SConscript('Tests/SConstruct')
+env.SConscript('Examples/SConstruct')
 
