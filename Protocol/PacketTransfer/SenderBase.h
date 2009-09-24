@@ -22,9 +22,9 @@ class PacketTransferBase;
 class SenderBase : public ThreadWorker {
 private:
 	SequenceGenerator seq_gen;
-	PacketSerializer *packet_serializer;
 	const Fanni::Network::Event_UDP &udp_server;
 	PacketTransferBase *transfer_peer;
+	PacketSerializer *packet_serializer;
 
 public:
 	SenderBase(const Fanni::Network::Event_UDP &udp_server, PacketTransferBase *transfer_peer, const PacketFactory *packet_factory);

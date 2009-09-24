@@ -5,9 +5,8 @@
 using namespace Fanni;
 
 PacketHeader::PacketHeader() {
+	// TODO @@@ init flag
 	this->flag = FLAG_UNKNOWN;
-	this->sequence = 0;
-	this->undef = 0;
 }
 
 PacketHeader::~PacketHeader() {

@@ -3,8 +3,8 @@
 
 namespace Fanni {
 
-PacketSerializer::PacketSerializer(const PacketFactory *packet_factory) {
-	this->factory = packet_factory;
+PacketSerializer::PacketSerializer(const PacketFactory *packet_factory) :
+	factory(packet_factory) {
 }
 
 PacketSerializer::~PacketSerializer() {

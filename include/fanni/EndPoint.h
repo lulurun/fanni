@@ -19,6 +19,7 @@ struct EndPoint : sockaddr_in {
 
 public:
 	EndPoint() {
+		// TODO @@@ how to init "sockaddr_in"
 		this->sin_family = AF_INET;
 		this->sin_addr.s_addr = INADDR_ANY;
 		this->sin_port = 0;
@@ -32,10 +33,8 @@ public:
 		this->sin_family = AF_INET;
 		this->setAddr(ipaddr);
 		this->setPort(port);
-	};
-	~EndPoint() {
-		TRACE_LOG("enter");
-	};
+	}
+	~EndPoint() {}
 
 	void setAddr(const std::string &ipaddr) {
 		in_addr_t addr = ::inet_addr(ipaddr.c_str());

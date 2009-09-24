@@ -17,8 +17,6 @@ namespace Fanni {
 class PacketTransferBase;
 class PacketHandlerBase {
 public:
-	PacketHandlerBase() {};
-	virtual ~PacketHandlerBase() {};
 	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const = 0;
 };
 

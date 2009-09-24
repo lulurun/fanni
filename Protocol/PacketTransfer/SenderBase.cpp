@@ -18,9 +18,8 @@ using namespace Fanni::Network;
 // SenderBase
 SenderBase::SenderBase(const Event_UDP &udp_server,
 		PacketTransferBase *transfer_peer, const PacketFactory *packet_factory) :
-	udp_server(udp_server), transfer_peer(transfer_peer) {
-	this->packet_serializer = new PacketSerializer(packet_factory);
-}
+	udp_server(udp_server), transfer_peer(transfer_peer),
+	packet_serializer(new PacketSerializer(packet_factory)) { }
 
 SenderBase::~SenderBase() {
 	delete this->packet_serializer;

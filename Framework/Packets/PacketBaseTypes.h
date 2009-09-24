@@ -14,10 +14,12 @@ namespace Fanni {
 template<class T, size_t Length>
 class MultipleSerializable : public PacketSerializable {
 public:
+	// TODO @@@ need better data structure
 	std::vector<T> val;
 public:
 	MultipleSerializable() {}
 	MultipleSerializable(const std::vector<T> &val) {
+		// @@@ copy
 		this->val = val;
 	}
 	virtual ~MultipleSerializable() {};
@@ -115,12 +117,10 @@ public:
 template<class T>
 class SerializableFixedSizeValue : public PacketSerializable {
 private:
-	T val;
+	T val; // MEMO @@@ 'T' must be built-in type
 
 public:
-	SerializableFixedSizeValue() {
-		this->val = 0;
-	};
+	SerializableFixedSizeValue() : val(0){ };
 	virtual ~SerializableFixedSizeValue() {};
 	virtual void serialize(PacketBuffer &buffer) const {
 		buffer.putValue<T>(this->val);
@@ -233,7 +233,7 @@ class SerializableQuaternion : public PacketSerializable {
 public:
 	float x, y, z, w;
 public:
-	SerializableQuaternion() {};
+	SerializableQuaternion() : x(0), y(0), z(0), w(0){};
 	virtual ~SerializableQuaternion() {};
 	virtual void serialize(PacketBuffer &buffer) const;
 	virtual void deserialize(PacketBuffer &buffer);

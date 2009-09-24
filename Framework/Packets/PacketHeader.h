@@ -50,19 +50,21 @@ public:
 	virtual void deserialize(PacketBuffer &buffer);
 
 	bool isAppendedAcks() const;
-	void setAppendedAcks(bool val);
 	bool isResent() const;
-	void setResent(bool val);
 	bool isReliable() const;
-	void setReliable(bool val);
 	bool isZeroCoded() const;
-	void setZeroCoded(bool val);
-	uint32_t getSequenceNumber() const;
-	void setSequenceNumber(uint32_t seq);
 
+	void setAppendedAcks(bool val);
+	void setResent(bool val);
+	void setReliable(bool val);
+	void setZeroCoded(bool val);
+
+	uint32_t getSequenceNumber() const;
 	PACKET_ID_TYPE getPacketID() const;
-	void setPacketID(PACKET_ID_TYPE packet_id);
 	Frequency getFrequence() const;
+
+	void setSequenceNumber(uint32_t seq);
+	void setPacketID(PACKET_ID_TYPE packet_id);
 	void setFrequence(Frequency freq);
 
 };

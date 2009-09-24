@@ -27,8 +27,8 @@ private:
 
 	size_t file_size;
 	const std::string file_name;
-	UUID ReceiverTransferID;
-	UUID SenderTransferID;
+	UUID receiver_transfer_id;
+	UUID sender_transfer_id;
 	size_t transfered_size;
 	time_t start_time;
 	unsigned char *file_buffer;
@@ -39,17 +39,16 @@ private:
 
 public:
 	FileTransferStatus(uint32_t file_size, const std::string file_name, const UUID &receiver_transfer_id, const UUID &sender_transfer_id) :
-		file_size(file_size), file_name(file_name){
-		this->ReceiverTransferID = receiver_transfer_id;
-		this->SenderTransferID = sender_transfer_id;
-		this->transfered_size = 0;
-		this->start_time = ::time(NULL);
-		this->file_buffer = new unsigned char[file_size];
-		this->block_size = (int)(file_size/FILE_PART_SIZE) + 1;
-		this->data_block_map = new bool[block_size];
+		file_size(file_size), file_name(file_name),
+		receiver_transfer_id(receiver_transfer_id),
+		sender_transfer_id(sender_transfer_id),
+		transfered_size(0),
+		start_time(::time(NULL)),
+		file_buffer(new unsigned char[file_size]),
+		block_size((int)(file_size/FILE_PART_SIZE) + 1),
+		data_block_map(new bool[block_size]),
+		internal_count(0) {
 		::memset(this->data_block_map, 0, sizeof(bool) * block_size);
-
-		this->internal_count = 0;
 	}
 
 	~FileTransferStatus() {
@@ -59,21 +58,21 @@ public:
 	}
 	const size_t getFileSize() const { return this->file_size; }
 	const std::string &getFileName() const { return this->file_name; }
-	const UUID &getReceiverTransferID() const { return this->ReceiverTransferID; }
-	const UUID &getSenderTransferID() const { return this->SenderTransferID; }
+	const UUID &getReceiverTransferID() const { return this->receiver_transfer_id; }
+	const UUID &getSenderTransferID() const { return this->sender_transfer_id; }
 	const time_t &getStartTime() const { return this->start_time; }
 	const unsigned char *getFileBuffer() const { return this->file_buffer; }
 
 	void setReceiverTransferID(const UUID &transfer_id) {
 		DataControlLock l;
 		l.lock(&this->dc);
-		this->ReceiverTransferID = transfer_id;
+		this->receiver_transfer_id = transfer_id;
 	}
 
 	void setSenderTransferID(const UUID &transfer_id) {
 		DataControlLock l;
 		l.lock(&this->dc);
-		this->SenderTransferID = transfer_id;
+		this->sender_transfer_id = transfer_id;
 	}
 
 	// return true if all data has been received

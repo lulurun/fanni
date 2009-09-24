@@ -15,15 +15,8 @@ using namespace Fanni;
 
 static const int MAX_ACK_NUMBER = 0xff;
 
-ClientConnectionBase::ClientConnectionBase() {
-	this->circuit_code = 0;
-	this->transfer_peer = NULL;
-	this->updateLastReceived();
-}
-
 ClientConnectionBase::ClientConnectionBase(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase *transfer_peer) :
-	circuit_code(circuit_code), ep(ep), transfer_peer(transfer_peer) {
-	this->updateLastReceived();
+	circuit_code(circuit_code), transfer_peer(transfer_peer), last_packet_received(::time(NULL)), ep(ep){
 }
 
 ClientConnectionBase::~ClientConnectionBase() {
@@ -33,7 +26,7 @@ ClientConnectionBase::~ClientConnectionBase() {
 }
 
 void ClientConnectionBase::updateLastReceived() {
-	this->last_packet_received = time(NULL);
+	this->last_packet_received = ::time(NULL);
 }
 
 void ClientConnectionBase::checkACK() {

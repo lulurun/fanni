@@ -24,7 +24,7 @@ public:
 		connection->processIncomingPacket(packet_base);
 		{
 			// send region hand shake
-			RegionHandshakePacket *packet = LLPacketFactorySingleton::get().createPacket(RegionHandshake_ID);
+			//RegionHandshakePacket *packet = LLPacketFactorySingleton::get().createPacket(RegionHandshake_ID);
 			//packet->RegionInfo.
 		}
 	};

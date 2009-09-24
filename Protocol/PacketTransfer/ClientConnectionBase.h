@@ -31,10 +31,8 @@ private:
 	int resend_count;
 
 public:
-	ResendPacket(const PacketBase *packet) : packet(packet){
-		this->packet = packet->clone();
-		this->last_sent = ::time(NULL);
-		this->resend_count = 0;
+	ResendPacket(const PacketBase *packet) :
+		packet(packet->clone()), last_sent(::time(NULL)), resend_count(0){
 	}
 
 	~ResendPacket() {
@@ -64,9 +62,9 @@ class PacketTransferBase;
 class ClientConnectionBase {
 protected:
     uint32_t circuit_code;
-	const EndPoint ep;
 	PacketTransferBase *transfer_peer;
 	time_t last_packet_received;
+	const EndPoint ep;
 
 public:
 	ClientConnectionBase();

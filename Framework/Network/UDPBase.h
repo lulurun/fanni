@@ -21,8 +21,12 @@ namespace Network {
 
 class UDP_OnRecvHandlerBase {
 public:
-	UDP_OnRecvHandlerBase() {};
-	virtual ~UDP_OnRecvHandlerBase() {};
+	UDP_OnRecvHandlerBase() {
+	}
+	;
+	virtual ~UDP_OnRecvHandlerBase() {
+	}
+	;
 	virtual void operator()(PacketBuffer *buffer, const EndPoint *ep) = 0;
 };
 
@@ -33,43 +37,34 @@ class UDPBase {
 
 protected:
 	EndPoint ep;
-    SOCKET socket;
-    UDP_OnRecvHandlerBase *recv_handler_ptr;
+	SOCKET socket;
+	UDP_OnRecvHandlerBase *recv_handler_ptr;
 
 public:
-	UDPBase() {
-		// use by client side APP
-		this->ep.setAddr(_UDPBASE_DEFAULT_ADDR);
-		this->ep.setPort(_UDPBASE_DEFAULT_PORT);
-		this->socket = 0;
-		this->recv_handler_ptr = NULL;
-	};
-
-	UDPBase(const std::string &addr, int server_port) {
-		this->ep.setAddr(addr);
-		this->ep.setPort(server_port);
-		this->socket = 0;
-		this->recv_handler_ptr = NULL;
-	};
+	UDPBase() :
+		ep(_UDPBASE_DEFAULT_ADDR, _UDPBASE_DEFAULT_PORT), socket(0),
+				recv_handler_ptr(NULL) {
+	}
+	UDPBase(const std::string &addr, int server_port) :
+		ep(addr, server_port), socket(0), recv_handler_ptr(NULL) {
+	}
 	virtual ~UDPBase() {
 		//this->stop();
 		this->shutdown();
-	};
-
+	}
 	virtual void init() {
 		this->socket = FanniSock::OpenUDPSocket(this->ep);
 		if (this->socket == FanniSock::INVALID_SOCKET) {
-			ErrorException::throw_exception(Fanni::EXP_UUID, EXP_PRE_MSG, "invalid socket");
+			ErrorException::throw_exception(Fanni::EXP_UUID, EXP_PRE_MSG,"invalid socket" );
 		}
 	}
-
 	virtual void setOnRecvHandler(UDP_OnRecvHandlerBase *handler) {
 		this->recv_handler_ptr = handler;
 	};
 
-	int getPort() const { return this->ep.getPort(); };
+	int getPort() const {return this->ep.getPort();};
 
-	const SOCKET &getSocket() const { return this->socket; }
+	const SOCKET &getSocket() const {return this->socket;}
 
 	virtual void start() = 0;
 	virtual void stop() = 0;
@@ -78,7 +73,7 @@ public:
 		this->send(buffer.getConstBuffer(), buffer.getLength(), ep);
 	}
 
-	virtual void send(const unsigned char* data, size_t data_len, const EndPoint &ep) const {
+	virtual void send(const unsigned char* data, size_t data_len, const EndPoint&ep) const {
 		FanniSock::SendPacket(this->socket, data_len, data, *reinterpret_cast<const sockaddr *>(&ep));
 	}
 

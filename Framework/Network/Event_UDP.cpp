@@ -24,13 +24,11 @@
 using namespace Fanni;
 using namespace Network;
 
-Event_UDP::Event_UDP() :
-	UDPBase() {
+Event_UDP::Event_UDP() : UDPBase() {
 	this->init();
 }
 
-Event_UDP::Event_UDP(const std::string &addr, int port) :
-	UDPBase(addr, port) {
+Event_UDP::Event_UDP(const std::string &addr, int port) : UDPBase(addr, port) {
 	this->init();
 }
 

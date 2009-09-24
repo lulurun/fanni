@@ -17,9 +17,8 @@ using namespace Fanni;
 ReceiverBase::ReceiverBase(PacketTransferBase *transfer_peer,
 		const PacketFactory *packet_factory,
 		const PacketHandlerFactory *packet_handler_factory) :
-	transfer_peer(transfer_peer), packet_handler_factory(packet_handler_factory) {
-	this->packet_serializer = new PacketSerializer(packet_factory);
-}
+	transfer_peer(transfer_peer), packet_handler_factory(packet_handler_factory),
+	packet_serializer(new PacketSerializer(packet_factory)) { }
 
 ReceiverBase::~ReceiverBase() {
 	delete this->packet_serializer;

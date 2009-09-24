@@ -27,7 +27,7 @@ void PacketBase::appendAck(uint32_t ack_seq) {
 	appended_acks.push_back(ack_seq);
 }
 
-const PacketBase::ACK_LIST_TYPE &PacketBase::getAppendedAcks() {
+const PacketBase::ACK_LIST_TYPE &PacketBase::getAppendedAcks() const {
 	return this->appended_acks;
 }
 

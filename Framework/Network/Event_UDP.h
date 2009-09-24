@@ -19,8 +19,8 @@ private:
 	UDP_OnRecvHandlerBase *_udp_OnRecv_handler_ptr;
 
 public:
-	Event_OnRecvHandler(UDP_OnRecvHandlerBase *handler) {
-		this->_udp_OnRecv_handler_ptr = handler;
+	Event_OnRecvHandler(UDP_OnRecvHandlerBase *handler) :
+		_udp_OnRecv_handler_ptr(handler) {
 	}
 
 	virtual void operator()(int fd, short flags) {

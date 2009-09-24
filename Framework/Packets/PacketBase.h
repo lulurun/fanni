@@ -26,7 +26,8 @@ public:
 	void setSequence(uint32_t seq);
 	void setID(uint32_t id);
 	void appendAck(uint32_t ack_seq);
-	const ACK_LIST_TYPE &getAppendedAcks();
+
+	const ACK_LIST_TYPE &getAppendedAcks() const;
 
 	virtual void serializePacket(PacketBuffer &buffer) const;
 	virtual void deserializePacket(PacketBuffer &buffer);
