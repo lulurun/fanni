@@ -26,12 +26,21 @@ ReceiverBase::~ReceiverBase() {
 }
 
 void ReceiverBase::loop_func() {
+	TRACE_LOG("enter");
 	auto_ptr<const TransferDataBuffer> transfer_data(
 			dynamic_cast<const TransferDataBuffer *> (this->getTask()));
 	assert(transfer_data.get());
 	try {
 		auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(*(transfer_data->data)));
 		assert(packet.get());
+
+		DEBUG_LOG("incoming packet: ID " << packet->header.getPacketID());
+		DEBUG_LOG("incoming packet: seq " << packet->header.getSequenceNumber());
+		DEBUG_LOG("incoming packet: reliable " << packet->header.isReliable());
+		DEBUG_LOG("incoming packet: resend " << packet->header.isResent());
+		DEBUG_LOG("incoming packet: zerocode " << packet->header.isZeroCoded());
+		DEBUG_LOG(transfer_data->data->to_debug_string());
+
 		// RESEND, ACK management
 		this->transfer_peer->processIncomingPacket(packet.get(), transfer_data->ep);
 		if ( !this->transfer_peer->skipHandlePacket( packet->header.getPacketID() ) ) {
@@ -49,6 +58,7 @@ void ReceiverBase::loop_func() {
 		FATAL_LOG("receiver loop terminated. FATAL ERROR: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
 		this->stop();
 	}
+	TRACE_LOG("exit");
 }
 
 // ==========

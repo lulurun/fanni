@@ -142,7 +142,8 @@ ClientConnectionBase* PacketTransferBase::addConnection(uint32_t circuit_code,
 			circuit_code, ep);
 	DataControlLock l;
 	l.lock(&this->client_connection_map_lock);
-	client_connection_map[ep->getIPv4HashKey()] = client_connection;
+	// TODO @@@ check if already exists
+	this->client_connection_map[ep->getIPv4HashKey()] = client_connection;
 	return client_connection;
 }
 
@@ -181,52 +182,42 @@ void PacketTransferBase::removeConnection_nolock(const EndPoint *ep) {
 }
 
 void PacketTransferBase::checkACK() {
-	TRACE_LOG("enter");
 	for (CLIENT_CONNECTION_MAP_TYPE::iterator it =
 			this->client_connection_map.begin(); it
 			!= this->client_connection_map.end(); it++) {
 		it->second->checkACK();
 	}
-	TRACE_LOG("exit");
 }
 
 void PacketTransferBase::checkRESEND() {
-	TRACE_LOG("enter");
 	for (CLIENT_CONNECTION_MAP_TYPE::iterator it =
 			this->client_connection_map.begin(); it
 			!= this->client_connection_map.end(); it++) {
 		it->second->checkRESEND();
 	}
-	TRACE_LOG("exit");
 }
 
 void PacketTransferBase::checkALIVE() {
-	TRACE_LOG("enter");
-	DEBUG_LOG("checking Alive for " << this->client_connection_map.size() << " connections");
-	list<const EndPoint *> remove_connection_list;
 	DataControlLock l;
 	l.lock(&this->client_connection_map_lock);
-	for (CLIENT_CONNECTION_MAP_TYPE::iterator it =
-			this->client_connection_map.begin(); it
-			!= this->client_connection_map.end(); it++) {
+	if (this->client_connection_map.empty()) return;
+	list<const EndPoint *> remove_connection_list;
+	for (CLIENT_CONNECTION_MAP_TYPE::iterator it = this->client_connection_map.begin();
+			it != this->client_connection_map.end(); it++) {
 		if (it->second->checkALIVE()) {
 			remove_connection_list.push_back(&(it->second->getEndPoint()));
 		}
 	}
 	if (remove_connection_list.size() > 0) {
 		INFO_LOG("remove " << remove_connection_list.size() << " client connection");
-		for (list<const EndPoint *>::iterator it =
-				remove_connection_list.begin(); it
+		for (list<const EndPoint *>::iterator it = remove_connection_list.begin(); it
 				!= remove_connection_list.end(); it++) {
 			this->removeConnection_nolock(*it);
 		}
 	}
-	TRACE_LOG("exit");
 }
 
-void PacketTransferBase::processIncomingPacket(const PacketBase *packet,
-		const EndPoint *ep) {
-	TRACE_LOG("enter");
+void PacketTransferBase::processIncomingPacket(const PacketBase *packet, const EndPoint *ep) {
 	if (this->skipProcessIncomingPacket(packet->header.getPacketID())) {
 		return;
 	}
@@ -236,19 +227,14 @@ void PacketTransferBase::processIncomingPacket(const PacketBase *packet,
 	} else {
 		WARN_LOG("unknown packet from ADDR: " << ep->getAddrStr() << " PORT: " << ep->getPort());
 	}
-	TRACE_LOG("exit");
 }
 
-void PacketTransferBase::processOutgoingPacket(const PacketBase *packet,
-		const EndPoint *ep) {
-	TRACE_LOG("enter");
+void PacketTransferBase::processOutgoingPacket(const PacketBase *packet, const EndPoint *ep) {
 	ClientConnectionBase *client_connection = this->getConnection(ep);
 	if (client_connection) {
 		client_connection->processOutgoingPacket(packet);
-		TRACE_LOG("exit 0");
 	} else {
 		WARN_LOG("unknown packet to ADDR: " << ep->getAddrStr() << " PORT: " << ep->getPort());
-		TRACE_LOG("exit 1");
 	}
 }
 

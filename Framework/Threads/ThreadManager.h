@@ -29,6 +29,7 @@ public:
 	void join();
 };
 
+/*
 template<class WorkerType>
 class ThreadManagerTemplate: public ThreadManager {
 private:
@@ -53,7 +54,7 @@ public:
 		}
 	}
 };
-
+*/
 }
 
 #endif /*THREAD_MANAGER_H_*/

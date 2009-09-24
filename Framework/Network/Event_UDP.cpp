@@ -40,7 +40,7 @@ void Event_UDP::init() {
 }
 
 Event_UDP::~Event_UDP() {
-	this->stop(); // TODO @@@ should be here ???
+	// this->stop(); // TODO @@@ should be here ???
 	if (this->_libevent_OnRecv_handler) delete this->_libevent_OnRecv_handler;
 }
 
@@ -54,12 +54,11 @@ void Event_UDP::start() {
 	EventBase<Event_OnRecvHandler> e(this->socket, EV_READ| EV_PERSIST, this->_libevent_OnRecv_handler);
 	this->em.add(&e);
 	this->em.dispatch();
+	INFO_LOG("Event_UDP stopped");
 	TRACE_LOG("exit");
 }
 
 void Event_UDP::stop() {
-	TRACE_LOG("enter");
 	this->em.stop();
-	TRACE_LOG("exit");
 }
 

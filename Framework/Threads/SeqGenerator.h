@@ -1,5 +1,5 @@
-#ifndef FP_SEQGENERATOR_H_
-#define FP_SEQGENERATOR_H_
+#ifndef _SEQGENERATOR_H_
+#define _SEQGENERATOR_H_
 
 #include <list>
 #include "DataControl.h"
@@ -39,4 +39,4 @@ public:
 
 };
 
-#endif /*SEQGENERATOR_H_*/
+#endif /*_SEQGENERATOR_H_*/
