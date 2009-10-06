@@ -16,35 +16,35 @@ static const int RESEND_TIME_OUT = 500; // 3 sec
 static const int ALIVE_TIME_OUT = 30000; // 30 sec
 
 class OnTimerElapsedHandler_CheckACK: public OnTimerElapsedHandler {
-	PacketTransferBase *transfer_peer_ptr;
+	PacketTransferBase &transfer_peer;
 public:
-	OnTimerElapsedHandler_CheckACK(PacketTransferBase *transfer_peer) :
-		transfer_peer_ptr(transfer_peer) {
+	OnTimerElapsedHandler_CheckACK(PacketTransferBase &transfer_peer) :
+		transfer_peer(transfer_peer) {
 	}
 	virtual void operator()() const {
-		this->transfer_peer_ptr->checkACK();
+		this->transfer_peer.checkACK();
 	}
 };
 
 class OnTimerElapsedHandler_CheckResend: public OnTimerElapsedHandler {
-	PacketTransferBase *transfer_peer_ptr;
+	PacketTransferBase &transfer_peer;
 public:
-	OnTimerElapsedHandler_CheckResend(PacketTransferBase *transfer_peer) :
-		transfer_peer_ptr(transfer_peer) {
+	OnTimerElapsedHandler_CheckResend(PacketTransferBase &transfer_peer) :
+		transfer_peer(transfer_peer) {
 	}
 	virtual void operator()() const {
-		this->transfer_peer_ptr->checkRESEND();
+		this->transfer_peer.checkRESEND();
 	}
 };
 
 class OnTimerElapsedHandler_CheckAlive: public OnTimerElapsedHandler {
-	PacketTransferBase *transfer_peer_ptr;
+	PacketTransferBase &transfer_peer;
 public:
-	OnTimerElapsedHandler_CheckAlive(PacketTransferBase *transfer_peer) :
-		transfer_peer_ptr(transfer_peer) {
+	OnTimerElapsedHandler_CheckAlive(PacketTransferBase &transfer_peer) :
+		transfer_peer(transfer_peer) {
 	}
 	virtual void operator()() const {
-		this->transfer_peer_ptr->checkALIVE();
+		this->transfer_peer.checkALIVE();
 	}
 };
 
@@ -72,25 +72,26 @@ PacketTransferBase::~PacketTransferBase() {
 			!= this->client_connection_map.end(); it++) {
 		delete it->second;
 	}
+	// TODO @@@ delete packet handlers
 }
 
-void PacketTransferBase::init(const PacketFactory *packet_factory, const PacketHandlerFactory *packet_handler_factory) {
+void PacketTransferBase::init(const PacketFactory &packet_factory, const PacketHandlerFactory &packet_handler_factory) {
 	TRACE_LOG("enter");
-	this->receiver_manager = new ReceiverManager(this->thread_number, this, packet_factory, packet_handler_factory);
-	this->sender_manager = new SenderManager(this->thread_number, this, packet_factory, *this->udp_server);
+	this->receiver_manager = new ReceiverManager(this->thread_number, *this, packet_factory, packet_handler_factory);
+	this->sender_manager = new SenderManager(this->thread_number, *this, packet_factory, *this->udp_server);
 	{ // start UDP server thread
-		this->_udp_server_on_recv = new OnRecvHandler(this->receiver_manager);
+		this->_udp_server_on_recv = new OnRecvHandler(*this->receiver_manager);
 		this->udp_server->setOnRecvHandler(this->_udp_server_on_recv);
-		this->udp_server_thread = new ThreadTemplate<Event_UDP> (this->udp_server);
+		this->udp_server_thread = new ThreadTemplate<Event_UDP> (*this->udp_server);
 	}
 	{ // init timers
-		OnTimerElapsedHandler_CheckACK *check_ack_handler = new OnTimerElapsedHandler_CheckACK(this);
+		OnTimerElapsedHandler_CheckACK *check_ack_handler = new OnTimerElapsedHandler_CheckACK(*this);
 		this->check_ACK_timer_thread = new PeriodicTask(ACK_TIME_OUT, check_ack_handler);
 
-		OnTimerElapsedHandler_CheckResend *check_resend_handler = new OnTimerElapsedHandler_CheckResend(this);
+		OnTimerElapsedHandler_CheckResend *check_resend_handler = new OnTimerElapsedHandler_CheckResend(*this);
 		this->check_RESEND_timer_thread = new PeriodicTask(RESEND_TIME_OUT, check_resend_handler);
 
-		OnTimerElapsedHandler_CheckAlive *check_alive_handler = new OnTimerElapsedHandler_CheckAlive(this);
+		OnTimerElapsedHandler_CheckAlive *check_alive_handler = new OnTimerElapsedHandler_CheckAlive(*this);
 		this->check_ALIVE_timer_thread = new PeriodicTask(ALIVE_TIME_OUT, check_alive_handler);
 	}
 	TRACE_LOG("exit");
@@ -140,16 +141,14 @@ ClientConnectionBase* PacketTransferBase::addConnection(uint32_t circuit_code,
 	DEBUG_LOG("add connection: " << ep->getAddrStr() << ":" << ep->getPort());
 	ClientConnectionBase *client_connection = this->createClientConnection(
 			circuit_code, ep);
-	DataControlLock l;
-	l.lock(&this->client_connection_map_lock);
+	DataControlLock l(this->client_connection_map_lock);
 	// TODO @@@ check if already exists
 	this->client_connection_map[ep->getIPv4HashKey()] = client_connection;
 	return client_connection;
 }
 
 ClientConnectionBase *PacketTransferBase::getConnection(const EndPoint *ep) {
-	DataControlLock l;
-	l.lock(&this->client_connection_map_lock);
+	DataControlLock l(this->client_connection_map_lock);
 	return this->getConnection_nolock(ep);
 }
 
@@ -167,8 +166,7 @@ ClientConnectionBase *PacketTransferBase::getConnection_nolock(
 }
 
 void PacketTransferBase::removeConnection(const EndPoint *ep) {
-	DataControlLock l;
-	l.lock(&this->client_connection_map_lock);
+	DataControlLock l(this->client_connection_map_lock);
 	this->removeConnection_nolock(ep);
 }
 
@@ -198,8 +196,7 @@ void PacketTransferBase::checkRESEND() {
 }
 
 void PacketTransferBase::checkALIVE() {
-	DataControlLock l;
-	l.lock(&this->client_connection_map_lock);
+	DataControlLock l(this->client_connection_map_lock);
 	if (this->client_connection_map.empty()) return;
 	list<const EndPoint *> remove_connection_list;
 	for (CLIENT_CONNECTION_MAP_TYPE::iterator it = this->client_connection_map.begin();

@@ -21,8 +21,7 @@ public:
 	~SequenceGenerator() {};
 	uint32_t next() {
 		{
-			DataControlLock l;
-			l.lock(&this->counter_lock);
+			DataControlLock l(this->counter_lock);
 			if (this->counter > this->max) {
 				this->reset();
 			}

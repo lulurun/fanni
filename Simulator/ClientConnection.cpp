@@ -9,8 +9,8 @@
 
 namespace Fanni {
 
-ClientConnection::ClientConnection(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase *transfer_base) :
-	ClientConnectionBase(circuit_code, ep, transfer_base){
+ClientConnection::ClientConnection(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase &transfer_peer) :
+	ClientConnectionBase(circuit_code, ep, transfer_peer){
 }
 
 ClientConnection::~ClientConnection() {

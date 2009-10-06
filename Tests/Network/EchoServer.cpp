@@ -25,7 +25,7 @@ public:
 	PacketServer_OnRecvHandler(Event_UDP &udp_server) :
 		udp_server(udp_server){};
 
-	virtual void operator() (PacketBuffer *buffer, const EndPoint *ep) {
+	virtual void operator() (PacketBuffer *buffer, const EndPoint *ep) const {
 		cout << "recv: " << buffer->getFixedLength() << endl;
 		cout << "recv: " << buffer->to_debug_string() << endl;
 		FanniSock::SendPacket(this->udp_server.getSocket(), buffer->getLength(), buffer->getBuffer(), ep->getSockAddr());
@@ -43,9 +43,10 @@ static const int DEFAULT_PORT = 9001;
 int main(int argc, char **argv) {
 	try {
 		Event_UDP peer(::DEFAULT_ADDR, ::DEFAULT_PORT);
-		peer.setOnRecvHandler(new PacketServer_OnRecvHandler(peer));
+		PacketServer_OnRecvHandler handler(peer);
+		peer.setOnRecvHandler(&handler);
 
-		ThreadTemplate<Event_UDP> thread(&peer);
+		ThreadTemplate<Event_UDP> thread(peer);
 		thread.kick();
 		thread.join();
 	} catch (ErrorException &e) {

@@ -40,11 +40,12 @@ public:
 
 class DataControlLock {
 protected:
-	DataControl *dc_ptr;
+	DataControl &dc;
+	bool locked;
 public:
-	DataControlLock();
+	DataControlLock(DataControl &dc);
 	~DataControlLock();
-	void lock(DataControl *dc);
+	void lock();
 	void unlock();
 
 };

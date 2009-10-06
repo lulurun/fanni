@@ -14,7 +14,7 @@ namespace Fanni {
 
 class ClientConnection : public ClientConnectionBase {
 public:
-	ClientConnection(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase *transfer_base);;
+	ClientConnection(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase &transfer_base);
 	virtual ~ClientConnection();
 };
 

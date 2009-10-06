@@ -26,15 +26,15 @@ class PacketTransferBase {
 
 	class OnRecvHandler: public Fanni::Network::UDP_OnRecvHandlerBase {
 	private:
-		ReceiverManager *recevier_manager_ptr;
+		ReceiverManager &recevier_manager;
 
 	public:
-		OnRecvHandler(ReceiverManager *recevier_manager) :
-			recevier_manager_ptr(recevier_manager) {
+		OnRecvHandler(ReceiverManager &recevier_manager) :
+			recevier_manager(recevier_manager) {
 		}
-		virtual void operator()(PacketBuffer *buffer, const EndPoint *ep) {
+		virtual void operator()(PacketBuffer *buffer, const EndPoint *ep) const {
 			TransferDataBuffer *recv_data = new TransferDataBuffer(buffer, ep);
-			this->recevier_manager_ptr->deliverTask(recv_data);
+			this->recevier_manager.deliverTask(recv_data);
 		}
 	};
 
@@ -71,7 +71,7 @@ public:
 	PacketTransferBase(const std::string &addr, int port, int thread_number);
 	virtual ~PacketTransferBase();
 
-	virtual void init(const PacketFactory *packet_factory, const PacketHandlerFactory *packet_handler_factory);
+	virtual void init(const PacketFactory &packet_factory, const PacketHandlerFactory &packet_handler_factory);
 	virtual void start();
 	virtual void join();
 	virtual void stop();

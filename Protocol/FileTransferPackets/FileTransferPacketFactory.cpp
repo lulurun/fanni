@@ -23,7 +23,7 @@ void FileTransferPacketFactory::init() {
 }
 
 PacketSerializer *CreateFileTransferPacketSerializer() {
-    return new PacketSerializer(&FileTransferPacketFactorySingleton::get());
+    return new PacketSerializer(FileTransferPacketFactorySingleton::get());
 }
 
 }

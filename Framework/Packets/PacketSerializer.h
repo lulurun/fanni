@@ -9,11 +9,12 @@ namespace Fanni {
 
 class PacketSerializer {
 private:
+	// @@@ not thread safe
 	PacketBuffer buf;
-	const PacketFactory *factory;
+	const PacketFactory &factory;
 
 public:
-	PacketSerializer(const PacketFactory *packet_factory);
+	PacketSerializer(const PacketFactory &packet_factory);
 	virtual ~PacketSerializer();
 
 	const unsigned char *serialize(const PacketBase *packet, int *len);

@@ -3,7 +3,7 @@
 
 namespace Fanni {
 
-PacketSerializer::PacketSerializer(const PacketFactory *packet_factory) :
+PacketSerializer::PacketSerializer(const PacketFactory &packet_factory) :
 	factory(packet_factory) {
 }
 
@@ -11,7 +11,7 @@ PacketSerializer::~PacketSerializer() {
 }
 
 const unsigned char *PacketSerializer::serialize(const PacketBase *obj, int *len) {
-	// @@@ lock(this->buf) is not needed if each work has its own PacketSerializer
+	// @@@ lock(this->buf) is not needed if each worker has its own PacketSerializer
 	this->buf.clear();
 	obj->serializePacket(this->buf);
 	*len = this->buf.getLength();
@@ -30,7 +30,7 @@ PacketBase *PacketSerializer::deserialize(PacketBuffer &in) {
 	in.resetPos();
 	PacketHeader header;
 	header.deserialize(in);
-	PacketBase *packet = this->factory->createPacket(header.getPacketID());
+	PacketBase *packet = this->factory.createPacket(header.getPacketID());
 	in.resetPos();
 	packet->deserializePacket(in); // TODO @@@ header is deserialized twice !!
 	return packet; // @@@ this packet will be deleted by "Receiver"

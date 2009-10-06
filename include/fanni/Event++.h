@@ -27,7 +27,7 @@ protected:
 
 class EventHandlerBase {
 public:
-	virtual void operator() (int fd, short flags) = 0;
+	virtual void operator() (int fd, short flags) const = 0;
 };
 
 class EventManager {

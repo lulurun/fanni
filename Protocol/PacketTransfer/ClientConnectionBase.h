@@ -61,14 +61,15 @@ typedef std::tr1::unordered_map<uint32_t, ResendPacket *> RESEND_PACKET_MAP_TYPE
 class PacketTransferBase;
 class ClientConnectionBase {
 protected:
+	PacketTransferBase &transfer_peer;
+
+	const EndPoint ep; // @@@ should be managed by me
     uint32_t circuit_code;
-	PacketTransferBase *transfer_peer;
 	time_t last_packet_received;
-	const EndPoint ep;
 
 public:
 	ClientConnectionBase();
-	ClientConnectionBase(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase *transfer_base);
+	ClientConnectionBase(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase &transfer_peer);
 	virtual ~ClientConnectionBase();
 
 	uint32_t getCircuitCode() const { return this->circuit_code; }

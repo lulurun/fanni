@@ -73,8 +73,7 @@ public:
 private:
 	virtual void start() {
 		try {
-			DataControlLock l;
-			l.lock(&this->dc);
+			DataControlLock l(this->dc);
 			dc.wait(this->timeout_msec);
 			this->handler->operator()();
 		} catch (ErrorException &e) {
@@ -110,8 +109,7 @@ private:
 	virtual void _start_limited() {
 		while(this->dc.isActive()) {
 			try {
-				DataControlLock l;
-				l.lock(&this->dc);
+				DataControlLock l(this->dc);
 				this->dc.wait(this->timeout_msec);
 				this->handler->operator()();
 				if (this->count++ >= this->max) {
@@ -127,8 +125,7 @@ private:
 	virtual void _start_forever() {
 		while(this->dc.isActive()) {
 			try {
-				DataControlLock l;
-				l.lock(&this->dc);
+				DataControlLock l(this->dc);
 				this->dc.wait(this->timeout_msec);
 				this->handler->operator()();
 			} catch (ErrorException &e) {

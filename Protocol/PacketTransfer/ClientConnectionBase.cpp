@@ -15,8 +15,8 @@ using namespace Fanni;
 
 static const int MAX_ACK_NUMBER = 0xff;
 
-ClientConnectionBase::ClientConnectionBase(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase *transfer_peer) :
-	circuit_code(circuit_code), transfer_peer(transfer_peer), last_packet_received(::time(NULL)), ep(ep){
+ClientConnectionBase::ClientConnectionBase(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase &transfer_peer) :
+	transfer_peer(transfer_peer), ep(ep), circuit_code(circuit_code), last_packet_received(::time(NULL)) {
 }
 
 ClientConnectionBase::~ClientConnectionBase() {
@@ -31,8 +31,7 @@ void ClientConnectionBase::updateLastReceived() {
 
 void ClientConnectionBase::checkACK() {
     if (this->ack_packet_queue.empty()) return;
-    DataControlLock l;
-    l.lock(&this->ack_lock);
+    DataControlLock l(this->ack_lock);
     int total_count = 0;
     while (!this->ack_packet_queue.empty()) {
 	int count = 0;
@@ -53,8 +52,7 @@ void ClientConnectionBase::checkACK() {
 
 void ClientConnectionBase::checkRESEND() {
 	if (this->resend_packet_map.empty()) return;
-	DataControlLock l;
-	l.lock(&this->resend_lock);
+	DataControlLock l(this->resend_lock);
 	DEBUG_LOG("number of resend packets: " << this->resend_packet_map.size());
 	list<uint32_t> delete_list;
 	int resend_count = 0;
@@ -89,13 +87,11 @@ void ClientConnectionBase::processIncomingPacket(const PacketBase *packet) {
 	TRACE_LOG("enter");
 	this->updateLastReceived();
 	if (packet->header.isReliable()) {
-		DataControlLock l;
-		l.lock(&this->ack_lock);
+		DataControlLock l(this->ack_lock);
 		this->ack_packet_queue.push(packet->header.getSequenceNumber());
 	}
 	// process resend
-	DataControlLock l;
-	l.lock(&this->resend_lock);
+	DataControlLock l(this->resend_lock);
 	if (packet->header.isAppendedAcks()) {
 		PacketBase::ACK_LIST_TYPE::const_iterator it = packet->appended_acks.begin();
 		for (; it != packet->appended_acks.end(); it++) {
@@ -116,8 +112,7 @@ void ClientConnectionBase::processIncomingPacket(const PacketBase *packet) {
 
 void ClientConnectionBase::processOutgoingPacket(const PacketBase *packet) {
 	if (packet->header.isReliable() && !packet->header.isResent()) {
-		DataControlLock l;
-		l.lock(&this->resend_lock);
+		DataControlLock l(this->resend_lock);
 		this->add_resend_packet_nolock(packet);
 	}
 }
@@ -136,6 +131,6 @@ void ClientConnectionBase::add_resend_packet_nolock(const PacketBase* packet) {
 }
 
 void ClientConnectionBase::sendPacket(PacketBase *packet) {
-	this->transfer_peer->sendPacket(packet, &this->ep);
+	this->transfer_peer.sendPacket(packet, &this->ep);
 }
 

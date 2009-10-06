@@ -82,16 +82,16 @@ protected:
 template<class ThreadObject>
 class ThreadTemplate : public ThreadBase {
 private:
-	ThreadObject *thread_object_ptr;
+	ThreadObject &thread_object;
 
 public:
-	ThreadTemplate(ThreadObject *thread_object) : thread_object_ptr(thread_object){}
+	ThreadTemplate(ThreadObject &thread_object) : thread_object(thread_object){}
 	virtual void start() {
-		this->thread_object_ptr->start();
+		this->thread_object.start();
 	}
 	virtual void stop() {
 		DEBUG_LOG("enter");
-		this->thread_object_ptr->stop();
+		this->thread_object.stop();
 		DEBUG_LOG("exit");
 	}
 	virtual void loop_func() {};

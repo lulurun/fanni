@@ -69,24 +69,25 @@ void DataControl::deactivate() {
 	this->unlock();
 }
 
-
+// ============
 // DataControlLock
-DataControlLock::DataControlLock(){
-	this->dc_ptr = NULL;
+DataControlLock::DataControlLock(DataControl &dc): dc(dc), locked(false){
+	this->lock();
 };
 
 DataControlLock::~DataControlLock(){
-	if(this->dc_ptr) this->unlock();
+	this->unlock();
 }
 
-void DataControlLock::lock(DataControl *dc){
-	this->dc_ptr = dc;
-	this->dc_ptr->lock();
+void DataControlLock::lock(){
+	this->dc.lock();
+	this->locked = true;
 }
 
 void DataControlLock::unlock(){
-	DataControl *dc = this->dc_ptr;
-	this->dc_ptr = NULL;
-	if(dc) dc->unlock();
+	if(this->locked) {
+		this->dc.unlock();
+		this->locked = false;
+	}
 }
 

@@ -21,13 +21,7 @@ namespace Network {
 
 class UDP_OnRecvHandlerBase {
 public:
-	UDP_OnRecvHandlerBase() {
-	}
-	;
-	virtual ~UDP_OnRecvHandlerBase() {
-	}
-	;
-	virtual void operator()(PacketBuffer *buffer, const EndPoint *ep) = 0;
+	virtual void operator()(PacketBuffer *buffer, const EndPoint *ep) const = 0;
 };
 
 static const short _UDPBASE_DEFAULT_PORT = 0;
@@ -44,15 +38,17 @@ public:
 	UDPBase() :
 		ep(_UDPBASE_DEFAULT_ADDR, _UDPBASE_DEFAULT_PORT), socket(0),
 				recv_handler_ptr(NULL) {
+		this->open_socket();
 	}
 	UDPBase(const std::string &addr, int server_port) :
 		ep(addr, server_port), socket(0), recv_handler_ptr(NULL) {
+		this->open_socket();
 	}
 	virtual ~UDPBase() {
 		//this->stop();
 		this->shutdown();
 	}
-	virtual void init() {
+	void open_socket() {
 		this->socket = FanniSock::OpenUDPSocket(this->ep);
 		if (this->socket == FanniSock::INVALID_SOCKET) {
 			ErrorException::throw_exception(Fanni::EXP_UUID, EXP_PRE_MSG,"invalid socket" );

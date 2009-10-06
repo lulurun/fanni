@@ -274,7 +274,7 @@ void LLPacketFactory::init() {
 }
 
 PacketSerializer *CreateLLPacketSerializer() {
-    return new PacketSerializer(&LLPacketFactorySingleton::get());
+    return new PacketSerializer(LLPacketFactorySingleton::get());
 }
 
 }

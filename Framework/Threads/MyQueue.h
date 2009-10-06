@@ -25,15 +25,13 @@ public:
 	virtual ~MyQueue() {};
 
 	void put(const DATA_TYPE &data) {
-		DataControlLock l;
-		l.lock(&this->control);
+		DataControlLock l(this->control);
 		this->_queue.push(data);
 		this->control.trigger();
 	}
 
 	DATA_TYPE get() {
-		DataControlLock l;
-		l.lock(&this->control);
+		DataControlLock l(this->control);
 		while(this->_queue.empty()) {
 			this->control.wait(-1);
 		}

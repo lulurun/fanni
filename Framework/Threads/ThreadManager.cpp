@@ -9,8 +9,7 @@ ThreadManager::ThreadManager() {
 }
 
 ThreadManager::~ThreadManager() {
-	DataControlLock l;
-	l.lock( &this->worker_list_lock );
+	DataControlLock l(this->worker_list_lock);
 	WORKER_MAP_TYPE::iterator it;
 	for(it = this->worker_list.begin(); it != this->worker_list.end(); it++){
 		ThreadWorker *worker = it->second;
@@ -25,8 +24,7 @@ ThreadManager::~ThreadManager() {
 void ThreadManager::deliverTask(const ThreadTask *data) {
 	ThreadWorker *worker = NULL;
 	{
-		DataControlLock l;
-		l.lock( &this->worker_list_lock );
+		DataControlLock l(this->worker_list_lock);
 		this->delivery_counter++;
 		// TODO: simple policy -> reasonable
 		WORKER_ID_TYPE worker_id = this->delivery_counter % this->worker_number;
@@ -49,8 +47,7 @@ ThreadWorker *ThreadManager::findWorkerById(WORKER_ID_TYPE id) {
 }
 
 void ThreadManager::addWorker(ThreadWorker *worker) {
-	DataControlLock l;
-	l.lock( &this->worker_list_lock );
+	DataControlLock l(this->worker_list_lock);
 	WORKER_ID_TYPE id = this->seq_gen.next();
 	worker->init(id);
 	WORKER_MAP_TYPE::value_type val(id, worker);
@@ -59,8 +56,7 @@ void ThreadManager::addWorker(ThreadWorker *worker) {
 }
 
 void ThreadManager::join() {
-	DataControlLock l;
-	l.lock( &this->worker_list_lock );
+	DataControlLock l(this->worker_list_lock);
 	WORKER_MAP_TYPE::iterator it;
 	for(it = this->worker_list.begin(); it != this->worker_list.end(); it++){
 		ThreadWorker *worker = it->second;

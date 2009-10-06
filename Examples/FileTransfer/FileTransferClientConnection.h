@@ -64,21 +64,18 @@ public:
 	const unsigned char *getFileBuffer() const { return this->file_buffer; }
 
 	void setReceiverTransferID(const UUID &transfer_id) {
-		DataControlLock l;
-		l.lock(&this->dc);
+		DataControlLock l(this->dc);
 		this->receiver_transfer_id = transfer_id;
 	}
 
 	void setSenderTransferID(const UUID &transfer_id) {
-		DataControlLock l;
-		l.lock(&this->dc);
+		DataControlLock l(this->dc);
 		this->sender_transfer_id = transfer_id;
 	}
 
 	// return true if all data has been received
 	bool update(int data_number, const unsigned char *data, size_t len) {
-		DataControlLock l;
-		l.lock(&this->dc);
+		DataControlLock l(this->dc);
 		if (!this->data_block_map[data_number]) {
 			size_t start = data_number * FILE_PART_SIZE;
 			assert(start + len <= this->file_size);
@@ -132,7 +129,7 @@ private:
 
 public:
 
-	FileTransferClientConnection(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase *transfer_base);
+	FileTransferClientConnection(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase &transfer_peer);
 	virtual ~FileTransferClientConnection();
 
 	OnOpenConnectionReplyEvent OnOpenConnectionReply;

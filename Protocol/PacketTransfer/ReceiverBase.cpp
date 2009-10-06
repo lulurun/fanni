@@ -14,9 +14,9 @@ using namespace Fanni;
 
 // ==========
 // RecevierBase
-ReceiverBase::ReceiverBase(PacketTransferBase *transfer_peer,
-		const PacketFactory *packet_factory,
-		const PacketHandlerFactory *packet_handler_factory) :
+ReceiverBase::ReceiverBase(PacketTransferBase &transfer_peer,
+		const PacketFactory &packet_factory,
+		const PacketHandlerFactory &packet_handler_factory) :
 	transfer_peer(transfer_peer), packet_handler_factory(packet_handler_factory),
 	packet_serializer(new PacketSerializer(packet_factory)) { }
 
@@ -41,12 +41,12 @@ void ReceiverBase::loop_func() {
 		DEBUG_LOG(transfer_data->data->to_debug_string());
 
 		// RESEND, ACK management
-		this->transfer_peer->processIncomingPacket(packet.get(), transfer_data->ep);
-		if ( !this->transfer_peer->skipHandlePacket( packet->header.getPacketID() ) ) {
+		this->transfer_peer.processIncomingPacket(packet.get(), transfer_data->ep);
+		if ( !this->transfer_peer.skipHandlePacket( packet->header.getPacketID() ) ) {
 			// dispatch packet handler
-			const PacketHandlerBase *packet_handler = this->packet_handler_factory->getPacketHandler(packet->header.getPacketID());
+			const PacketHandlerBase *packet_handler = this->packet_handler_factory.getPacketHandler(packet->header.getPacketID());
 			// MEMO @@@ (inside getPacketHandler:) packet_handler never be null;
-			packet_handler->operator()(packet.get(), transfer_data->ep,this->transfer_peer);
+			packet_handler->operator()(packet.get(), transfer_data->ep, &this->transfer_peer);
 		}
 		// MEMO @@@ TransferDataBuffer(packet, ep) will be deleted here
 	} catch (ErrorException &e) {
@@ -63,8 +63,8 @@ void ReceiverBase::loop_func() {
 // ==========
 // RecevierManager
 ReceiverManager::ReceiverManager(int thread_number,
-		PacketTransferBase *transfer_peer, const PacketFactory *packet_factory,
-		const PacketHandlerFactory *packet_handler_factory) :
+		PacketTransferBase &transfer_peer, const PacketFactory &packet_factory,
+		const PacketHandlerFactory &packet_handler_factory) :
 	thread_number(thread_number), transfer_peer(transfer_peer), packet_factory(
 			packet_factory), packet_handler_factory(packet_handler_factory) {
 }

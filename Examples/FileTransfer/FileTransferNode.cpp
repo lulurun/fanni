@@ -32,12 +32,12 @@ void FileTransferNode::init() {
 	this->packet_handler_factory.registerPacketHandler(FileInfoReply_ID, new FileInfoReplyPacketHandler());
 	this->packet_handler_factory.registerPacketHandler(FileData_ID, new FileDataPacketHandler());
 	this->packet_handler_factory.registerPacketHandler(TransferComplete_ID, new TransferCompletePacketHandler());
-	PacketTransferBase::init(&this->packet_factory, &this->packet_handler_factory);
+	PacketTransferBase::init(this->packet_factory, this->packet_handler_factory);
 }
 
 ClientConnectionBase *FileTransferNode::createClientConnection(uint32_t circuit_code, const EndPoint *ep) {
 	// MEMO @@@ will be deleted in "PacketTransferBase::destructor()" or "closeConnection()"
-	return new FileTransferClientConnection(circuit_code, *ep, this);
+	return new FileTransferClientConnection(circuit_code, *ep, *this);
 }
 
 bool FileTransferNode::skipProcessIncomingPacket(PacketHeader::PACKET_ID_TYPE packet_id) {

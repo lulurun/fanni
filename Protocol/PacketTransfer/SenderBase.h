@@ -19,30 +19,34 @@
 namespace Fanni {
 
 class PacketTransferBase;
-class SenderBase : public ThreadWorker {
+class SenderBase: public ThreadWorker {
+	friend class SenderManager;
 private:
 	SequenceGenerator seq_gen;
 	const Fanni::Network::Event_UDP &udp_server;
-	PacketTransferBase *transfer_peer;
+	PacketTransferBase &transfer_peer;
 	PacketSerializer *packet_serializer;
 
+protected:
+	SenderBase(const Fanni::Network::Event_UDP &udp_server,
+			PacketTransferBase &transfer_peer,
+			const PacketFactory &packet_factory);
 public:
-	SenderBase(const Fanni::Network::Event_UDP &udp_server, PacketTransferBase *transfer_peer, const PacketFactory *packet_factory);
 	~SenderBase();
 	virtual void loop_func();
 };
 
-
 class SenderManager: public ThreadManager {
 private:
 	int thread_number;
-	PacketTransferBase *transfer_peer;
-	const PacketFactory* packet_factory;
+	PacketTransferBase &transfer_peer;
+	const PacketFactory &packet_factory;
 	const Fanni::Network::Event_UDP &udp_server;
 
 public:
-	SenderManager(int thread_number, PacketTransferBase *transfer_peer,
-			const PacketFactory *packet_factory, const Fanni::Network::Event_UDP &udp_server);
+	SenderManager(int thread_number, PacketTransferBase &transfer_peer,
+			const PacketFactory &packet_factory,
+			const Fanni::Network::Event_UDP &udp_server);
 	virtual void init();
 };
 

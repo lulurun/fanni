@@ -16,14 +16,14 @@ namespace Network {
 
 class Event_OnRecvHandler: public EventHandlerBase {
 private:
-	UDP_OnRecvHandlerBase *_udp_OnRecv_handler_ptr;
+	const UDP_OnRecvHandlerBase &_udp_OnRecv_handler;
 
 public:
-	Event_OnRecvHandler(UDP_OnRecvHandlerBase *handler) :
-		_udp_OnRecv_handler_ptr(handler) {
+	Event_OnRecvHandler(const UDP_OnRecvHandlerBase &handler) :
+		_udp_OnRecv_handler(handler) {
 	}
 
-	virtual void operator()(int fd, short flags) {
+	virtual void operator()(int fd, short flags) const {
 		TRACE_LOG("enter");
 
 		std::auto_ptr<PacketBuffer> buffer(new PacketBuffer());
@@ -40,9 +40,7 @@ public:
 		}
 		// @@@ bad interface! do not forget me !!
 		buffer->setLength(recv_len);
-		if (this->_udp_OnRecv_handler_ptr != NULL) {
-			this->_udp_OnRecv_handler_ptr->operator ()(buffer.release(), ep.release());
-		}
+		this->_udp_OnRecv_handler(buffer.release(), ep.release());
 
 		TRACE_LOG("exit");
 	}
@@ -58,7 +56,6 @@ public:
 	Event_UDP(const std::string &addr, int port);
 	virtual ~Event_UDP();
 
-	virtual void init();
 	virtual void start();
 	virtual void stop();
 };
