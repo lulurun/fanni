@@ -8,7 +8,7 @@
 #ifndef CLIENTCONNECTION_H_
 #define CLIENTCONNECTION_H_
 
-#include "PacketTransfer/ClientConnectionBase.h"
+#include "rUDP/ClientConnectionBase.h"
 
 namespace Fanni {
 

@@ -10,7 +10,7 @@
 
 #include "LLPackets/LLPacketsID.h"
 #include "LLPackets/LLPacketFactory.h"
-#include "PacketTransfer/PacketTransferBase.h"
+#include "rUDP/PacketTransferBase.h"
 
 namespace Fanni {
 

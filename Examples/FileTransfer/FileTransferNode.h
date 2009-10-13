@@ -11,7 +11,7 @@
 #include <string>
 #include "fanni/EndPoint.h"
 #include "Packets/PacketBase.h"
-#include "PacketTransfer/PacketTransferBase.h"
+#include "rUDP/PacketTransferBase.h"
 #include "FileTransferPackets/FileTransferPacketFactory.h"
 #include "FileTransferPackets/FileTransferPacketsID.h"
 

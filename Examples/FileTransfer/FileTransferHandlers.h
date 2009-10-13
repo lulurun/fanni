@@ -15,7 +15,7 @@
 #include "FileTransferPackets/FileTransferPackets.h"
 #include "FileTransferPackets/FileTransferPacketFactory.h"
 
-#include "PacketTransfer/PacketHandlerFactory.h"
+#include "rUDP/PacketHandlerFactory.h"
 #include "FileTransferClientConnection.h"
 #include "FileTransferNode.h"
 

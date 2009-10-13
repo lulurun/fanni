@@ -14,7 +14,7 @@
 #include "fanni/UUID.h"
 #include "fanni/LockableTemplate.h"
 #include "Threads/DataControl.h"
-#include "PacketTransfer/ClientConnectionBase.h"
+#include "rUDP/ClientConnectionBase.h"
 
 namespace Fanni {
 namespace Tests {

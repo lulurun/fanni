@@ -1,7 +1,7 @@
 # TODO: should not import
 Import("env")
 
-env.SharedLibrary("../../lib/packet_transfer",
+env.SharedLibrary("../../lib/rudp",
 		[
 		"PacketHandlerFactory.cpp",
 		"ReceiverBase.cpp",
