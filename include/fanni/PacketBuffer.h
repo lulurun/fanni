@@ -8,6 +8,7 @@
 #ifndef PACKETBUFFER_H_
 #define PACKETBUFFER_H_
 
+#include "Poco/SharedPtr.h"
 #include "fanni/FixedLengthBuffer.h"
 #include "fanni/Serializable.h"
 
@@ -18,6 +19,7 @@ namespace Fanni {
 #endif
 
 typedef FixedLengthBuffer<PACKET_BUF_LEN> PacketBuffer;
+//typedef Poco::SharedPtr<PacketBuffer> PacketBufferPtr;
 typedef Serializable<PacketBuffer> PacketSerializable;
 
 }

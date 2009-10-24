@@ -8,10 +8,8 @@ env.Program("simulator",
 		"ClientConnection.cpp",
 		],
 		LIBS = [
-			"framework_network", "basic", "event",
-			"framework_threads", "pthread", "packets",
-			"log4cxx", "llpackets", "boost_thread-mt",
-			"rudp", "uuid"],
+			"basic", "PocoNetd", "PocoFoundationd", "rudp", "packets",
+			"log4cxx", "llpackets"],
 		CPPPATH = ["../Framework", "../Protocol", "../include"],
 		LIBPATH = ["../lib"],
 		)

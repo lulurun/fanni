@@ -1,19 +1,13 @@
-# TODO: should not import
 Import("env")
 
-env.SharedLibrary("../../lib/rudp",
-		[
-		"PacketHandlerFactory.cpp",
-		"ReceiverBase.cpp",
-		"SenderBase.cpp",
-		"PacketTransferBase.cpp",
-		"ClientConnectionBase.cpp",
-		],
-		LIBS = [
-			"framework_network", "basic", "event",
-			"framework_threads", "pthread", "packets",
-			"log4cxx", "boost_thread-mt"],
-		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
-		LIBPATH = ["../../lib"],
-		)
-		
+files = [
+	"ConnectionBase.cpp",
+	"TransferNode.cpp",
+	"Sender.cpp",
+	"Receiver.cpp",
+	"PacketHandlerFactory.cpp",
+	]
+
+env.SharedLibrary("../../lib/rudp", files,
+	CPPPATH =["../../include", "../../Framework"])
+

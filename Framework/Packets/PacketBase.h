@@ -2,6 +2,7 @@
 #define PACKETBASE_H_
 
 #include "fanni/PacketBuffer.h"
+#include "fanni/Serializable.h"
 #include "PacketHeader.h"
 #include <vector>
 

@@ -11,8 +11,6 @@
 
 using namespace std;
 using namespace Fanni;
-using namespace Fanni::Network;
-using namespace Fanni::Tests;
 
 static const string DEFAULT_ADDR = "127.0.0.1";
 static const int DEFAULT_PORT = 9001;
@@ -22,9 +20,10 @@ int start_server() {
 	try {
 		DEBUG_LOG("enter Server mode");
 		FileTransferNode node("0.0.0.0", DEFAULT_PORT, thread_number);
-		node.init();
 		node.start();
-		node.join();
+		while(1) {
+			;
+		}
 	} catch (ErrorException &e) {
 		ERROR_LOG("ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
 	}
@@ -35,12 +34,15 @@ int start_client(const string &server_addr, const string &file_path) {
 	TRACE_LOG("enter");
 	try {
 		FileTransferNode node("0.0.0.0", 0, thread_number);
-		node.init();
 		node.start();
 
-		EndPoint connect_to_ep(server_addr, DEFAULT_PORT);
-		node.startSendFile(file_path, connect_to_ep);
-		node.join();
+		Poco::Net::SocketAddress connect_to_addr(server_addr, DEFAULT_PORT);
+		node.startSendFile(file_path, connect_to_addr);
+
+		while(1) {
+			;
+		}
+
 	} catch (ErrorException &e) {
 		ERROR_LOG("ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
 	}

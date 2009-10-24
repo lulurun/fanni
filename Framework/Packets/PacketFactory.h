@@ -4,7 +4,6 @@
 #include <tr1/unordered_map>
 
 #include "fanni/Serializable.h"
-
 #include "PacketHeader.h"
 #include "PacketBase.h"
 
@@ -20,10 +19,7 @@ public:
 	virtual ~PacketFactory();
 	PacketBase *createPacket(PacketHeader::PACKET_ID_TYPE packet_id) const;
 	PacketBase *createPacketCopy(PacketHeader::PACKET_ID_TYPE packet_id, const PacketBase *packet) const;
-
-	// register packets
-	virtual void init() = 0;
-
+	virtual void registerPacket(PacketHeader::PACKET_ID_TYPE id, const PacketBase &packet);
 };
 
 }

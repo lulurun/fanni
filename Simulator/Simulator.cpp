@@ -20,7 +20,9 @@ int main(int argc, char **argv) {
 		PacketServer server("0.0.0.0", DEFAULT_PORT, thread_number);
 		server.init();
 		server.start();
-		server.join();
+		while(1) {
+			;
+		}
 	} catch (WarnException &e) {
 		cout << "catch WARN Exception: " << e.get_msg();
 	} catch (ErrorException &e) {

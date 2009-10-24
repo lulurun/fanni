@@ -8,16 +8,17 @@
 #ifndef PACKETHANDLERFACTORY_H_
 #define PACKETHANDLERFACTORY_H_
 
-#include "fanni/EndPoint.h"
+#include "Poco/Net/SocketAddress.h"
+
 #include "Packets/PacketBase.h"
 #include "Packets/PacketHeader.h"
 
 namespace Fanni {
 
-class PacketTransferBase;
+class ConnectionBase;
 class PacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet, const EndPoint *ep, PacketTransferBase *transfer_peer) const = 0;
+	virtual void operator()(const PacketBase *packet, ConnectionBase *connection) const = 0;
 };
 
 class PacketHandlerFactory {
@@ -26,7 +27,7 @@ public:
 	virtual ~PacketHandlerFactory();
 
 	void init();
-	const PacketHandlerBase *getPacketHandler(PacketHeader::PACKET_ID_TYPE packet_id) const;
+	const PacketHandlerBase &getPacketHandler(PacketHeader::PACKET_ID_TYPE packet_id) const;
 	void registerPacketHandler(PacketHeader::PACKET_ID_TYPE packet_id, const PacketHandlerBase *packet_handler);
 };
 

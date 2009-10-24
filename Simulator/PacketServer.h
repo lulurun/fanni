@@ -10,24 +10,21 @@
 
 #include "LLPackets/LLPacketsID.h"
 #include "LLPackets/LLPacketFactory.h"
-#include "rUDP/PacketTransferBase.h"
+#include "rUDP/TransferNode.h"
 
 namespace Fanni {
 
-class PacketServer : public PacketTransferBase {
+class PacketServer : public TransferNode {
 private:
 	static const PacketHeader::PACKET_ID_TYPE OPEN_CONNECTION_PACKET = UseCircuitCode_ID;
 	static const PacketHeader::PACKET_ID_TYPE CLOSE_CONNECTION_PACKET = CloseCircuit_ID;
 
-	const LLPacketFactory &packet_factory;
-	PacketHandlerFactory packet_handler_factory;
-
 public:
-	PacketServer(const std::string &addr, int port, int thread_number);
+	PacketServer(const std::string &addr, uint16_t port, int thread_number);
 	virtual ~PacketServer();
 	virtual void init();
 
-	virtual ClientConnectionBase *createClientConnection(uint32_t circuit_code, const EndPoint *ep);
+	virtual ConnectionBase *createConnection(uint32_t circuit_code, const Poco::Net::SocketAddress *addr);
 	virtual bool skipProcessIncomingPacket(PacketHeader::PACKET_ID_TYPE packet_id);
 	virtual bool skipHandlePacket(PacketHeader::PACKET_ID_TYPE packet_id);
 

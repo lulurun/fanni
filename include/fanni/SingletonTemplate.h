@@ -8,34 +8,27 @@
 #ifndef SINGLETONTEMPLATE_H_
 #define SINGLETONTEMPLATE_H_
 
-#include <iostream>
 #include <memory>
-#include <boost/thread.hpp>
 
 namespace Fanni {
 
+// TODO @@@ not thrad safe
 template<class T>
 class Singleton {
 private:
-	static std::auto_ptr<T> instance;
-	static boost::once_flag flag;
-
-	static void init() {
-		instance.reset( new T );
-	}
+	static T *instance;
 
 public:
 	static T &get() {
-		boost::call_once( &Singleton::init, flag );
+		if (instance == NULL) {
+			instance = new T();
+		}
 		return *instance;
 	}
 };
 
 template<class T>
-boost::once_flag Singleton<T>::flag = BOOST_ONCE_INIT;
-
-template<class T>
-std::auto_ptr<T> Singleton<T>::instance;
+T *Singleton<T>::instance = NULL;
 
 }
 

@@ -1,3 +1,4 @@
+#include "fanni/Logger.h"
 #include "PacketBase.h"
 #include "PacketFactory.h"
 
@@ -24,3 +25,10 @@ PacketBase *PacketFactory::createPacketCopy(PacketHeader::PACKET_ID_TYPE packet_
     }
     return ret;
 }
+
+void PacketFactory::registerPacket(PacketHeader::PACKET_ID_TYPE id, const PacketBase &packet) {
+	TRACE_LOG("enter");
+	this->PacketList[id] = packet.clone();
+	TRACE_LOG("exit");
+}
+

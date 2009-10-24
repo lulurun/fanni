@@ -8,13 +8,13 @@
 #ifndef CLIENTCONNECTION_H_
 #define CLIENTCONNECTION_H_
 
-#include "rUDP/ClientConnectionBase.h"
+#include "rUDP/ConnectionBase.h"
 
 namespace Fanni {
 
-class ClientConnection : public ClientConnectionBase {
+class ClientConnection : public ConnectionBase {
 public:
-	ClientConnection(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase &transfer_base);
+	ClientConnection(uint32_t circuit_code, const Poco::Net::SocketAddress&addr, TransferNode &node);
 	virtual ~ClientConnection();
 };
 

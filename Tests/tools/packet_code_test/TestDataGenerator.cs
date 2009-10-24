@@ -108,20 +108,6 @@ namespace PacketTest
             output(packet.ToBytes());
         }
         
-        static void PacketAck_gen()
-        {
-            PacketAckPacket packet = new PacketAckPacket();
-            packet.Packets = new PacketAckPacket.PacketsBlock[DefaultValues.variable_blocks_length];
-            for (int i = 0; i < DefaultValues.variable_blocks_length; i++)
-            {
-                packet.Packets[i] = new PacketAckPacket.PacketsBlock();
-                packet.Packets[i].ID = DefaultValues.U32;
-
-	    }
-
-            output(packet.ToBytes());
-        }
-        
         static void OpenConnection_gen()
         {
             OpenConnectionPacket packet = new OpenConnectionPacket();
@@ -160,7 +146,6 @@ namespace PacketTest
             FileInfoReply_gen();
             TransferComplete_gen();
             FileData_gen();
-            PacketAck_gen();
             OpenConnection_gen();
             OpenConnectionReply_gen();
             CloseConnection_gen();

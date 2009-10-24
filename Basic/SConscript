@@ -2,8 +2,8 @@ Import("env")
 
 files = ["ExceptionBase.cpp",
 		 "Exception.cpp",
-		 "UUID.cpp",
-		 "FanniUUID.cpp",
+		 "ThreadManager.cpp",
+		 "ThreadWorker.cpp",
 		 ]
 
 env.SharedLibrary("../lib/basic",

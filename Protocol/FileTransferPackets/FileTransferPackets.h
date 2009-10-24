@@ -208,53 +208,6 @@ public:
     }
 };
 
-// PacketAckPacket
-class PacketAckPacket : public PacketBase {
-public:
-
-    // Block Class List
-    class PacketsBlock : public PacketSerializable {
-    public:
-        // PacketsBlock Member List
-        SerializableU32 ID;
-    public:
-        PacketsBlock() {};
-        virtual ~PacketsBlock() {};
-        virtual void serialize(PacketBuffer &buffer) const {
-            ID.serialize(buffer);
-        }
-        virtual void deserialize(PacketBuffer &buffer) {
-            ID.deserialize(buffer);
-        }
-    };
-    // PacketAckPacket Member List
-    VariableSerializable<PacketsBlock> Packets;
-    typedef VariableSerializable<PacketsBlock> PACKETSBLOCK_LIST_TYPE;
-
-public:
-    PacketAckPacket() {
-        this->setID(PacketAck_ID);
-    };
-    virtual ~PacketAckPacket() {};
-
-    virtual void serialize(PacketBuffer &buffer) const {
-        Packets.serialize(buffer);
-    }
-    virtual void deserialize(PacketBuffer &buffer) {
-        Packets.deserialize(buffer);
-    }
-    virtual PacketBase *clone() const {
-        return new PacketAckPacket(*this);
-    }
-    virtual PacketBase *clone(const PacketBase *packet) const {
-        const PacketAckPacket *PacketAckPacket_packet = dynamic_cast<const PacketAckPacket *>(packet);
-        if (PacketAckPacket_packet == NULL) {
-            FatalException::throw_exception(EXP_Packet, EXP_PRE_MSG, "can not make a copy, packet type not matched");
-        }
-        return new PacketAckPacket(*PacketAckPacket_packet);
-    }
-};
-
 // OpenConnectionPacket
 class OpenConnectionPacket : public PacketBase {
 public:

@@ -10,12 +10,15 @@ using namespace Fanni;
 // UUID (16Bytes)
 void SerializableUUID::serialize(PacketBuffer &buffer) const {
 	// @@@ check inside buffer
-	buffer.putBuf(this->val, UUID::UUID_SIZE);
+	// TODO @@@ !!! ??? look into Poco
+
+	buffer.putBuf(&this->val, sizeof(UUID));
 }
 
 void SerializableUUID::deserialize(PacketBuffer &buffer) {
 	// @@@ check inside buffer
-	buffer.getBuf(this->val, UUID::UUID_SIZE);
+	// TODO @@@ !!! ??? look into Poco
+	buffer.getBuf(&this->val, sizeof(UUID));
 }
 
 void SerializableUUID::operator=(const UUID &uuid) {

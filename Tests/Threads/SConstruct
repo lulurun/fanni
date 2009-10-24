@@ -1,9 +1,0 @@
-# TODO: should not import
-Import("test_env")
-
-test_env.Program("test_thread_manager",
-		"test_thread_manager.cpp",
-		LIBS = ["framework_threads", "basic", "pthread", "log4cxx", "uuid", "boost_thread-mt"],
-		CPPPATH = ["../../Framework", "../../include"],
-		LIBPATH = ["../../lib"],
-		)

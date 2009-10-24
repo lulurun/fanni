@@ -112,17 +112,13 @@ our $PacketFactory_CPP_Template =<< "PACKETFACTORY_CPP_TEMPLATE";
 namespace Fanni {
 
 {IMPL_PREFIX}PacketFactory::{IMPL_PREFIX}PacketFactory() {
-    this->init();
+{InitAllPackets}
 }
 
 {IMPL_PREFIX}PacketFactory::~{IMPL_PREFIX}PacketFactory() {}
 
-void {IMPL_PREFIX}PacketFactory::init() {
-{InitAllPackets}
-}
-
 PacketSerializer *Create{IMPL_PREFIX}PacketSerializer() {
-    return new PacketSerializer(&{IMPL_PREFIX}PacketFactorySingleton::get());
+    return new PacketSerializer({IMPL_PREFIX}PacketFactorySingleton::get());
 }
 
 }
@@ -135,7 +131,6 @@ our $PacketFactory_H_Template =<< "PACKETFACTORY_H_TEMPLATE";
 #ifndef {IMPL_PREFIX}PACKETFACTORY_H_
 #define {IMPL_PREFIX}PACKETFACTORY_H_
 
-#include "fanni/Serializable.h"
 #include "fanni/SingletonTemplate.h"
 
 #include "Packets/PacketFactory.h"
@@ -147,7 +142,6 @@ class {IMPL_PREFIX}PacketFactory : public PacketFactory {
 public:
     {IMPL_PREFIX}PacketFactory();
     virtual ~{IMPL_PREFIX}PacketFactory();
-    virtual void init();
 };
 
 typedef Singleton<{IMPL_PREFIX}PacketFactory> {IMPL_PREFIX}PacketFactorySingleton;

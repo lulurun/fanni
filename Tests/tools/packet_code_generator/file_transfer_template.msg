@@ -37,14 +37,6 @@
 
 // system packets
 {
-        PacketAck Fixed 0xFFFFFFFB NotTrusted Unencoded
-        {
-                Packets                 Variable                
-                {       ID                      U32     }
-        }
-}
-
-{
 	OpenConnection Low 3 NotTrusted Unencoded
 	{
 		OpenConnection		Single

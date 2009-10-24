@@ -13,8 +13,5 @@ test_env = Environment(CCFLAGS=DEBUG_CCFLAGS, LINKFLAGS=DEBUG_LDFLAGS)
 Export("test_env")
 
 # Programs
-test_env.SConscript('Network/SConstruct')
-test_env.SConscript('Threads/SConstruct')
 test_env.SConscript('Unit/SConstruct')
 test_env.SConscript('Protocol/SConstruct')
-test_env.SConscript('Basic/SConstruct')

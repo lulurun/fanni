@@ -9,6 +9,8 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+
+#include "fanni/Logger.h"
 #include "FileTransferPackets/FileTransferPacketFactory.h"
 #include "FileTransferPackets/FileTransferPacketsID.h"
 #include "FileTransferPackets/FileTransferPackets.h"
@@ -18,18 +20,17 @@
 
 using namespace std;
 using namespace Fanni;
-using namespace Fanni::Tests;
 
-FileTransferClientConnection::FileTransferClientConnection(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase &transfer_peer) :
-	ClientConnectionBase(circuit_code, ep, transfer_peer){
+FileTransferClientConnection::FileTransferClientConnection(uint32_t circuit_code, const Poco::Net::SocketAddress &addr, TransferNode &node) :
+	ConnectionBase(circuit_code, addr, node){
 }
 
 FileTransferClientConnection::~FileTransferClientConnection() {
 	// TODO @@@ thread safe
-	for(FILE_TRANSFER_STATUS_MAP_TYPE::iterator it=this->receive_transfer_status_map.begin(); it!=this->receive_transfer_status_map.end(); it++) {
+	for(FILE_TRANSFER_STATUS_MAP::iterator it=this->receive_transfer_status_map.begin(); it!=this->receive_transfer_status_map.end(); it++) {
 		delete it->second;
 	}
-	for(FILE_TRANSFER_STATUS_MAP_TYPE::iterator it=this->send_transfer_status_map.begin(); it!=this->send_transfer_status_map.end(); it++) {
+	for(FILE_TRANSFER_STATUS_MAP::iterator it=this->send_transfer_status_map.begin(); it!=this->send_transfer_status_map.end(); it++) {
 		delete it->second;
 	}
 }
@@ -37,17 +38,17 @@ FileTransferClientConnection::~FileTransferClientConnection() {
 // ================
 // receive transfer
 void FileTransferClientConnection::addReceiveFileTransfer(FileTransferStatus *status) {
-	DataControlLock l(this->receive_transfer_status_map.getDataControl());
+	Poco::FastMutex::ScopedLock l(this->receive_transfer_status_map);
 	this->receive_transfer_status_map[status->getReceiverTransferID().toString()] = status;
 }
 
 FileTransferStatus *FileTransferClientConnection::getReceiveFileTransfer(const UUID &receiver_transfer_id) {
-	DataControlLock l(this->receive_transfer_status_map.getDataControl());
+	Poco::FastMutex::ScopedLock l(this->receive_transfer_status_map);
 	return this->_getReceiveFileTransfer_nolock(receiver_transfer_id);
 }
 
 FileTransferStatus *FileTransferClientConnection::_getReceiveFileTransfer_nolock(const UUID &receiver_transfer_id) {
-	LOCKABLE_FILE_TRANSFER_STATUS_MAP_TYPE::iterator it = this->receive_transfer_status_map.find(receiver_transfer_id.toString());
+	FILE_TRANSFER_STATUS_MAP::iterator it = this->receive_transfer_status_map.find(receiver_transfer_id.toString());
 	if (it == this->receive_transfer_status_map.end()) {
 		// not found
 		return NULL;
@@ -57,7 +58,7 @@ FileTransferStatus *FileTransferClientConnection::_getReceiveFileTransfer_nolock
 }
 
 void FileTransferClientConnection::closeReceiveTransfer(const UUID &receiver_transfer_id) {
-	DataControlLock l(this->receive_transfer_status_map.getDataControl());
+	Poco::FastMutex::ScopedLock l(this->receive_transfer_status_map);
 	FileTransferStatus *status = this->_getReceiveFileTransfer_nolock(receiver_transfer_id);
 	if (status) {
 		this->receive_transfer_status_map.erase(receiver_transfer_id.toString());
@@ -70,17 +71,17 @@ void FileTransferClientConnection::closeReceiveTransfer(const UUID &receiver_tra
 // ================
 // send transfer
 void FileTransferClientConnection::addSendFileTransfer(FileTransferStatus *status) {
-	DataControlLock l(this->send_transfer_status_map.getDataControl());
+	Poco::FastMutex::ScopedLock l(this->send_transfer_status_map);
 	this->send_transfer_status_map[status->getSenderTransferID().toString()] = status;
 }
 
 FileTransferStatus *FileTransferClientConnection::getSendFileTransfer(const UUID &sender_transfer_id) {
-	DataControlLock l(this->send_transfer_status_map.getDataControl());
+	Poco::FastMutex::ScopedLock l(this->send_transfer_status_map);
 	return this->_getSendFileTransfer_nolock(sender_transfer_id);
 }
 
 FileTransferStatus *FileTransferClientConnection::_getSendFileTransfer_nolock(const UUID &sender_transfer_id) {
-	LOCKABLE_FILE_TRANSFER_STATUS_MAP_TYPE::iterator it = this->send_transfer_status_map.find(sender_transfer_id.toString());
+	FILE_TRANSFER_STATUS_MAP::iterator it = this->send_transfer_status_map.find(sender_transfer_id.toString());
 	if (it == this->send_transfer_status_map.end()) {
 		// not found
 		return NULL;
@@ -90,7 +91,7 @@ FileTransferStatus *FileTransferClientConnection::_getSendFileTransfer_nolock(co
 }
 
 void FileTransferClientConnection::closeSendTransfer(const UUID &sender_transfer_id) {
-	DataControlLock l(this->send_transfer_status_map.getDataControl());
+	Poco::FastMutex::ScopedLock l(this->send_transfer_status_map);
 	FileTransferStatus *status = this->_getSendFileTransfer_nolock(sender_transfer_id);
 	if (status) {
 		this->send_transfer_status_map.erase(sender_transfer_id.toString());
@@ -104,7 +105,7 @@ void FileTransferClientConnection::closeSendTransfer(const UUID &sender_transfer
 // events
 void FileTransferClientConnection::OnOpenConnectionReplyEvent::operator ()(FileTransferClientConnection *connection) {
 	TRACE_LOG("enter");
-	FileTransferNode *file_transfer_peer = dynamic_cast<FileTransferNode *>(&connection->transfer_peer);
+	FileTransferNode *file_transfer_peer = dynamic_cast<FileTransferNode *>(&connection->node);
 	assert(file_transfer_peer);
 	string file_path = file_transfer_peer->getSendFile();
 	size_t file_size =FileUtils::get_file_size(file_path);

@@ -4,12 +4,6 @@
 namespace Fanni {
 
 LLPacketFactory::LLPacketFactory() {
-    this->init();
-}
-
-LLPacketFactory::~LLPacketFactory() {}
-
-void LLPacketFactory::init() {
     PacketList[TestMessage_ID] = new TestMessagePacket();
     PacketList[PacketAck_ID] = new PacketAckPacket();
     PacketList[OpenCircuit_ID] = new OpenCircuitPacket();
@@ -272,6 +266,8 @@ void LLPacketFactory::init() {
     PacketList[ObjectIncludeInSearch_ID] = new ObjectIncludeInSearchPacket();
 
 }
+
+LLPacketFactory::~LLPacketFactory() {}
 
 PacketSerializer *CreateLLPacketSerializer() {
     return new PacketSerializer(LLPacketFactorySingleton::get());

@@ -11,19 +11,19 @@
 #include <ctime>
 #include <string>
 #include <tr1/unordered_map>
+#include "Poco/Mutex.h"
+
 #include "fanni/UUID.h"
 #include "fanni/LockableTemplate.h"
-#include "Threads/DataControl.h"
-#include "rUDP/ClientConnectionBase.h"
+#include "rUDP/ConnectionBase.h"
 
 namespace Fanni {
-namespace Tests {
 
 static const size_t FILE_PART_SIZE = 1200;
 
 class FileTransferStatus {
 private:
-	DataControl dc;
+	Poco::FastMutex mutex;
 
 	size_t file_size;
 	const std::string file_name;
@@ -64,18 +64,18 @@ public:
 	const unsigned char *getFileBuffer() const { return this->file_buffer; }
 
 	void setReceiverTransferID(const UUID &transfer_id) {
-		DataControlLock l(this->dc);
+		Poco::FastMutex::ScopedLock l(this->mutex);
 		this->receiver_transfer_id = transfer_id;
 	}
 
 	void setSenderTransferID(const UUID &transfer_id) {
-		DataControlLock l(this->dc);
+		Poco::FastMutex::ScopedLock l(this->mutex);
 		this->sender_transfer_id = transfer_id;
 	}
 
 	// return true if all data has been received
 	bool update(int data_number, const unsigned char *data, size_t len) {
-		DataControlLock l(this->dc);
+		Poco::FastMutex::ScopedLock l(this->mutex);
 		if (!this->data_block_map[data_number]) {
 			size_t start = data_number * FILE_PART_SIZE;
 			assert(start + len <= this->file_size);
@@ -88,12 +88,12 @@ public:
 	}
 };
 
-class FileTransferClientConnection : public ClientConnectionBase {
+class FileTransferClientConnection : public ConnectionBase {
 private:
-	typedef std::tr1::unordered_map<std::string, FileTransferStatus *> FILE_TRANSFER_STATUS_MAP_TYPE;
-	typedef lockable<FILE_TRANSFER_STATUS_MAP_TYPE> LOCKABLE_FILE_TRANSFER_STATUS_MAP_TYPE;
-	LOCKABLE_FILE_TRANSFER_STATUS_MAP_TYPE receive_transfer_status_map;
-	LOCKABLE_FILE_TRANSFER_STATUS_MAP_TYPE send_transfer_status_map;
+	typedef std::tr1::unordered_map<std::string, FileTransferStatus *> __FILE_TRANSFER_STATUS_MAP;
+	typedef lockable<__FILE_TRANSFER_STATUS_MAP> FILE_TRANSFER_STATUS_MAP;
+	FILE_TRANSFER_STATUS_MAP receive_transfer_status_map;
+	FILE_TRANSFER_STATUS_MAP send_transfer_status_map;
 
 	struct OnOpenConnectionReplyEvent {
 		void operator()(FileTransferClientConnection *connection);
@@ -129,7 +129,7 @@ private:
 
 public:
 
-	FileTransferClientConnection(uint32_t circuit_code, const EndPoint &ep, PacketTransferBase &transfer_peer);
+	FileTransferClientConnection(uint32_t circuit_code, const Poco::Net::SocketAddress &addr, TransferNode &node);
 	virtual ~FileTransferClientConnection();
 
 	OnOpenConnectionReplyEvent OnOpenConnectionReply;
@@ -141,7 +141,6 @@ public:
 	OnCloseConnectionReplyEvent OnCloseConnectionReply;
 };
 
-}
 }
 
 #endif /* FILETRANSFERCLIENTCONNECTION_H_ */

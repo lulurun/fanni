@@ -13,8 +13,6 @@ Export("env")
 
 # Libraries
 env.SConscript('Basic/SConscript')
-env.SConscript('Framework/Threads/SConscript')
-env.SConscript('Framework/Network/SConscript')
 env.SConscript('Framework/Packets/SConscript')
 env.SConscript('Framework/rUDP/SConscript')
 env.SConscript('Protocol/LLPackets/SConscript')

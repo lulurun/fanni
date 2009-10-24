@@ -18,7 +18,7 @@ eval {
 
     print "scons\n";
     chdir("../../../");
-    !system("scons >/dev/null 2>/dev/null") || die "Error! scons\n";;
+    !system("scons") || die "Error! scons\n";;
     chdir($base_dir);
 
     # compile c#

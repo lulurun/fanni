@@ -31,6 +31,9 @@ PacketBase *PacketSerializer::deserialize(PacketBuffer &in) {
 	PacketHeader header;
 	header.deserialize(in);
 	PacketBase *packet = this->factory.createPacket(header.getPacketID());
+	if (packet == NULL) {
+		ErrorException::throw_exception(EXP_Packet, EXP_PRE_MSG, "unknown packet: %08x", header.getPacketID());
+	}
 	in.resetPos();
 	packet->deserializePacket(in); // TODO @@@ header is deserialized twice !!
 	return packet; // @@@ this packet will be deleted by "Receiver"
