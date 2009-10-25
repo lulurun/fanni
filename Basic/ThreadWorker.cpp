@@ -6,13 +6,10 @@ using namespace std;
 using namespace Fanni;
 using namespace Poco;
 
-Worker::Worker() : running(false) {
+Worker::Worker() {
 }
 
 Worker::~Worker() {
-	if (this->running) {
-		this->stop();
-	}
 }
 
 void Worker::addTask(Poco::Notification *data) {
@@ -20,17 +17,16 @@ void Worker::addTask(Poco::Notification *data) {
 }
 
 void Worker::run() {
-	this->running = true;
-	while (this->running) {
+	while (true) {
 		Notification::Ptr task(this->queue.waitDequeueNotification());
 		if (task) {
 			// TODO @@@ try catch fanni exceptions
 			this->doTask(task);
-		}
-		else break;
+		} else
+			break;
 	}
 }
 
 void Worker::stop() {
-	this->running = false;
+	this->queue.wakeUpAll();
 }

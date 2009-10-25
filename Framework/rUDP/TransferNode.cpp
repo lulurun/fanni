@@ -51,10 +51,14 @@ TransferNode::~TransferNode() {
 void TransferNode::start() {
 	TRACE_LOG("enter");
 	// start UDP server
+	INFO_LOG("start receiver sender");
 	this->receiver_manager->start();
 	this->sender_manager->start();
+	INFO_LOG("start udp server");
 	this->udp_server_thread.start(this->reactor);
 	// start timers
+	INFO_LOG("start ack resend timers");
+	// TODO @@@ use dedicated thread pool
 	this->check_ACK_timer->start(Poco::TimerCallback<TransferNode>(*this, &TransferNode::onCheckACKTimer));
 	this->check_RESEND_timer->start(Poco::TimerCallback<TransferNode>(*this, &TransferNode::onCheckRESENDTimer));
 	this->check_ALIVE_timer->start(Poco::TimerCallback<TransferNode>(*this, &TransferNode::onCheckALIVETimer));
@@ -64,14 +68,17 @@ void TransferNode::start() {
 
 void TransferNode::stop() {
 	// stop timers
+	INFO_LOG("stop ack resend timers");
 	this->check_ACK_timer->stop();
 	this->check_RESEND_timer->stop();
 	this->check_ALIVE_timer->stop();
 	// stop UDP server
+	INFO_LOG("stop udp server");
 	this->reactor.stop();
 	this->udp_server_thread.join();
-	//this->receiver_manager->stop();
-	//this->sender_manager->stop();
+	INFO_LOG("stop receiver sender");
+	this->receiver_manager->stop();
+	this->sender_manager->stop();
 }
 
 void TransferNode::sendPacket(PacketBase *packet, const Poco::Net::SocketAddress &addr) {

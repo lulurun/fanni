@@ -9,7 +9,6 @@ namespace Fanni {
 class Worker : public Poco::Runnable {
 protected:
 	Poco::NotificationQueue queue;
-	bool running;
 
 public:
 	Worker();

@@ -5,13 +5,13 @@ using namespace Poco;
 using namespace Fanni;
 
 ThreadManager::ThreadManager() {
+	// @@@ do not use the Poco::defaultpool
 	this->thread_pool = new ThreadPool();
 }
 
 ThreadManager::~ThreadManager() {
 	WORKER_LIST_TYPE::iterator it;
 	for(WORKER_LIST_TYPE::iterator it = this->worker_list.begin(); it != this->worker_list.end(); it++){
-		(*it)->stop();
 		delete (*it);
 	}
 	delete this->thread_pool;
@@ -41,5 +41,13 @@ void ThreadManager::start() {
 
 void ThreadManager::addWorker(Worker *worker) {
 	this->worker_list.push_back(worker);
+}
+
+void ThreadManager::stop() {
+	for (WORKER_LIST_TYPE::iterator it = this->worker_list.begin(); it
+			!= this->worker_list.end(); it++) {
+		(*it)->stop();
+	}
+	this->thread_pool->joinAll();
 }
 
