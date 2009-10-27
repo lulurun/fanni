@@ -1,12 +1,12 @@
 Import("env")
 
 files = [
-	"LLPacketFactory.cpp",
+	"src/LLPacketFactory.cpp",
 	]
 
 env.SharedLibrary(
 	"../../lib/llpackets",
 	files,
-	CPPPATH=["../../include", "../../Protocol", "../../Framework"]
+	CPPPATH=["include", "../../Basic/include", "../../Framework/Packets/include"]
 	)
 

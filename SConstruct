@@ -15,7 +15,7 @@ Export("env")
 env.SConscript('Basic/SConscript')
 env.SConscript('Framework/Packets/SConscript')
 env.SConscript('Framework/rUDP/SConscript')
-#env.SConscript('Protocol/LLPackets/SConscript')
+env.SConscript('Protocol/LLPackets/SConscript')
 env.SConscript('Protocol/FTPackets/SConscript')
 #env.SConscript('Simulator/SConstruct')
 # Programs
