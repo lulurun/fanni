@@ -1,12 +1,12 @@
 Import("env")
 
 files = [
-	"FileTransferPacketFactory.cpp",
+	"src/FTPacketFactory.cpp",
 	]
 
 env.SharedLibrary(
-	"../../lib/filetransferpackets",
+	"../../lib/ftpackets",
 	files,
-	CPPPATH=["../../include", "../../Protocol", "../../Framework"]
+	CPPPATH=["include", "../../Basic/include", "../../Framework/Packets/include"]
 	)
 

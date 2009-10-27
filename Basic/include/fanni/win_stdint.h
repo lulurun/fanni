@@ -1,8 +1,6 @@
 #pragma once
 
-#ifndef _WIN32
-#error  only win32 target supported!
-#endif
+#ifdef _WIN32
 
 typedef signed char       int8_t;
 typedef unsigned char     uint8_t;
@@ -44,3 +42,6 @@ typedef unsigned __int64  uintmax_t;
 
 typedef signed int        intptr_t;
 typedef unsigned int      uintptr_t;
+
+#endif
+

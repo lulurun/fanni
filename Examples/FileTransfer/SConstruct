@@ -1,17 +1,24 @@
 # TODO: should not import
 Import("test_env")
 
-test_env.Program("file_transfer",
-		[
-		"file_transfer.cpp",
-		"FileTransferNode.cpp",
-		"FileTransferClientConnection.cpp",
+test_env.Program(
+	"../../bin/file_transfer",
+	[
+	"src/file_transfer.cpp",
+	"src/FileTransferNode.cpp",
+	"src/FileTransferClientConnection.cpp",
+	],
+	LIBS = [
+		"PocoNetd", "PocoFoundationd", "PocoUtild", "PocoXMLd",
+		"basic", "packets", "ftpackets", "rudp",
 		],
-		LIBS = [
-			"PocoNetd", "PocoFoundationd", "PocoUtild", "PocoXMLd",
-			"basic", "packets", "log4cxx", "filetransferpackets",
-			"rudp", "uuid"],
-		CPPPATH = ["../../Framework", "../../Protocol", "../../include"],
-		LIBPATH = ["../../lib"],
-		)
-		
+	CPPPATH = [
+		"include",
+		"../../Basic/include",
+		"../../Framework/Packets/include",
+		"../../Framework/rUDP/include",
+		"../../Protocol/FTPackets/include",
+		],
+	LIBPATH = ["../../lib"],
+	)
+

@@ -35,9 +35,11 @@ public:
 typedef Singleton<Logger> LoggerSingleton;
 
 inline void INIT_LOGGER(const std::string &config_file) {
-	Logger &logger = LoggerSingleton::get();
-	// set loging level for each logger
-	//(void)Logger;
+    /*
+      Logger &logger = LoggerSingleton::get();
+      // set loging level for each logger
+      //(void)Logger;
+      */
 }
 
 };

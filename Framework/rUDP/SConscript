@@ -1,13 +1,13 @@
 Import("env")
 
 files = [
-	"ConnectionBase.cpp",
-	"TransferNode.cpp",
-	"Sender.cpp",
-	"Receiver.cpp",
-	"PacketHandlerFactory.cpp",
+	"src/ConnectionBase.cpp",
+	"src/TransferNode.cpp",
+	"src/Sender.cpp",
+	"src/Receiver.cpp",
+	"src/PacketHandlerFactory.cpp",
 	]
 
 env.SharedLibrary("../../lib/rudp", files,
-	CPPPATH =["../../include", "../../Framework"])
+	CPPPATH =["include", "../../Framework/Packets/include", "../../Basic/include"])
 

@@ -1,13 +1,15 @@
 Import("env")
 
-files = ["ExceptionBase.cpp",
-		 "Exception.cpp",
-		 "ThreadManager.cpp",
-		 "ThreadWorker.cpp",
-		 ]
+files = [
+      "src/ExceptionBase.cpp",
+      "src/Exception.cpp",
+      "src/ThreadManager.cpp",
+      "src/ThreadWorker.cpp",
+	]
 
-env.SharedLibrary("../lib/basic",
-				files,
-				CPPPATH = "../include",
-				)
+env.SharedLibrary(
+	"../lib/basic",
+	files,
+	CPPPATH = ["include", ],
+	)
 
