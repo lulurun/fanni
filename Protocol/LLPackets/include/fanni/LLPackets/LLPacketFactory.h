@@ -2,13 +2,13 @@
 #define LLPACKETFACTORY_H_
 
 #include "fanni/SingletonTemplate.h"
-
-#include "Packets/PacketFactory.h"
-#include "Packets/PacketSerializer.h"
+#include "fanni/LLPackets/LLPackets_def.h"
+#include "fanni/Packets/PacketFactory.h"
+#include "fanni/Packets/PacketSerializer.h"
 
 namespace Fanni {
 
-class LLPacketFactory : public PacketFactory {
+class Fanni_LLPackets_API LLPacketFactory : public PacketFactory {
 public:
     LLPacketFactory();
     virtual ~LLPacketFactory();

@@ -3,9 +3,9 @@
 
 #include "fanni/Exception.h"
 
-#include "Packets/PacketBaseTypes.h"
-#include "Packets/PacketBase.h"
-#include "LLPacketsID.h"
+#include "fanni/Packets/PacketBaseTypes.h"
+#include "fanni/Packets/PacketBase.h"
+#include "fanni/LLPackets/LLPacketsID.h"
 
 namespace Fanni {
 

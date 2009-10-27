@@ -1,5 +1,5 @@
-#include "LLPackets.h"
-#include "LLPacketFactory.h"
+#include "fanni/LLPackets/LLPackets.h"
+#include "fanni/LLPackets/LLPacketFactory.h"
 
 namespace Fanni {
 
