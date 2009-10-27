@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fanni.Basic", "Basic\Fanni.Basic.vcproj", "{D793532B-4C13-46BC-AF81-154463E9F0FD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fanni.Packets", "Framework\Packets\Fanni.Framework.Packets.vcproj", "{830FCAB6-E720-4B28-A10C-17DC1DDE28CA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D793532B-4C13-46BC-AF81-154463E9F0FD} = {D793532B-4C13-46BC-AF81-154463E9F0FD}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fanni.rUDP", "Framework\rUDP\Fanni.Framework.rUDP.vcproj", "{0796ECFF-569D-477B-A8C0-159474FE28FB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D793532B-4C13-46BC-AF81-154463E9F0FD} = {D793532B-4C13-46BC-AF81-154463E9F0FD}
+		{830FCAB6-E720-4B28-A10C-17DC1DDE28CA} = {830FCAB6-E720-4B28-A10C-17DC1DDE28CA}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FTPackets", "Protocol\FTPackets\FTPackets.vcproj", "{C42470D8-63E4-42CA-A97E-03BEABA07F51}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D793532B-4C13-46BC-AF81-154463E9F0FD} = {D793532B-4C13-46BC-AF81-154463E9F0FD}
+		{830FCAB6-E720-4B28-A10C-17DC1DDE28CA} = {830FCAB6-E720-4B28-A10C-17DC1DDE28CA}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileTransfer", "Examples\FileTransfer\FileTransfer.vcproj", "{81829B93-8C89-4792-8DCA-20EB29BE2500}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D793532B-4C13-46BC-AF81-154463E9F0FD} = {D793532B-4C13-46BC-AF81-154463E9F0FD}
+		{830FCAB6-E720-4B28-A10C-17DC1DDE28CA} = {830FCAB6-E720-4B28-A10C-17DC1DDE28CA}
+		{C42470D8-63E4-42CA-A97E-03BEABA07F51} = {C42470D8-63E4-42CA-A97E-03BEABA07F51}
+		{0796ECFF-569D-477B-A8C0-159474FE28FB} = {0796ECFF-569D-477B-A8C0-159474FE28FB}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D793532B-4C13-46BC-AF81-154463E9F0FD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D793532B-4C13-46BC-AF81-154463E9F0FD}.Debug|Win32.Build.0 = Debug|Win32
+		{D793532B-4C13-46BC-AF81-154463E9F0FD}.Release|Win32.ActiveCfg = Release|Win32
+		{D793532B-4C13-46BC-AF81-154463E9F0FD}.Release|Win32.Build.0 = Release|Win32
+		{830FCAB6-E720-4B28-A10C-17DC1DDE28CA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{830FCAB6-E720-4B28-A10C-17DC1DDE28CA}.Debug|Win32.Build.0 = Debug|Win32
+		{830FCAB6-E720-4B28-A10C-17DC1DDE28CA}.Release|Win32.ActiveCfg = Release|Win32
+		{830FCAB6-E720-4B28-A10C-17DC1DDE28CA}.Release|Win32.Build.0 = Release|Win32
+		{0796ECFF-569D-477B-A8C0-159474FE28FB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0796ECFF-569D-477B-A8C0-159474FE28FB}.Debug|Win32.Build.0 = Debug|Win32
+		{0796ECFF-569D-477B-A8C0-159474FE28FB}.Release|Win32.ActiveCfg = Release|Win32
+		{0796ECFF-569D-477B-A8C0-159474FE28FB}.Release|Win32.Build.0 = Release|Win32
+		{C42470D8-63E4-42CA-A97E-03BEABA07F51}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C42470D8-63E4-42CA-A97E-03BEABA07F51}.Debug|Win32.Build.0 = Debug|Win32
+		{C42470D8-63E4-42CA-A97E-03BEABA07F51}.Release|Win32.ActiveCfg = Release|Win32
+		{C42470D8-63E4-42CA-A97E-03BEABA07F51}.Release|Win32.Build.0 = Release|Win32
+		{81829B93-8C89-4792-8DCA-20EB29BE2500}.Debug|Win32.ActiveCfg = Debug|Win32
+		{81829B93-8C89-4792-8DCA-20EB29BE2500}.Debug|Win32.Build.0 = Debug|Win32
+		{81829B93-8C89-4792-8DCA-20EB29BE2500}.Release|Win32.ActiveCfg = Release|Win32
+		{81829B93-8C89-4792-8DCA-20EB29BE2500}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
