@@ -1,10 +1,7 @@
 package CSharpDataGenerator;
 
 use strict;
-use PacketGenerator::CodeTemplate;
-
-my $program_template = $CodeTemplate::CSharp_TestProgram_Template;
-my $gen_function_template = $CodeTemplate::CSharp_DataGenFunction_Template;
+use PacketGenerator::CodeTemplate::CSharpTest_Src;
 
 my %unused_packets = (
     AddCircuitCode => 1,
@@ -95,24 +92,24 @@ my %unused_packets = (
 my %changed_packets = (
 );
 
-sub generate_test_program {
+sub CSharpTest_Src {
     my $packet_list = shift;
     my $packet_functions_def = "";
     my $packet_functions_call = "";
     foreach my $packet (@$packet_list) {
 	next if ($unused_packets{$packet->{name}});
 	next if ($changed_packets{$packet->{name}});
-	$packet_functions_def .= &generate_packet($packet);
+	$packet_functions_def .= &_generate_packet($packet);
 	$packet_functions_call .= "            " . $packet->{name} . "_gen();\n";
     }
 
-    my $text = $CodeTemplate::CSharp_TestProgram_Template;
+    my $text = $CodeTemplate::CSharpTest_Src::Template;
     $text =~ s/{TestDataGen_FuncDef_List}/$packet_functions_def/;
     $text =~ s/{TestDataGen_FuncCall_List}/$packet_functions_call/;
     return $text;
 }
 
-sub generate_packet {
+sub _generate_packet {
     my $packet = shift;
     my $packet_name = $packet->{name};
     my $block_list = $packet->{block_list};
@@ -121,29 +118,29 @@ sub generate_packet {
 	# TODO @@@ !!!!!????
 	$block->{name} = "_" . $block->{name} if ($block->{name} eq "Header");
 	if ($block->{number} eq "Variable" || $block->{number} eq "//") {
-	    $set_packet_data .= &generate_variable_block($block, $packet);
+	    $set_packet_data .= &_generate_variable_block($block, $packet);
 	} elsif ($block->{number} eq "Single") {
-	    $set_packet_data .= &generate_single_block($block);
+	    $set_packet_data .= &_generate_single_block($block);
 	} else {
-	    $set_packet_data .= &generate_multiple_block($block, $packet);
+	    $set_packet_data .= &_generate_multiple_block($block, $packet);
 	}
     }
 
-    my $text = $CodeTemplate::CSharp_DataGenFunction_Template;
+    my $text = $CodeTemplate::CSharpTest_Src::CSharp_DataGenFunction_Template;
     $text =~ s/{PacketName}/$packet->{name}/g;
     $text =~ s/{Set_PacketData}/$set_packet_data/;
     return $text;
 }
 
-sub generate_single_block {
+sub _generate_single_block {
     my $block = shift;
     return &_block_member_assignment($block, 0);
 }
 
-sub generate_multiple_block {
+sub _generate_multiple_block {
     my ($block, $packet) = @_;
     my $block_member_assign = &_block_member_assignment($block, 1);
-    my $text = $CodeTemplate::CSharp_BlockData_Template;
+    my $text = $CodeTemplate::CSharpTest_Src::CSharp_BlockData_Template;
     $text =~ s/{BlockName}/$block->{name}/g;
     $text =~ s/{PacketName}/$packet->{name}/g;
     $text =~ s/{BlockNumber}/$block->{number}/g;
@@ -151,11 +148,11 @@ sub generate_multiple_block {
     return $text;
 }
 
-sub generate_variable_block {
+sub _generate_variable_block {
     my ($block, $packet) = @_;
     my $block_member_assign = &_block_member_assignment($block, 1);
     my $default_block_number = "DefaultValues.variable_blocks_length";
-    my $text = $CodeTemplate::CSharp_BlockData_Template;
+    my $text = $CodeTemplate::CSharpTest_Src::CSharp_BlockData_Template;
     $text =~ s/{BlockName}/$block->{name}/g;
     $text =~ s/{PacketName}/$packet->{name}/g;
     $text =~ s/{BlockNumber}/$default_block_number/g;

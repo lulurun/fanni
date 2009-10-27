@@ -1,7 +1,11 @@
 package Generator2;
 
 use strict;
-use PacketGenerator::CodeTemplate;
+use PacketGenerator::CodeTemplate::Packets_Include;
+use PacketGenerator::CodeTemplate::PacketsID_Include;
+use PacketGenerator::CodeTemplate::Packets_def_Include;
+use PacketGenerator::CodeTemplate::PacketFactory_Include;
+use PacketGenerator::CodeTemplate::PacketFactory_Src;
 
 my $limit = 1000; # max is 473
 
@@ -28,20 +32,20 @@ my %data_type_table = (
     Variable2 => "SerializableVariable2",
 );
 
-sub generate_packet_id {
+sub PacketsID_Include {
     my $packet_list = shift;
     my $packet_id_enum = &_generate_packet_classes_header($packet_list);
 
-    my $text = $CodeTemplate::PacketsID_H_Template;
+    my $text = $CodeTemplate::PacketsID_Include::Template;
     $text =~ s/{PacketIDEnum}/$packet_id_enum/;
     return $text;
 }
 
-sub generate_packet_impls {
+sub Packets_Include {
     my $packet_list = shift;
     my $packet_classes = &_generate_serializable_classes($packet_list);
 
-    my $text = $CodeTemplate::Packets_H_Template;
+    my $text = $CodeTemplate::Packets_Include::Template;
     $text =~ s/{PacketClasses}/$packet_classes/;
     return $text;
 }
@@ -87,7 +91,7 @@ sub _generate_serializable_classes {
 	# make source file readable
 	$block_class_list = &_indent_block_list($block_class_list);
 	# CODE TEMPLATE !
-	my $class_impl = $CodeTemplate::PacketClass_Template;
+	my $class_impl = $CodeTemplate::Packets_Include::PacketClass_Template;
 	$class_impl =~ s/{ClassName}/$class_name/g;
 	$class_impl =~ s/{BaseClassName}/PacketBase/g;
 	$class_impl =~ s/{BlockClassList}/$block_class_list/g;
@@ -133,7 +137,7 @@ sub _generate_block {
 	$member_list_serialize .= "        " . $name . ".serialize(buffer);\n";
 	$member_list_deserialize .= "        " . $name . ".deserialize(buffer);\n";
     }
-    my $class_impl = $CodeTemplate::BlockClass_Template;
+    my $class_impl = $CodeTemplate::Packets_Include::BlockClass_Template;
     $class_impl =~ s/{ClassName}/$block_name/g;
     $class_impl =~ s/{BaseClassName}/PacketSerializable/g;
     $class_impl =~ s/{MemberList}/$member_list/g;
@@ -142,6 +146,13 @@ sub _generate_block {
     $class_impl =~ s/{SetPacketInfo}//g;
 
     return $class_impl;
+}
+
+sub _indent_block_list {
+    my $text = shift;
+    $text =~ s/\n/\n    /g;
+    $text = "    " . $text;
+    return $text;
 }
 
 sub _generate_packet_classes_header {
@@ -182,7 +193,7 @@ sub _generate_packet_classes_header {
     return $text;
 }
 
-sub generate_packet_factory_cpp {
+sub PacketFactory_Src {
     my $packet_list = shift;
     my $init_all_packets = "";
     my $count = 0;
@@ -195,24 +206,22 @@ INIT_PACKET
         last if ++$count == $limit;
     }
 
-    my $text = $CodeTemplate::PacketFactory_CPP_Template;
+    my $text = $CodeTemplate::PacketFactory_Src::Template;
     $text =~ s/{InitAllPackets}/$init_all_packets/;
     return $text;
 }
 
-sub generate_packet_factory_h {
+sub PacketFactory_Include {
     my $packet_list = shift;
-    my $text = $CodeTemplate::PacketFactory_H_Template;
+    my $text = $CodeTemplate::PacketFactory_Include::Template;
     return $text;
 }
 
-sub _indent_block_list {
-    my $text = shift;
-    $text =~ s/\n/\n    /g;
-    $text = "    " . $text;
+sub Packets_def_Include {
+    my $packet_list = shift;
+    my $text = $CodeTemplate::Packets_def_Include::Template;
     return $text;
 }
-
 
 1;
 

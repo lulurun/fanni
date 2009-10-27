@@ -1,5 +1,6 @@
-#ifndef FileTransferPACKET_ID_H_
-#define FileTransferPACKET_ID_H_
+
+#ifndef FTPACKET_ID_H_
+#define FTPACKET_ID_H_
 
 namespace Fanni {
 
@@ -17,5 +18,5 @@ typedef enum {
 
 };
 
-#endif // FileTransferPACKET_ID_H
+#endif // FTPACKET_ID_H
 

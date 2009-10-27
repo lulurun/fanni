@@ -1,8 +1,8 @@
-#ifndef FileTransferPACKET_IMPL_H_
-#define FileTransferPACKET_IMPL_H_
+
+#ifndef FTPACKET_IMPL_H_
+#define FTPACKET_IMPL_H_
 
 #include "fanni/Exception.h"
-
 #include "fanni/Packets/PacketBaseTypes.h"
 #include "fanni/Packets/PacketBase.h"
 #include "fanni/FTPackets/FTPacketsID.h"
@@ -358,5 +358,5 @@ public:
 
 };
 
-#endif // FileTransferPACKET_IMPL_H
+#endif // FTPACKET_IMPL_H
 

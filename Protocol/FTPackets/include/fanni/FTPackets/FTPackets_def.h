@@ -1,5 +1,6 @@
-#ifndef _FANNI_FTPackets_H_
-#define _FANNI_FTPackets_H_
+
+#ifndef _FANNI_FTPackets_def_H_
+#define _FANNI_FTPackets_def_H_
 
 #if defined(_WIN32) && defined(Fanni_DLL)
 	#if defined(Fanni_FTPackets_EXPORTS)
@@ -15,3 +16,4 @@
 #endif
 
 #endif // _FANNI_FTPackets_H_
+

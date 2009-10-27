@@ -1,8 +1,8 @@
+
 #ifndef LLPACKET_IMPL_H_
 #define LLPACKET_IMPL_H_
 
 #include "fanni/Exception.h"
-
 #include "fanni/Packets/PacketBaseTypes.h"
 #include "fanni/Packets/PacketBase.h"
 #include "fanni/LLPackets/LLPacketsID.h"

@@ -1,5 +1,6 @@
-#ifndef FileTransferPACKETFACTORY_H_
-#define FileTransferPACKETFACTORY_H_
+
+#ifndef FTPACKETFACTORY_H_
+#define FTPACKETFACTORY_H_
 
 #include "fanni/SingletonTemplate.h"
 #include "fanni/Packets/PacketFactory.h"
@@ -16,9 +17,9 @@ public:
 
 typedef Singleton<FTPacketFactory> FTPacketFactorySingleton;
 
-PacketSerializer *CreateFTPacketFactorySerializer();
+PacketSerializer *CreateFTPacketSerializer();
 
 }
 
-#endif /* FileTransferPACKETFACTORY_H_ */
+#endif /* FTPACKETFACTORY_H_ */
 

@@ -13,21 +13,22 @@ if ($act eq "packet") {
 }
 my $input_message_template = shift @ARGV || "message_template.msg";
 my $output_prefix = shift @ARGV || "LL";
-# settings
+# get base dir
 my $_pwd = `pwd`;
 my $base_dir = $_pwd;
 $base_dir =~ s/\n//g; # TODO @@@ ???
-
 my $base_output_dir = $base_dir . "/../../../Protocol/" . $output_prefix . "Packets";
 if (! -e $base_output_dir) {
     mkdir($base_output_dir);
 }
-my $packet_id_target = $base_output_dir . "/" . $output_prefix . "PacketsID.h";
-my $packet_impl_target = $base_output_dir . "/" . $output_prefix . "Packets.h";
-my $packet_factory_cpp_target = $base_output_dir . "/" . $output_prefix . "PacketFactory.cpp";
-my $packet_factory_h_target = $base_output_dir . "/" . $output_prefix . "PacketFactory.h";
-# for test
-my $csharp_data_generator_target = $base_dir . "/../packet_code_test/TestDataGenerator.cs";
+# output
+my $packet_def_include = &_get_include_output_file($base_output_dir, $output_prefix, "Packets_def.h");
+my $packet_id_include = &_get_include_output_file($base_output_dir, $output_prefix, "PacketsID.h");
+my $packet_impl_include = &_get_include_output_file($base_output_dir, $output_prefix, "Packets.h");
+my $packet_factory_include = &_get_include_output_file($base_output_dir, $output_prefix, "PacketFactory.h");
+my $packet_factory_src = &_get_src_output_file($base_output_dir, $output_prefix, "PacketFactory.cpp");
+# test data generator (CSharp)
+my $csharp_test_src = $base_dir . "/../packet_code_test/TestDataGenerator.cs";
 
 # init
 my $packet_list = &Parser::parse($input_message_template);
@@ -36,22 +37,25 @@ if ($act eq "packet") {
     &dump_packets($packet_list, $out_packet);
 } elsif ($act eq "type") {
     &dump_member_types($packet_list);
-} elsif ($act eq "generate2_packet") {
-    &save_file(&Generator2::generate_packet_id($packet_list), $packet_id_target);
-    &save_file(&Generator2::generate_packet_impls($packet_list), $packet_impl_target);
-} elsif ($act eq "generate2_factory") {
-    &save_file(&Generator2::generate_packet_factory_cpp($packet_list), $packet_factory_cpp_target);
-    &save_file(&Generator2::generate_packet_factory_h($packet_list), $packet_factory_h_target);
-} elsif ($act eq "generate_c#_testdata") {
-    &save_file(&CSharpDataGenerator::generate_test_program($packet_list), $csharp_data_generator_target);
 } elsif ($act eq "generate2") {
-    &save_file(&Generator2::generate_packet_id($packet_list), $packet_id_target);
-    &save_file(&Generator2::generate_packet_impls($packet_list), $packet_impl_target);
-    &save_file(&Generator2::generate_packet_factory_cpp($packet_list), $packet_factory_cpp_target);
-    &save_file(&Generator2::generate_packet_factory_h($packet_list), $packet_factory_h_target);
-    &save_file(&CSharpDataGenerator::generate_test_program($packet_list), $csharp_data_generator_target);
+    &save_file(&Generator2::Packets_def_Include($packet_list), $packet_def_include);
+    &save_file(&Generator2::PacketsID_Include($packet_list), $packet_id_include);
+    &save_file(&Generator2::Packets_Include($packet_list), $packet_impl_include);
+    &save_file(&Generator2::PacketFactory_Include($packet_list), $packet_factory_include);
+    &save_file(&Generator2::PacketFactory_Src($packet_list), $packet_factory_src);
+    &save_file(&CSharpDataGenerator::CSharpTest_Src($packet_list), $csharp_test_src);
 } else {
     die "unknown action -" . $act . "-\n";
+}
+
+sub _get_include_output_file {
+    my ($base_dir, $prefix, $name) = @_;
+    return $base_dir . "/include/fanni/" . $prefix . "Packets/" . $prefix . $name;
+}
+
+sub _get_src_output_file {
+    my ($base_dir, $prefix, $name) = @_;
+    return $base_dir . "/src/" . $prefix . $name;
 }
 
 sub save_file {
