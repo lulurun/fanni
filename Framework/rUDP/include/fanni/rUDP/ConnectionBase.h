@@ -65,6 +65,7 @@ public:
 
 	uint32_t getCircuitCode() const { return this->circuit_code; }
 	const Poco::Net::SocketAddress &getAddr() const { return this->addr; }
+	TransferNode &getTransferNode() const { return this->node; }
 	void sendPacket(PacketBase *packet);
 
 	void updateLastReceived();

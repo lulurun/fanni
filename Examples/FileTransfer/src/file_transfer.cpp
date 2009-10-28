@@ -19,7 +19,7 @@ using namespace Poco::Util;
 class FileTransferApp : public ServerApplication {
 public:
 	FileTransferApp() :
-		_server_mode(false), ip(), port(0), path() {}
+		_server_mode(false), ip(), port(0), path(), thread_number(1) {}
 	~FileTransferApp() {}
 
 protected:
@@ -119,18 +119,19 @@ protected:
 				return 1;
 			}
 			try {
-				int thread_number = 5;
-				FileTransferNode node("0.0.0.0", 0, thread_number);
+				FileTransferNode node("0.0.0.0", 0, this->thread_number);
 				node.start();
 
 				Poco::Net::SocketAddress connect_to_addr(this->ip, this->port);
 				INFO_LOG("FileTRansfer", "send " << this->path << " to " << connect_to_addr.toString());
 				node.startSendFile(this->path, connect_to_addr);
-
 				waitForTerminationRequest();
+
 				node.stop();
 			} catch (ErrorException &e) {
 				ERROR_LOG("FileTRansfer", "ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
+			} catch (...) {
+				ERROR_LOG("FileTRansfer", "Poco Exception");
 			}
 		} else {
 			try {
@@ -141,10 +142,9 @@ protected:
 				if (_error) {
 					return 1;
 				}
-				int thread_number = 5;
 				INFO_LOG("FileTRansfer", "enter server mode");
 				INFO_LOG("FileTRansfer", "listening port: " << this->port);
-				FileTransferNode node("0.0.0.0", this->port, thread_number);
+				FileTransferNode node("0.0.0.0", this->port, this->thread_number);
 				node.start();
 				waitForTerminationRequest();
 				node.stop();
@@ -152,6 +152,15 @@ protected:
 				ERROR_LOG("FileTRansfer", "ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
 			}
 		}
+
+#ifdef _WIN32
+#ifdef _DEBUG
+
+		_CrtDumpMemoryLeaks();
+
+#endif
+#endif
+
 		return Application::EXIT_OK;
 	}
 
@@ -160,6 +169,7 @@ private:
 	std::string ip;
 	int port;
 	std::string path;
+	int thread_number;
 };
 
 int main(int argc, char** argv)
@@ -167,61 +177,4 @@ int main(int argc, char** argv)
 	FileTransferApp app;
 	return app.run(argc, argv);
 }
-
-/*
-int start_server() {
-	try {
-		DEBUG_LOG("enter Server mode");
-		FileTransferNode node("0.0.0.0", DEFAULT_PORT, thread_number);
-		node.start();
-		while(1) {
-			;
-		}
-	} catch (ErrorException &e) {
-		ERROR_LOG("ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
-	}
-	return 0;
-}
-
-int start_client(const string &server_addr, const string &file_path) {
-	TRACE_LOG("enter");
-	try {
-		FileTransferNode node("0.0.0.0", 0, thread_number);
-		node.start();
-
-		Poco::Net::SocketAddress connect_to_addr(server_addr, DEFAULT_PORT);
-		node.startSendFile(file_path, connect_to_addr);
-
-		while(1) {
-			;
-		}
-
-	} catch (ErrorException &e) {
-		ERROR_LOG("ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
-	}
-	TRACE_LOG("exit");
-	return 0;
-}
-
-int main(int argc, char **argv) {
-    bool server_mode = false;
-    if (argc >= 2) {
-	string arg(argv[1]);
-	if (arg == "server") server_mode = true;
-    }
-    if (server_mode) {
-	return start_server();
-    } else {
-	if (argc >= 3) {
-	    string server_addr(argv[1]);
-	    string file_name(argv[2]);
-	    return start_client(server_addr, file_name);
-	} else {
-	    cout << "help" << endl;
-	}
-    }
-    return 0;
-}
-
-*/
 

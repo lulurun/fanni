@@ -8,6 +8,16 @@
 #ifndef FILETRANSFERNODE_H_
 #define FILETRANSFERNODE_H_
 
+#ifdef _WIN32
+#ifdef _DEBUG
+
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+#endif
+#endif
+
 #include <string>
 
 #include "fanni/Packets/PacketBase.h"

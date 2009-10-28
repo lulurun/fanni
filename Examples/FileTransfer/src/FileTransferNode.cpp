@@ -54,19 +54,19 @@ bool FileTransferNode::isNewConnection(const PacketBase *packet) {
 void FileTransferNode::openConnection(const Poco::Net::SocketAddress &addr) {
 	TRACE_LOG("enter");
 	int circuit_code = 1; // TODO @@@ should be a random number
-	OpenConnectionPacket *packet = dynamic_cast<OpenConnectionPacket *> (this->packet_factory.createPacket(OpenConnection_ID));
-	assert(packet);
+	std::auto_ptr<OpenConnectionPacket> packet(dynamic_cast<OpenConnectionPacket *> (this->packet_factory.createPacket(OpenConnection_ID)));
+	assert(packet.get());
 	packet->OpenConnection.Code = circuit_code;
-	this->sendPacket(packet, addr);
+	this->sendPacket(packet.release(), addr);
 	TRACE_LOG("exit");
 }
 
 void FileTransferNode::closeConnection(const Poco::Net::SocketAddress &addr) {
-	CloseConnectionPacket *packet = dynamic_cast<CloseConnectionPacket *> (this->packet_factory.createPacket(CloseConnection_ID));
-	assert(packet);
-	this->sendPacket(packet, addr);
-	// memo @@@ don't wait
-	this->removeConnection(addr);
+	std::auto_ptr<CloseConnectionPacket> packet(dynamic_cast<CloseConnectionPacket *> (this->packet_factory.createPacket(CloseConnection_ID)));
+	assert(packet.get());
+	this->sendPacket(packet.release(), addr);
+	// TODO @@@ don't wait ??
+	// this->removeConnection(addr);
 }
 
 void FileTransferNode::startSendFile(const string &file_path, const Poco::Net::SocketAddress &addr) {

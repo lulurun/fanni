@@ -28,12 +28,12 @@ Receiver::~Receiver() {
 
 void Receiver::doTask(Poco::Notification *task) {
 	TRACE_LOG("enter");
-	ReceiverTask *transfer_data = dynamic_cast<ReceiverTask *> (task);
-	assert(transfer_data);
+	Poco::AutoPtr<ReceiverTask> transfer_data(dynamic_cast<ReceiverTask *>(task));
+	assert(transfer_data.get());
 	try {
 		//DEBUG_LOG(transfer_data->data->to_debug_string());
 
-		auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(*(transfer_data->data)));
+		std::auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(*(transfer_data->data)));
 		assert(packet.get());
 		/*
 		DEBUG_LOG("incoming packet: ID " << packet->header.getPacketID());
@@ -42,7 +42,7 @@ void Receiver::doTask(Poco::Notification *task) {
 		DEBUG_LOG("incoming packet: resend " << packet->header.isResent());
 		DEBUG_LOG("incoming packet: zerocode " << packet->header.isZeroCoded());
 		*/
-		this->node.processIncomingPacket(packet.get(), transfer_data->addr);
+		this->node.processIncomingPacket(packet.release(), transfer_data.get()->addr);
 		// MEMO @@@ TransferDataBuffer(packet, ep) will be deleted here
 	} catch (ErrorException &e) {
 		ERROR_LOG("rUDP", "packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
@@ -68,5 +68,10 @@ ReceiverManager::ReceiverManager(int receiver_number, TransferNode &node,
 	}
 }
 
-ReceiverManager::~ReceiverManager() {}
+ReceiverManager::~ReceiverManager() {
+	WORKER_LIST_TYPE::iterator it;
+	for(WORKER_LIST_TYPE::iterator it = this->worker_list.begin(); it != this->worker_list.end(); it++){
+		delete (*it);
+	}
+}
 

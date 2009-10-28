@@ -166,33 +166,6 @@ public:
 
 };
 
-/*
- // TODO @@@ temporary, not implemented as expected
- class FixedLengthBufferPool {
- static const unsigned int DEFAULT_BUF_LEN = 5000;
- public:
- static FixedLengthBufferPool *GetInstance() {
- static FixedLengthBufferPool *pool = NULL;
- if (pool == NULL) {
- pool = new FixedLengthBufferPool();
- //pool->init();
- }
- return pool;
- }
-
- FixedLengthBuffer *getBuffer() {
- unsigned char *buf = new unsigned char[FixedLengthBufferPool::DEFAULT_BUF_LEN];
- return new FixedLengthBuffer(buf);
- }
-
- void returnBuffer(FixedLengthBuffer *buf) {
- if (buf != NULL) {
- delete buf;
- }
- }
- };
- */
-
 }
 
 #endif /* FIXEDLENGTHBUFFER_H_ */

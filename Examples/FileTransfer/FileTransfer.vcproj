@@ -178,6 +178,10 @@
 				RelativePath=".\src\FileTransferNode.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\src\FileTransferStatus.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="ヘッダー ファイル"
@@ -194,6 +198,10 @@
 			</File>
 			<File
 				RelativePath=".\include\FileTransferNode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\FileTransferStatus.h"
 				>
 			</File>
 			<File

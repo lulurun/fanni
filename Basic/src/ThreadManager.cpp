@@ -10,10 +10,6 @@ ThreadManager::ThreadManager() {
 }
 
 ThreadManager::~ThreadManager() {
-	WORKER_LIST_TYPE::iterator it;
-	for(WORKER_LIST_TYPE::iterator it = this->worker_list.begin(); it != this->worker_list.end(); it++){
-		delete (*it);
-	}
 	delete this->thread_pool;
 }
 

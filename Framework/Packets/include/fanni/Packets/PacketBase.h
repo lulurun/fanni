@@ -20,9 +20,9 @@ protected:
 	virtual void deserialize(PacketBuffer &buffer) = 0;
 
 public:
+	PacketBase();
 	PacketHeader header; // TODO @@@ should be protected
 
-	PacketBase();
 	virtual ~PacketBase();
 
 	void setFlag(PacketHeader::Flag flag);

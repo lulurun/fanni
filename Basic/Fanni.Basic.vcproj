@@ -245,6 +245,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\fanni\Sleep.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\fanni\ThreadManager.h"
 				>
 			</File>

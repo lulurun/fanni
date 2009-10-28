@@ -37,6 +37,7 @@ class Receiver: public Fanni::Worker {
 private:
 	TransferNode &node;
 	const PacketHandlerFactory &packet_handler_factory;
+	// MEMO @@@ serializer is not thread safe, should be owned by the thread
 	PacketSerializer *packet_serializer;
 
 protected:

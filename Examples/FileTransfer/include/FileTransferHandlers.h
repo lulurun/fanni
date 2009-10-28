@@ -21,6 +21,7 @@
 
 namespace Fanni {
 
+// System Packet Handlers
 class OpenConnectionPacketHandler : public PacketHandlerBase {
 public:
 	virtual void operator()(const PacketBase *packet, ConnectionBase *connection) const {
@@ -28,14 +29,38 @@ public:
 		const OpenConnectionPacket *open_conn_packet = dynamic_cast<const OpenConnectionPacket *> (packet);
 		assert(open_conn_packet);
 		// send reply
-		OpenConnectionReplyPacket *reply_packet = dynamic_cast<OpenConnectionReplyPacket *>(FTPacketFactorySingleton::get().createPacket(OpenConnectionReply_ID));
-		assert(reply_packet);
+		std::auto_ptr<OpenConnectionReplyPacket> reply_packet(dynamic_cast<OpenConnectionReplyPacket *>(FTPacketFactorySingleton::get().createPacket(OpenConnectionReply_ID)));
+		assert(reply_packet.get());
 		reply_packet->OpenConnectionReply.Code = open_conn_packet->OpenConnection.Code;
-		connection->sendPacket(reply_packet);
+		connection->sendPacket(reply_packet.release());
 		TRACE_LOG("exit");
 	};
 };
 
+class CloseConnectionPacketHandler : public PacketHandlerBase {
+public:
+	virtual void operator()(const PacketBase *packet_base, ConnectionBase *connection) const {
+		INFO_LOG("FileTransfer", "reply to close connection request");
+		std::auto_ptr<CloseConnectionPacket> packet(dynamic_cast<CloseConnectionPacket *>(FTPacketFactorySingleton::get().createPacket(CloseConnection_ID)));
+		connection->getTransferNode().sendPacket(packet.release(), connection->getAddr());
+		// TODO @@@ solve this !!
+		//node->removeConnection(addr);
+	};
+};
+
+class CloseConnectionReplyPacketHandler : public PacketHandlerBase {
+public:
+	virtual void operator()(const PacketBase *packet, ConnectionBase *connection_base) const {
+		INFO_LOG("FileTransfer", "got close connection reply");
+		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(connection_base);
+		assert(connection);
+		//connection->OnCloseConnectionReply(connection);
+		// TODO @@@
+		//node->removeConnection(addr);
+	};
+};
+
+// Connection Event Packet Handlers
 class OpenConnectionReplyPacketHandler : public PacketHandlerBase {
 public:
 	virtual void operator()(const PacketBase *packet, ConnectionBase *connection_base) const {
@@ -47,30 +72,6 @@ public:
 	};
 };
 
-class CloseConnectionPacketHandler : public PacketHandlerBase {
-public:
-	virtual void operator()(const PacketBase *packet, ConnectionBase *connection_base) const {
-		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(connection_base);
-		assert(connection);
-		INFO_LOG("FileTransfer", "reply to close connection request");
-		connection->OnCloseConnection(connection);
-		// TODO @@@ solve this !!
-		//transfer_peer->removeConnection(ep);
-	};
-};
-
-class CloseConnectionReplyPacketHandler : public PacketHandlerBase {
-public:
-	virtual void operator()(const PacketBase *packet, ConnectionBase *connection_base) const {
-		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(connection_base);
-		assert(connection);
-		INFO_LOG("FileTransfer", "got close connection reply");
-		connection->OnCloseConnectionReply(connection);
-		// TODO @@@
-		//node->removeConnection(addr);
-	};
-};
-
 class FileInfoPacketHandler : public PacketHandlerBase {
 public:
 	virtual void operator()(const PacketBase *packet, ConnectionBase *connection_base) const {
@@ -79,7 +80,7 @@ public:
 		assert(file_info_packet);
 		FileTransferClientConnection *connection = dynamic_cast<FileTransferClientConnection *>(connection_base);
 		assert(connection);
-		connection->OnFileInfo(file_info_packet->FileInfo.Size, file_info_packet->FileInfo.Name.c_str(), file_info_packet->FileInfo.SenderTransferID.val, connection);
+		connection->OnFileInfo(file_info_packet->FileInfo.Size, file_info_packet->FileInfo.Name.asString(), file_info_packet->FileInfo.SenderTransferID.val, connection);
 		TRACE_LOG("exit");
 	};
 };

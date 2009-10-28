@@ -37,6 +37,7 @@ class Sender: public Fanni::Worker {
 private:
 	Poco::Net::DatagramSocket &socket;
 	TransferNode &node;
+	// MEMO @@@ serializer is not thread safe, should be owned by the thread
 	PacketSerializer *packet_serializer;
 
 protected:

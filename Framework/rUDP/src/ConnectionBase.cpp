@@ -52,6 +52,9 @@ void ConnectionBase::processIncomingPacket(const PacketBase *packet) {
 		const DefaultPacketAckPacket *ack_packet = dynamic_cast<const DefaultPacketAckPacket *>(packet);
 		assert(ack_packet);
 		int debug_count = 0;
+
+		DEBUG_LOG("rUDP", "removing resend packets: " << ack_packet->Packets.val.size());
+
 		for(vector<DefaultPacketAckPacket::PacketsBlock>::const_iterator it = ack_packet->Packets.val.begin(); it!=ack_packet->Packets.val.end(); it++) {
 			this->remove_resend_packet_nolock(it->ID);
 			debug_count++;
@@ -78,6 +81,7 @@ void ConnectionBase::checkACK() {
     int total_count = 0;
     while (!this->ack_packet_queue.empty()) {
 		int count = 0;
+		// TODO @@@ leak !!?
 		DefaultPacketAckPacket *packet = new DefaultPacketAckPacket();
 		while (!this->ack_packet_queue.empty()) {
 			DefaultPacketAckPacket::PacketsBlock packets_block;
@@ -112,6 +116,7 @@ void ConnectionBase::checkRESEND() {
 			delete_list.push_back(it->first);
 		}
 	}
+	DEBUG_LOG("rUDP", "giveup resending " << delete_list.size() << " packets");
 	for(list<uint32_t>::const_iterator it=delete_list.begin(); it!=delete_list.end(); it++ ) {
 		this->remove_resend_packet_nolock(*it);
 	}
@@ -131,7 +136,6 @@ void ConnectionBase::remove_resend_packet_nolock(uint32_t seq) {
 	if (it != this->resend_packet_map.end()) {
 		if (it->second != NULL) delete it->second;
 		this->resend_packet_map.erase(seq);
-		//this->resend_status_map.erase(seq); // TODO @@@ !!!
 	}
 }
 
