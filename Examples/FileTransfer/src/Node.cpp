@@ -7,14 +7,15 @@
 
 #include <cassert>
 #include <fstream>
-#include "FileTransferNode.h"
-#include "FileTransferHandlers.h"
-#include "FileTransferClientConnection.h"
+#include "Node.h"
+#include "Handlers.h"
+#include "Connection.h"
 
 using namespace std;
 using namespace Fanni;
+using namespace Fanni::FileTransfer;
 
-FileTransferNode::FileTransferNode(const std::string &addr, uint16_t port, int thread_number) :
+Node::Node(const std::string &addr, uint16_t port, int thread_number) :
 	TransferNode(FTPacketFactorySingleton::get(), addr, port, thread_number)  {
 	// set packet handlers
 	this->packet_handler_factory.registerPacketHandler(OpenConnection_ID, new OpenConnectionPacketHandler());
@@ -27,31 +28,35 @@ FileTransferNode::FileTransferNode(const std::string &addr, uint16_t port, int t
 	this->packet_handler_factory.registerPacketHandler(TransferComplete_ID, new TransferCompletePacketHandler());
 }
 
-FileTransferNode::~FileTransferNode() {
-}
+Node::~Node() {}
 
-ConnectionBase *FileTransferNode::createConnection(const PacketBase *packet_base, const Poco::Net::SocketAddress &addr) {
+ConnectionBase &Node::createConnection(const PacketBase *packet_base, const Poco::Net::SocketAddress &addr) {
 	TRACE_LOG("enter");
-	ConnectionBase *connection = NULL;
+	ConnectionBase *conn = NULL;
 	if (packet_base->header.getPacketID() == OpenConnection_ID) {
+		// Server
 		const OpenConnectionPacket *packet = dynamic_cast<const OpenConnectionPacket *>(packet_base);
 		assert(packet);
-		connection = new FileTransferClientConnection(packet->OpenConnection.Code, addr, *this);
+		conn = new Connection(packet->OpenConnection.Code, addr, *this);
 	} else if (packet_base->header.getPacketID() == OpenConnectionReply_ID) {
+		// Client
 		const OpenConnectionReplyPacket *packet = dynamic_cast<const OpenConnectionReplyPacket *>(packet_base);
 		assert(packet);
-		connection = new FileTransferClientConnection(packet->OpenConnectionReply.Code, addr, *this);
+		conn = new Connection(packet->OpenConnectionReply.Code, addr, *this);
+	} else {
+		// throw Exception
 	}
+	this->addConnection(conn);
 	TRACE_LOG("exit");
-	return connection;
+	return *conn;
 }
 
-bool FileTransferNode::isNewConnection(const PacketBase *packet) {
+bool Node::isNewConnection(const PacketBase *packet) {
 	return (packet->header.getPacketID() == OpenConnection_ID) || (packet->header.getPacketID() == OpenConnectionReply_ID);
 }
 
 // file sender methods
-void FileTransferNode::openConnection(const Poco::Net::SocketAddress &addr) {
+void Node::connect(const Poco::Net::SocketAddress &addr) {
 	TRACE_LOG("enter");
 	int circuit_code = 1; // TODO @@@ should be a random number
 	std::auto_ptr<OpenConnectionPacket> packet(dynamic_cast<OpenConnectionPacket *> (this->packet_factory.createPacket(OpenConnection_ID)));
@@ -61,7 +66,7 @@ void FileTransferNode::openConnection(const Poco::Net::SocketAddress &addr) {
 	TRACE_LOG("exit");
 }
 
-void FileTransferNode::closeConnection(const Poco::Net::SocketAddress &addr) {
+void Node::close(const Poco::Net::SocketAddress &addr) {
 	std::auto_ptr<CloseConnectionPacket> packet(dynamic_cast<CloseConnectionPacket *> (this->packet_factory.createPacket(CloseConnection_ID)));
 	assert(packet.get());
 	this->sendPacket(packet.release(), addr);
@@ -69,8 +74,11 @@ void FileTransferNode::closeConnection(const Poco::Net::SocketAddress &addr) {
 	// this->removeConnection(addr);
 }
 
-void FileTransferNode::startSendFile(const string &file_path, const Poco::Net::SocketAddress &addr) {
+void Node::startSendFile(const string &file_path, const Poco::Net::SocketAddress &addr) {
 	this->send_file_path = file_path;
-	this->openConnection(addr);
+	this->connect(addr);
 }
 
+std::string& Node::getSendFile() {
+	return this->send_file_path;
+}

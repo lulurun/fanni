@@ -15,18 +15,19 @@
 #include "fanni/UUID.h"
 
 namespace Fanni {
+namespace FileTransfer {
 
 static const size_t FILE_PART_SIZE = 1200;
 
-class FileTransferStatus {
+class Status {
 
 private:
 	Poco::FastMutex mutex;
 
 	size_t file_size;
 	const std::string file_name;
-	UUID receiver_transfer_id;
-	UUID sender_transfer_id;
+	UUID receive_id;
+	UUID send_id;
 	size_t transfered_size;
 	time_t start_time;
 	int block_size;
@@ -36,17 +37,17 @@ private:
 	unsigned char *file_buffer;
 	bool *data_block_map;
 public:
-	FileTransferStatus(uint32_t file_size, const std::string file_name, const UUID &receiver_transfer_id, const UUID &sender_transfer_id, bool mem_alloc = false);
-	~FileTransferStatus();
+	Status(uint32_t file_size, const std::string file_name, const UUID &receive_id, const UUID &send_id, bool mem_alloc = false);
+	~Status();
 
-	const size_t getFileSize() const { return this->file_size; }
-	const std::string &getFileName() const { return this->file_name; }
-	const UUID &getReceiverTransferID() const { return this->receiver_transfer_id; }
-	const UUID &getSenderTransferID() const { return this->sender_transfer_id; }
-	const time_t &getStartTime() const { return this->start_time; }
-	const unsigned char *getFileBuffer() const { return this->file_buffer; }
-	const bool isFailed() const { return this->_error; }
-	void failed() { this->_error = true; }
+	inline const size_t getFileSize() const { return this->file_size; }
+	inline const std::string &getFileName() const { return this->file_name; }
+	inline const UUID &getReceiverTransferID() const { return this->receive_id; }
+	inline const UUID &getSenderTransferID() const { return this->send_id; }
+	inline const time_t &getStartTime() const { return this->start_time; }
+	inline const unsigned char *getFileBuffer() const { return this->file_buffer; }
+	inline const bool isFailed() const { return this->_error; }
+	inline void failed() { this->_error = true; }
 
 	void setReceiverTransferID(const UUID &transfer_id);
 	void setSenderTransferID(const UUID &transfer_id);
@@ -54,6 +55,7 @@ public:
 	bool update(int data_number, const unsigned char *data, size_t len);
 };
 
+}
 }
 
 #endif // FileTransferStatus_H_

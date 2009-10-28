@@ -174,8 +174,7 @@ void TransferNode::onCheckALIVETimer(Poco::Timer &timer) {
 void TransferNode::processIncomingPacket(const PacketBase *packet, const Poco::Net::SocketAddress &addr) {
 	ConnectionBase *connection = NULL;
 	if (this->isNewConnection(packet)) {
-		connection = this->createConnection(packet, addr);
-		this->addConnection(connection);
+		this->createConnection(packet, addr);
 	} else {
 		connection = this->getConnection(addr);
 	}

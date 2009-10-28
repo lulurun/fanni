@@ -72,10 +72,13 @@ private:
 
 	void removeConnection_nolock(const Poco::Net::SocketAddress &addr);
 	ConnectionBase *getConnection_nolock(const Poco::Net::SocketAddress &addr);
+
+protected:
+	void addConnection(ConnectionBase *connection);
+
 public:
 	virtual bool isNewConnection(const PacketBase *packet) = 0;
-	virtual ConnectionBase *createConnection(const PacketBase *packet, const Poco::Net::SocketAddress &addr) = 0;
-	void addConnection(ConnectionBase *connection);
+	virtual ConnectionBase &createConnection(const PacketBase *packet, const Poco::Net::SocketAddress &addr) = 0;
 	void removeConnection(const Poco::Net::SocketAddress &addr);
 	ConnectionBase *getConnection(const Poco::Net::SocketAddress &addr);
 

@@ -9,17 +9,16 @@
 #include "Poco/Util/ServerApplication.h"
 #include "Poco/Util/HelpFormatter.h"
 #include "fanni/Logger.h"
-#include "FileTransferNode.h"
+#include "Node.h"
 
 using namespace std;
 using namespace Fanni;
-
+using namespace Fanni::FileTransfer;
 using namespace Poco::Util;
 
 class FileTransferApp : public ServerApplication {
 public:
-	FileTransferApp() :
-		_server_mode(false), ip(), port(0), path(), thread_number(1) {}
+	FileTransferApp() : _server_mode(false), ip(), port(0), path(), thread_number(1) {}
 	~FileTransferApp() {}
 
 protected:
@@ -102,7 +101,7 @@ protected:
 	{
 		bool _error = false;
 		if (!_server_mode) {
-			INFO_LOG("FileTRansfer", "enter client mode");
+			INFO_LOG("FileTransfer", "enter client mode");
 			if ( this->ip.empty() ) {
 				cout << "requires host" << endl;
 				_error = true;
@@ -119,7 +118,7 @@ protected:
 				return 1;
 			}
 			try {
-				FileTransferNode node("0.0.0.0", 0, this->thread_number);
+				Node node("0.0.0.0", 0, this->thread_number);
 				node.start();
 
 				Poco::Net::SocketAddress connect_to_addr(this->ip, this->port);
@@ -144,7 +143,7 @@ protected:
 				}
 				INFO_LOG("FileTRansfer", "enter server mode");
 				INFO_LOG("FileTRansfer", "listening port: " << this->port);
-				FileTransferNode node("0.0.0.0", this->port, this->thread_number);
+				Node node("0.0.0.0", this->port, this->thread_number);
 				node.start();
 				waitForTerminationRequest();
 				node.stop();

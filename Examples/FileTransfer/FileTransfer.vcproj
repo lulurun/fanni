@@ -167,19 +167,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\Connection.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\file_transfer.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\FileTransferClientConnection.cpp"
+				RelativePath=".\src\Node.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\FileTransferNode.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\FileTransferStatus.cpp"
+				RelativePath=".\src\Status.cpp"
 				>
 			</File>
 		</Filter>
@@ -189,23 +189,23 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\include\FileTransferClientConnection.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\FileTransferHandlers.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\FileTransferNode.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\FileTransferStatus.h"
+				RelativePath=".\include\Connection.h"
 				>
 			</File>
 			<File
 				RelativePath=".\include\FileUtils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Handlers.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Node.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Status.h"
 				>
 			</File>
 		</Filter>

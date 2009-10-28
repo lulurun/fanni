@@ -12,6 +12,7 @@
 #include <fstream>
 
 namespace Fanni {
+namespace FileTransfer {
 
 class FileUtils {
 public:
@@ -42,6 +43,7 @@ public:
 
 };
 
+}
 }
 
 #endif /* FILEUTILS_H_ */
