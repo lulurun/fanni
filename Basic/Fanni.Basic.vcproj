@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="E:\fanni\ext_libs\include;E:\fanni\git_repo\Basic\include"
+				AdditionalIncludeDirectories="..\ext_libs\include;include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;Fanni_DLL;Fanni_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -67,7 +67,7 @@
 				LinkLibraryDependencies="false"
 				OutputFile="..\bin\FanniBasicd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\ext_libs\lib"
+				AdditionalLibraryDirectories="..\ext_libs\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				ImportLibrary="..\lib\FanniBasicd.lib"

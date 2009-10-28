@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\ext_libs\include;..\..\Framework\Packets\include;..\..\Basic\include"
+				AdditionalIncludeDirectories="..\..\ext_libs\include;include;..\..\Basic\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;Fanni_DLL;Fanni_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -64,7 +64,7 @@
 				Name="VCLinkerTool"
 				OutputFile="..\..\bin\FanniPacketsd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\ext_libs\lib"
+				AdditionalLibraryDirectories="..\..\ext_libs\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				ImportLibrary="..\..\lib\FanniPacketsd.lib"
