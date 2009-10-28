@@ -1,0 +1,15 @@
+*.dll
+*.lib
+*.exp
+*.pdb
+*.ilk
+*.user
+Debug
+Release
+fanni.ncb
+fanni.suo
+*.exe
+*.so
+*.o
+*.os
+ext_libs
