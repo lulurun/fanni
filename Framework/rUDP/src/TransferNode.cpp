@@ -87,17 +87,17 @@ void TransferNode::sendPacket(PacketBase *packet, const Poco::Net::SocketAddress
 		this->ac++;
 		packet->setSequence(this->ac.value());
 	}
-	SenderTask *data = new SenderTask(packet, addr);
-	this->sender_manager->deliverTask(data);
+	std::auto_ptr<SenderTask> data(new SenderTask(packet, addr));
+	this->sender_manager->deliverTask(data.release());
 	TRACE_LOG("exit");
 }
 
 // PacketTransfer Management
-void TransferNode::addConnection(ConnectionBase *connection) {
-	INFO_LOG("rUDP", "add connection: " << connection->getAddr().toString());
+void TransferNode::addConnection(ConnectionBase *conn) {
+	INFO_LOG("rUDP", "add connection: " << conn->getAddr().toString());
 	Poco::FastMutex::ScopedLock l(this->connection_map);
 	// TODO @@@ check if already exists
-	this->connection_map[connection->getAddr().toString()] = connection;
+	this->connection_map[conn->getAddr().toString()] = conn;
 }
 
 ConnectionBase *TransferNode::getConnection(const Poco::Net::SocketAddress &addr) {
@@ -122,10 +122,10 @@ void TransferNode::removeConnection(const Poco::Net::SocketAddress &addr) {
 
 void TransferNode::removeConnection_nolock(const Poco::Net::SocketAddress &addr) {
 	INFO_LOG("rUDP", "remove connection: " << addr.toString());
-	ConnectionBase *connection = this->getConnection(addr);
-	if (connection != NULL) {
+	ConnectionBase *conn = this->getConnection_nolock(addr);
+	if (conn != NULL) {
 		this->connection_map.erase(addr.toString());
-		delete connection;
+		delete conn;
 	}
 }
 
@@ -172,29 +172,29 @@ void TransferNode::onCheckALIVETimer(Poco::Timer &timer) {
 
 // Reliable Packet Transfer
 void TransferNode::processIncomingPacket(const PacketBase *packet, const Poco::Net::SocketAddress &addr) {
-	ConnectionBase *connection = NULL;
-	if (this->isNewConnection(packet)) {
-		this->createConnection(packet, addr);
+	if (this->isSystemPacket(packet)) {
+		const SystemPacketHandlerBase &handler = this->packet_handler_factory.getSystemHandler(packet->header.getPacketID());
+		handler(packet, addr, *this);
 	} else {
-		connection = this->getConnection(addr);
-	}
-	if (connection) {
-		connection->processIncomingPacket(packet);
-	} else {
-		WARN_LOG("rUDP", "unknown packet from: " << addr.toString());
+		ConnectionBase *conn = this->getConnection(addr);
+		if (conn) {
+			conn->processIncomingPacket(packet);
+		} else {
+			WARN_LOG("rUDP", "unknown packet from: " << addr.toString());
+		}
 	}
 }
 
 void TransferNode::processOutgoingPacket(const PacketBase *packet, const Poco::Net::SocketAddress &addr) {
-	ConnectionBase *connection = this->getConnection(addr);
-	if (connection) {
-		connection->processOutgoingPacket(packet);
+	ConnectionBase *conn = this->getConnection(addr);
+	if (conn) {
+		conn->processOutgoingPacket(packet);
 	} else {
 		WARN_LOG("rUDP", "unknown packet to: " << addr.toString());
 	}
 }
 
-PacketHandlerFactory &TransferNode::getPacketHandlerFactory() {
+const PacketHandlerFactory &TransferNode::getPacketHandlerFactory() const {
 	return this->packet_handler_factory;
 }
 

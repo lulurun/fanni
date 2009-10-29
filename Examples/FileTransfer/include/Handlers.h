@@ -22,53 +22,53 @@ namespace Fanni {
 namespace FileTransfer {
 
 // System Packet Handlers
-class OpenConnectionPacketHandler : public PacketHandlerBase {
+class OpenConnectionPacketHandler : public SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const {
+	virtual void operator()(const PacketBase *packet_base, const Poco::Net::SocketAddress &addr, TransferNode &node) const {
 		TRACE_LOG("enter");
-		const OpenConnectionPacket *packet = dynamic_cast<const OpenConnectionPacket *>(packet_base);
-		assert(packet);
+		ConnectionBase &conn = node.createConnection(packet_base, addr);
 		// send reply
 		std::auto_ptr<OpenConnectionReplyPacket> reply_packet(dynamic_cast<OpenConnectionReplyPacket *>(FTPacketFactorySingleton::get().createPacket(OpenConnectionReply_ID)));
 		assert(reply_packet.get());
-		reply_packet->OpenConnectionReply.Code = packet->OpenConnection.Code;
-		conn_base->sendPacket(reply_packet.release());
+		reply_packet->OpenConnectionReply.Code = conn.getCircuitCode();
+		node.sendPacket(reply_packet.release(), addr);
 		TRACE_LOG("exit");
 	};
 };
 
-class CloseConnectionPacketHandler : public PacketHandlerBase {
+class OpenConnectionReplyPacketHandler : public SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const {
-		INFO_LOG("FileTransfer", "reply to close connection request");
-		std::auto_ptr<CloseConnectionPacket> packet(dynamic_cast<CloseConnectionPacket *>(FTPacketFactorySingleton::get().createPacket(CloseConnection_ID)));
-		conn_base->getTransferNode().sendPacket(packet.release(), conn_base->getAddr());
-		// TODO @@@ solve this !!
-		//node->removeConnection(addr);
+	virtual void operator()(const PacketBase *packet_base, const Poco::Net::SocketAddress &addr, TransferNode &node) const {
+		TRACE_LOG("enter");
+		ConnectionBase &conn_base = node.createConnection(packet_base, addr);
+		Connection *conn = dynamic_cast<Connection *>(&conn_base);
+		assert(conn);
+		conn->OnOpenConnectionReply(conn);
+		TRACE_LOG("exit");
 	};
 };
 
-class CloseConnectionReplyPacketHandler : public PacketHandlerBase {
+class CloseConnectionPacketHandler : public SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const {
+	virtual void operator()(const PacketBase *packet_base, const Poco::Net::SocketAddress &addr, TransferNode &node) const {
+		INFO_LOG("FileTransfer", "reply to close connection request");
+		std::auto_ptr<CloseConnectionReplyPacket> packet(dynamic_cast<CloseConnectionReplyPacket *>(FTPacketFactorySingleton::get().createPacket(CloseConnectionReply_ID)));
+		node.sendPacket(packet.release(), addr);
+		// TODO @@@ solve this !!?
+		node.removeConnection(addr);
+	};
+};
+
+class CloseConnectionReplyPacketHandler : public SystemPacketHandlerBase {
+public:
+	virtual void operator()(const PacketBase *packet_base, const Poco::Net::SocketAddress &addr, TransferNode &node) const {
 		INFO_LOG("FileTransfer", "got close connection reply");
-		Connection *conn = dynamic_cast<Connection *>(conn_base);
-		assert(conn);
-		//node->removeConnection(conn->getAddr());
+		node.removeConnection(addr);
 	};
 };
 
 // Connection Event Packet Handlers
-class OpenConnectionReplyPacketHandler : public PacketHandlerBase {
-public:
-	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const {
-		Connection *conn = dynamic_cast<Connection *>(conn_base);
-		assert(conn);
-		conn->OnOpenConnectionReply(conn);
-	};
-};
-
-class FileInfoPacketHandler : public PacketHandlerBase {
+class FileInfoPacketHandler : public ClientPacketHandlerBase {
 public:
 	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const {
 		TRACE_LOG("enter");
@@ -81,7 +81,7 @@ public:
 	};
 };
 
-class FileInfoReplyPacketHandler : public PacketHandlerBase {
+class FileInfoReplyPacketHandler : public ClientPacketHandlerBase {
 public:
 	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const {
 		TRACE_LOG("enter");
@@ -94,7 +94,7 @@ public:
 	};
 };
 
-class FileDataPacketHandler : public PacketHandlerBase {
+class FileDataPacketHandler : public ClientPacketHandlerBase {
 public:
 	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const {
 		TRACE_LOG("enter");
@@ -107,7 +107,7 @@ public:
 	};
 };
 
-class TransferCompletePacketHandler : public PacketHandlerBase {
+class TransferCompletePacketHandler : public ClientPacketHandlerBase {
 public:
 	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const {
 		TRACE_LOG("enter");

@@ -53,7 +53,7 @@ class TransferNode;
 class Fanni_RUDP_API ConnectionBase {
 protected:
 	TransferNode &node;
-	PacketHandlerFactory &packet_handler_factory;
+	const PacketHandlerFactory &packet_handler_factory;
 
 	const Poco::Net::SocketAddress addr;
     uint32_t circuit_code; // connection id
@@ -63,7 +63,7 @@ public:
 	ConnectionBase(uint32_t circuit_code, const Poco::Net::SocketAddress &addr, TransferNode &node);
 	virtual ~ConnectionBase();
 
-	uint32_t getCircuitCode() const { return this->circuit_code; }
+	const uint32_t getCircuitCode() const { return this->circuit_code; }
 	const Poco::Net::SocketAddress &getAddr() const { return this->addr; }
 	TransferNode &getTransferNode() const { return this->node; }
 	void sendPacket(PacketBase *packet);

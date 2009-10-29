@@ -28,11 +28,11 @@ public:
 	Node(const std::string &addr, uint16_t port, int thread_number);
 	virtual ~Node();
 	virtual ConnectionBase &createConnection(const PacketBase *packet, const Poco::Net::SocketAddress &addr);
-	virtual bool isNewConnection(const PacketBase *packet);
+	virtual bool isSystemPacket(const PacketBase *packet) const;
 
 	void startSendFile(const std::string &file_path, const Poco::Net::SocketAddress &addr);
 
-	std::string &getSendFile();
+	const std::string &getSendFile() const;
 };
 
 }

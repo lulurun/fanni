@@ -14,13 +14,21 @@
 
 namespace Fanni {
 
-class NullHandler: public PacketHandlerBase {
+class NullClientHandler: public ClientPacketHandlerBase {
 public:
-	void operator()(const PacketBase *packet, ConnectionBase *connection) const {
+	void operator()(const PacketBase *packet, ConnectionBase *conn) const {
 		INFO_LOG("rUDP", "handler not defined for Packet: " << std::hex << packet->header.getPacketID() << std::dec
-				<< " from " << connection->getAddr().toString());
+				<< " from " << conn->getAddr().toString());
 	}
-	;
+};
+
+class NullSystemHandler: public SystemPacketHandlerBase {
+public:
+	void operator()(const PacketBase *packet, const Poco::Net::SocketAddress &addr, TransferNode &node) const {
+		FATAL_LOG("rUDP", "system handler not defined for Packet: " << std::hex << packet->header.getPacketID() << std::dec
+				<< " from " << addr.toString());
+		// TODO @@@ throw exception
+	}
 };
 
 }
@@ -28,34 +36,43 @@ public:
 using namespace std;
 using namespace Fanni;
 
-typedef Poco::HashMap<PacketHeader::PACKET_ID_TYPE, const PacketHandlerBase*> PACKET_HANDLER_MAP_TYPE;
-static PACKET_HANDLER_MAP_TYPE PacketHandlerList;
-static NullHandler null_handler;
+static NullClientHandler null_client_handler;
+static NullSystemHandler null_system_handler;
 
-PacketHandlerFactory::PacketHandlerFactory() {
-}
+PacketHandlerFactory::PacketHandlerFactory() {}
+
 PacketHandlerFactory::~PacketHandlerFactory() {
-	//TODO @@@ memory leak, delete
+	for(CLIENT_HANDLER_MAP::Iterator it=this->ClientHandlerList.begin(); it!=this->ClientHandlerList.end(); it++) {
+		delete it->second;
+	}
+	for(SYSTEM_HANDLER_MAP::Iterator it=this->SystemHandlerList.begin(); it!=this->SystemHandlerList.end(); it++) {
+		delete it->second;
+	}
 }
 
-void PacketHandlerFactory::init() {
-}
-
-void PacketHandlerFactory::registerPacketHandler(
-		PacketHeader::PACKET_ID_TYPE packet_id,
-		const PacketHandlerBase *packet_handler) {
+void PacketHandlerFactory::registerClientHandler(PacketHeader::PACKET_ID_TYPE packet_id, const ClientPacketHandlerBase *packet_handler) {
 	// MEMO @@@ not thread safe, call me in one thread
-	PacketHandlerList[packet_id] = packet_handler;
+	this->ClientHandlerList[packet_id] = packet_handler;
 }
 
-const PacketHandlerBase &PacketHandlerFactory::getPacketHandler(
-		PacketHeader::PACKET_ID_TYPE packet_id) const {
-	PACKET_HANDLER_MAP_TYPE::ConstIterator it = PacketHandlerList.find(
-			packet_id);
-	if (it != PacketHandlerList.end()) {
-		// MEMO @@@ do not copy
+void PacketHandlerFactory::registerSyetemHandler(PacketHeader::PACKET_ID_TYPE packet_id, const SystemPacketHandlerBase *packet_handler) {
+	// MEMO @@@ not thread safe, call me in one thread
+	this->SystemHandlerList[packet_id] = packet_handler;
+}
+
+const ClientPacketHandlerBase &PacketHandlerFactory::getClientHandler(PacketHeader::PACKET_ID_TYPE packet_id) const {
+	CLIENT_HANDLER_MAP::ConstIterator it = this->ClientHandlerList.find(packet_id);
+	if (it != this->ClientHandlerList.end()) {
 		return *it->second;
 	}
-	return null_handler;
+	return null_client_handler;
+}
+
+const SystemPacketHandlerBase &PacketHandlerFactory::getSystemHandler(PacketHeader::PACKET_ID_TYPE packet_id) const {
+	SYSTEM_HANDLER_MAP::ConstIterator it = this->SystemHandlerList.find(packet_id);
+	if (it != this->SystemHandlerList.end()) {
+		return *it->second;
+	}
+	return null_system_handler;
 }
 

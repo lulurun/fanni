@@ -62,8 +62,8 @@ void ConnectionBase::processIncomingPacket(const PacketBase *packet) {
 		return; // @@@ this is the handler of packetack
 	}
 	// dispatch packet handler
-	const PacketHandlerBase &packet_handler = this->packet_handler_factory.getPacketHandler(packet->header.getPacketID());
-	packet_handler(packet, this);
+	const ClientPacketHandlerBase &handler = this->packet_handler_factory.getClientHandler(packet->header.getPacketID());
+	handler(packet, this);
 
 	TRACE_LOG("exit");
 }

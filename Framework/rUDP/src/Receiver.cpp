@@ -28,30 +28,21 @@ Receiver::~Receiver() {
 
 void Receiver::doTask(Poco::Notification *task) {
 	TRACE_LOG("enter");
-	Poco::AutoPtr<ReceiverTask> transfer_data(dynamic_cast<ReceiverTask *>(task));
-	assert(transfer_data.get());
-	try {
-		//DEBUG_LOG(transfer_data->data->to_debug_string());
+	ReceiverTask *transfer_data = dynamic_cast<ReceiverTask *>(task);
+	assert(transfer_data);
+	//DEBUG_LOG(transfer_data->data->to_debug_string());
 
-		std::auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(*(transfer_data->data)));
-		assert(packet.get());
-		/*
-		DEBUG_LOG("incoming packet: ID " << packet->header.getPacketID());
-		DEBUG_LOG("incoming packet: seq " << packet->header.getSequenceNumber());
-		DEBUG_LOG("incoming packet: reliable " << packet->header.isReliable());
-		DEBUG_LOG("incoming packet: resend " << packet->header.isResent());
-		DEBUG_LOG("incoming packet: zerocode " << packet->header.isZeroCoded());
-		*/
-		this->node.processIncomingPacket(packet.release(), transfer_data.get()->addr);
-		// MEMO @@@ TransferDataBuffer(packet, ep) will be deleted here
-	} catch (ErrorException &e) {
-		ERROR_LOG("rUDP", "packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
-	} catch (WarnException &e) {
-		WARN_LOG("rUDP", "packet handler failed. Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
-	} catch (FatalException &e) {
-		FATAL_LOG("rUDP", "receiver loop terminated. FATAL ERROR: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg() );
-		this->stop();
-	}
+	std::auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(*(transfer_data->data)));
+	assert(packet.get());
+	/*
+	DEBUG_LOG("incoming packet: ID " << packet->header.getPacketID());
+	DEBUG_LOG("incoming packet: seq " << packet->header.getSequenceNumber());
+	DEBUG_LOG("incoming packet: reliable " << packet->header.isReliable());
+	DEBUG_LOG("incoming packet: resend " << packet->header.isResent());
+	DEBUG_LOG("incoming packet: zerocode " << packet->header.isZeroCoded());
+	*/
+	this->node.processIncomingPacket(packet.get(), transfer_data->addr);
+	// MEMO @@@ packet will be deleted here
 	TRACE_LOG("exit");
 }
 

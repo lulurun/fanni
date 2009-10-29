@@ -77,13 +77,13 @@ protected:
 	void addConnection(ConnectionBase *connection);
 
 public:
-	virtual bool isNewConnection(const PacketBase *packet) = 0;
+	virtual bool isSystemPacket(const PacketBase *packet) const = 0;
+	ConnectionBase *getConnection(const Poco::Net::SocketAddress &addr);
 	virtual ConnectionBase &createConnection(const PacketBase *packet, const Poco::Net::SocketAddress &addr) = 0;
 	void removeConnection(const Poco::Net::SocketAddress &addr);
-	ConnectionBase *getConnection(const Poco::Net::SocketAddress &addr);
 
 public:
-	PacketHandlerFactory &getPacketHandlerFactory();
+	const PacketHandlerFactory &getPacketHandlerFactory() const;
 };
 
 }
