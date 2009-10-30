@@ -9,7 +9,7 @@
 #define SENDER_H_
 
 #include "Poco/Net/DatagramSocket.h"
-
+#include "fanni/EndPoint.h"
 #include "fanni/ThreadWorker.h"
 #include "fanni/ThreadManager.h"
 #include "fanni/Packets/PacketBase.h"
@@ -20,10 +20,10 @@ namespace Fanni {
 class SenderTask: public Poco::Notification {
 public:
 	PacketBase *data;
-	Poco::Net::SocketAddress addr;
+	EndPoint ep;
 
-	SenderTask(PacketBase *data, const Poco::Net::SocketAddress &addr) :
-		data(data), addr(addr) {
+	SenderTask(PacketBase *data, const EndPoint &ep) :
+		data(data), ep(ep) {
 	}
 
 	~SenderTask() {

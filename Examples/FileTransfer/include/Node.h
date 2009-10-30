@@ -9,7 +9,7 @@
 #define FILETRANSFERNODE_H_
 
 #include <string>
-
+#include "fanni/EndPoint.h"
 #include "fanni/Packets/PacketBase.h"
 #include "fanni/rUDP/TransferNode.h"
 #include "fanni/FTPackets/FTPacketsID.h"
@@ -21,16 +21,16 @@ class Node : public TransferNode {
 private:
 	std::string send_file_path;
 
-	void connect(const Poco::Net::SocketAddress &addr);
-	void close(const Poco::Net::SocketAddress &addr);
+	void connect(const EndPoint &ep);
+	void close(const EndPoint &ep);
 
 public:
 	Node(const std::string &addr, uint16_t port, int thread_number);
 	virtual ~Node();
-	virtual ConnectionBase &createConnection(const PacketBase *packet, const Poco::Net::SocketAddress &addr);
+	virtual ConnectionBase &createConnection(const PacketBase *packet, const EndPoint &ep);
 	virtual bool isSystemPacket(const PacketBase *packet) const;
 
-	void startSendFile(const std::string &file_path, const Poco::Net::SocketAddress &addr);
+	void startSendFile(const std::string &file_path, const EndPoint &ep);
 
 	const std::string &getSendFile() const;
 };

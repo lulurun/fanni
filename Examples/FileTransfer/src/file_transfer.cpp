@@ -121,9 +121,9 @@ protected:
 				Node node("0.0.0.0", 0, this->thread_number);
 				node.start();
 
-				Poco::Net::SocketAddress connect_to_addr(this->ip, this->port);
-				INFO_LOG("FileTRansfer", "send " << this->path << " to " << connect_to_addr.toString());
-				node.startSendFile(this->path, connect_to_addr);
+				EndPoint connect_to_ep(this->ip, this->port);
+				INFO_LOG("FileTRansfer", "send " << this->path << " to " << connect_to_ep.toString());
+				node.startSendFile(this->path, connect_to_ep);
 				waitForTerminationRequest();
 
 				node.stop();

@@ -37,8 +37,8 @@ void Sender::doTask(Poco::Notification *task) {
 	DEBUG_LOG("outgoing packet: zerocode " << packet->header.isZeroCoded());
 	*/
 	const unsigned char *resp_buf = this->packet_serializer->serialize(packet, &len);
-	this->node.processOutgoingPacket(transfer_data->data, transfer_data->addr);
-	this->socket.sendTo(resp_buf, len, transfer_data->addr);
+	this->node.processOutgoingPacket(transfer_data->data, transfer_data->ep);
+	this->socket.sendTo(resp_buf, len, transfer_data->ep);
 	TRACE_LOG("exit");
 }
 

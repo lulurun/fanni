@@ -8,7 +8,7 @@
 #ifndef PACKETHANDLERFACTORY_H_
 #define PACKETHANDLERFACTORY_H_
 
-#include "Poco/Net/SocketAddress.h"
+#include "fanni/EndPoint.h"
 #include "fanni/Packets/PacketBase.h"
 #include "fanni/Packets/PacketHeader.h"
 #include "fanni/rUDP/rUDP_def.h"
@@ -24,7 +24,7 @@ public:
 
 class SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, const Poco::Net::SocketAddress &addr, TransferNode &node) const = 0;
+	virtual void operator()(const PacketBase *packet_base, const EndPoint &ep, TransferNode &node) const = 0;
 };
 
 class Fanni_RUDP_API PacketHandlerFactory {

@@ -8,8 +8,7 @@
 #ifndef RECEIVER_H_
 #define RECEIVER_H_
 
-#include "Poco/Net/SocketAddress.h"
-
+#include "fanni/EndPoint.h"
 #include "fanni/ThreadWorker.h"
 #include "fanni/ThreadManager.h"
 #include "fanni/Packets/PacketHeader.h"
@@ -21,10 +20,10 @@ namespace Fanni {
 class ReceiverTask: public Poco::Notification {
 public:
 	PacketBuffer *data;
-	Poco::Net::SocketAddress addr;
+	EndPoint ep;
 
-	ReceiverTask(PacketBuffer *data, const Poco::Net::SocketAddress &addr) :
-		data(data), addr(addr) {
+	ReceiverTask(PacketBuffer *data, const EndPoint &ep) :
+		data(data), ep(ep) {
 	}
 	~ReceiverTask() {
 		delete this->data;

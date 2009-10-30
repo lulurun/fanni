@@ -56,11 +56,11 @@ public:
 
 	virtual void start();
 	virtual void stop();
-	virtual void sendPacket(PacketBase *packet, const Poco::Net::SocketAddress &addr);
+	virtual void sendPacket(PacketBase *packet, const EndPoint &ep);
 
 	// Reliable Packet Transfer
-	void processIncomingPacket(const PacketBase *packet, const Poco::Net::SocketAddress &addr);
-	void processOutgoingPacket(const PacketBase *packet, const Poco::Net::SocketAddress &addr);
+	void processIncomingPacket(const PacketBase *packet, const EndPoint &ep);
+	void processOutgoingPacket(const PacketBase *packet, const EndPoint &ep);
 
 	// Connection Management
 private:
@@ -70,17 +70,17 @@ public:
 private:
 	CONNECTION_MAP connection_map;
 
-	void removeConnection_nolock(const Poco::Net::SocketAddress &addr);
-	ConnectionBase *getConnection_nolock(const Poco::Net::SocketAddress &addr);
+	void removeConnection_nolock(const EndPoint &ep);
+	ConnectionBase *getConnection_nolock(const EndPoint &ep);
 
 protected:
 	void addConnection(ConnectionBase *connection);
 
 public:
 	virtual bool isSystemPacket(const PacketBase *packet) const = 0;
-	ConnectionBase *getConnection(const Poco::Net::SocketAddress &addr);
-	virtual ConnectionBase &createConnection(const PacketBase *packet, const Poco::Net::SocketAddress &addr) = 0;
-	void removeConnection(const Poco::Net::SocketAddress &addr);
+	ConnectionBase *getConnection(const EndPoint &ep);
+	virtual ConnectionBase &createConnection(const PacketBase *packet, const EndPoint &ep) = 0;
+	void removeConnection(const EndPoint &ep);
 
 public:
 	const PacketHandlerFactory &getPacketHandlerFactory() const;

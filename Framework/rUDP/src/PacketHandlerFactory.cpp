@@ -9,6 +9,7 @@
 #include "Poco/HashMap.h"
 
 #include "fanni/Exception.h"
+#include "fanni/EndPoint.h"
 #include "fanni/rUDP/PacketHandlerFactory.h"
 #include "fanni/rUDP/TransferNode.h"
 
@@ -18,15 +19,15 @@ class NullClientHandler: public ClientPacketHandlerBase {
 public:
 	void operator()(const PacketBase *packet, ConnectionBase *conn) const {
 		INFO_LOG("rUDP", "handler not defined for Packet: " << std::hex << packet->header.getPacketID() << std::dec
-				<< " from " << conn->getAddr().toString());
+				<< " from " << conn->getEndPoint().toString());
 	}
 };
 
 class NullSystemHandler: public SystemPacketHandlerBase {
 public:
-	void operator()(const PacketBase *packet, const Poco::Net::SocketAddress &addr, TransferNode &node) const {
+	void operator()(const PacketBase *packet, const EndPoint &ep, TransferNode &node) const {
 		FATAL_LOG("rUDP", "system handler not defined for Packet: " << std::hex << packet->header.getPacketID() << std::dec
-				<< " from " << addr.toString());
+				<< " from " << ep.toString());
 		// TODO @@@ throw exception
 	}
 };

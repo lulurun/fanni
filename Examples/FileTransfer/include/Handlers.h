@@ -10,6 +10,7 @@
 
 #include <cassert>
 #include <memory>
+#include "fanni/EndPoint.h"
 #include "fanni/UUID.h"
 #include "fanni/Logger.h"
 #include "fanni/FTPackets/FTPackets.h"
@@ -24,23 +25,23 @@ namespace FileTransfer {
 // System Packet Handlers
 class OpenConnectionPacketHandler : public SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, const Poco::Net::SocketAddress &addr, TransferNode &node) const {
+	virtual void operator()(const PacketBase *packet_base, const EndPoint &ep, TransferNode &node) const {
 		TRACE_LOG("enter");
-		ConnectionBase &conn = node.createConnection(packet_base, addr);
+		ConnectionBase &conn = node.createConnection(packet_base, ep);
 		// send reply
 		std::auto_ptr<OpenConnectionReplyPacket> reply_packet(dynamic_cast<OpenConnectionReplyPacket *>(FTPacketFactorySingleton::get().createPacket(OpenConnectionReply_ID)));
 		assert(reply_packet.get());
 		reply_packet->OpenConnectionReply.Code = conn.getCircuitCode();
-		node.sendPacket(reply_packet.release(), addr);
+		node.sendPacket(reply_packet.release(), ep);
 		TRACE_LOG("exit");
 	};
 };
 
 class OpenConnectionReplyPacketHandler : public SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, const Poco::Net::SocketAddress &addr, TransferNode &node) const {
+	virtual void operator()(const PacketBase *packet_base, const EndPoint &ep, TransferNode &node) const {
 		TRACE_LOG("enter");
-		ConnectionBase &conn_base = node.createConnection(packet_base, addr);
+		ConnectionBase &conn_base = node.createConnection(packet_base, ep);
 		Connection *conn = dynamic_cast<Connection *>(&conn_base);
 		assert(conn);
 		conn->OnOpenConnectionReply(conn);
@@ -50,20 +51,20 @@ public:
 
 class CloseConnectionPacketHandler : public SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, const Poco::Net::SocketAddress &addr, TransferNode &node) const {
+	virtual void operator()(const PacketBase *packet_base, const EndPoint &ep, TransferNode &node) const {
 		INFO_LOG("FileTransfer", "reply to close connection request");
 		std::auto_ptr<CloseConnectionReplyPacket> packet(dynamic_cast<CloseConnectionReplyPacket *>(FTPacketFactorySingleton::get().createPacket(CloseConnectionReply_ID)));
-		node.sendPacket(packet.release(), addr);
+		node.sendPacket(packet.release(), ep);
 		// TODO @@@ solve this !!?
-		node.removeConnection(addr);
+		node.removeConnection(ep);
 	};
 };
 
 class CloseConnectionReplyPacketHandler : public SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, const Poco::Net::SocketAddress &addr, TransferNode &node) const {
+	virtual void operator()(const PacketBase *packet_base, const EndPoint &ep, TransferNode &node) const {
 		INFO_LOG("FileTransfer", "got close connection reply");
-		node.removeConnection(addr);
+		node.removeConnection(ep);
 	};
 };
 

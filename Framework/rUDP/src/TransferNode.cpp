@@ -8,6 +8,7 @@
 #include <list>
 
 #include "fanni/Logger.h"
+#include "fanni/EndPoint.h"
 #include "fanni/rUDP/DefaultPacketAckPacket.h"
 #include "fanni/rUDP/TransferNode.h"
 
@@ -21,8 +22,8 @@ TransferNode::TransferNode(PacketFactory &packet_factory, const std::string &add
 	DefaultPacketAckPacket packet;
 	this->packet_factory.registerPacket(DefaultPacketAckPacket::DefaultPacketAck_ID, packet);
 	// init scoket
-	SocketAddress sock_addr(addr, port);
-	this->socket.bind(sock_addr, true);
+	EndPoint ep(addr, port);
+	this->socket.bind(ep, true);
 	// init Receiver, Sender
 	this->receiver_manager = new ReceiverManager(thread_number, *this, this->packet_factory, this->packet_handler_factory);
 	this->sender_manager = new SenderManager(thread_number, this->socket, *this, this->packet_factory);
@@ -81,32 +82,32 @@ void TransferNode::stop() {
 	this->sender_manager->stop();
 }
 
-void TransferNode::sendPacket(PacketBase *packet, const Poco::Net::SocketAddress &addr) {
+void TransferNode::sendPacket(PacketBase *packet, const EndPoint &ep) {
 	TRACE_LOG("enter");
 	if (!packet->header.isResent()) {
 		this->ac++;
 		packet->setSequence(this->ac.value());
 	}
-	std::auto_ptr<SenderTask> data(new SenderTask(packet, addr));
+	std::auto_ptr<SenderTask> data(new SenderTask(packet, ep));
 	this->sender_manager->deliverTask(data.release());
 	TRACE_LOG("exit");
 }
 
 // PacketTransfer Management
 void TransferNode::addConnection(ConnectionBase *conn) {
-	INFO_LOG("rUDP", "add connection: " << conn->getAddr().toString());
+	INFO_LOG("rUDP", "add connection: " << conn->getEndPoint().toString());
 	Poco::FastMutex::ScopedLock l(this->connection_map);
 	// TODO @@@ check if already exists
-	this->connection_map[conn->getAddr().toString()] = conn;
+	this->connection_map[conn->getEndPoint().toString()] = conn;
 }
 
-ConnectionBase *TransferNode::getConnection(const Poco::Net::SocketAddress &addr) {
+ConnectionBase *TransferNode::getConnection(const EndPoint &ep) {
 	Poco::FastMutex::ScopedLock l(this->connection_map);
-	return this->getConnection_nolock(addr);
+	return this->getConnection_nolock(ep);
 }
 
-ConnectionBase *TransferNode::getConnection_nolock(const Poco::Net::SocketAddress &addr) {
-	CONNECTION_MAP::Iterator it = this->connection_map.find(addr.toString());
+ConnectionBase *TransferNode::getConnection_nolock(const EndPoint &ep) {
+	CONNECTION_MAP::Iterator it = this->connection_map.find(ep.toString());
 	if (it == this->connection_map.end()) {
 		// not found
 		return NULL;
@@ -115,16 +116,16 @@ ConnectionBase *TransferNode::getConnection_nolock(const Poco::Net::SocketAddres
 	}
 }
 
-void TransferNode::removeConnection(const Poco::Net::SocketAddress &addr) {
+void TransferNode::removeConnection(const EndPoint &ep) {
 	Poco::FastMutex::ScopedLock l(this->connection_map);
-	this->removeConnection_nolock(addr);
+	this->removeConnection_nolock(ep);
 }
 
-void TransferNode::removeConnection_nolock(const Poco::Net::SocketAddress &addr) {
-	INFO_LOG("rUDP", "remove connection: " << addr.toString());
-	ConnectionBase *conn = this->getConnection_nolock(addr);
+void TransferNode::removeConnection_nolock(const EndPoint &ep) {
+	INFO_LOG("rUDP", "remove connection: " << ep.toString());
+	ConnectionBase *conn = this->getConnection_nolock(ep);
 	if (conn != NULL) {
-		this->connection_map.erase(addr.toString());
+		this->connection_map.erase(ep.toString());
 		delete conn;
 	}
 }
@@ -152,45 +153,43 @@ void TransferNode::onCheckALIVETimer(Poco::Timer &timer) {
 	Poco::FastMutex::ScopedLock l(this->connection_map);
 	if (this->connection_map.empty())
 		return;
-	list<const Poco::Net::SocketAddress *> remove_connection_list;
+	list<const EndPoint> remove_connection_list;
 	for (CONNECTION_MAP::Iterator it = this->connection_map.begin(); it
 			!= this->connection_map.end(); it++) {
 		if (it->second->checkALIVE()) {
-			remove_connection_list.push_back(&it->second->getAddr());
+			remove_connection_list.push_back(it->second->getEndPoint());
 		}
 	}
 	if (remove_connection_list.size() > 0) {
 		INFO_LOG("rUDP", "remove " << remove_connection_list.size() << " client connections");
-		for (list<const Poco::Net::SocketAddress *>::iterator it =
-				remove_connection_list.begin(); it
-				!= remove_connection_list.end(); it++) {
-			this->removeConnection_nolock(*(*it));
+		for (list<const EndPoint>::iterator it = remove_connection_list.begin(); it != remove_connection_list.end(); it++) {
+			this->removeConnection_nolock(*it);
 		}
 	}
 	TRACE_LOG("exit");
 }
 
 // Reliable Packet Transfer
-void TransferNode::processIncomingPacket(const PacketBase *packet, const Poco::Net::SocketAddress &addr) {
+void TransferNode::processIncomingPacket(const PacketBase *packet, const EndPoint &ep) {
 	if (this->isSystemPacket(packet)) {
 		const SystemPacketHandlerBase &handler = this->packet_handler_factory.getSystemHandler(packet->header.getPacketID());
-		handler(packet, addr, *this);
+		handler(packet, ep, *this);
 	} else {
-		ConnectionBase *conn = this->getConnection(addr);
+		ConnectionBase *conn = this->getConnection(ep);
 		if (conn) {
 			conn->processIncomingPacket(packet);
 		} else {
-			WARN_LOG("rUDP", "unknown packet from: " << addr.toString());
+			WARN_LOG("rUDP", "unknown packet from: " << ep.toString());
 		}
 	}
 }
 
-void TransferNode::processOutgoingPacket(const PacketBase *packet, const Poco::Net::SocketAddress &addr) {
-	ConnectionBase *conn = this->getConnection(addr);
+void TransferNode::processOutgoingPacket(const PacketBase *packet, const EndPoint &ep) {
+	ConnectionBase *conn = this->getConnection(ep);
 	if (conn) {
 		conn->processOutgoingPacket(packet);
 	} else {
-		WARN_LOG("rUDP", "unknown packet to: " << addr.toString());
+		WARN_LOG("rUDP", "unknown packet to: " << ep.toString());
 	}
 }
 

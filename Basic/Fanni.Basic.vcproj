@@ -209,6 +209,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\fanni\EndPoint.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\fanni\Event++.h"
 				>
 			</File>

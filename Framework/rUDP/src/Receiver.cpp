@@ -41,7 +41,7 @@ void Receiver::doTask(Poco::Notification *task) {
 	DEBUG_LOG("incoming packet: resend " << packet->header.isResent());
 	DEBUG_LOG("incoming packet: zerocode " << packet->header.isZeroCoded());
 	*/
-	this->node.processIncomingPacket(packet.get(), transfer_data->addr);
+	this->node.processIncomingPacket(packet.get(), transfer_data->ep);
 	// MEMO @@@ packet will be deleted here
 	TRACE_LOG("exit");
 }

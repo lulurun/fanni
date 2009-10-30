@@ -11,6 +11,7 @@
 #include <fstream>
 
 #include "fanni/Sleep.h"
+#include "fanni/EndPoint.h"
 #include "fanni/Logger.h"
 #include "fanni/FTPackets/FTPacketFactory.h"
 #include "fanni/FTPackets/FTPacketsID.h"
@@ -23,8 +24,8 @@ using namespace std;
 using namespace Fanni;
 using namespace Fanni::FileTransfer;
 
-Connection::Connection(uint32_t circuit_code, const Poco::Net::SocketAddress &addr, TransferNode &node)
-: ConnectionBase(circuit_code, addr, node) {
+Connection::Connection(uint32_t circuit_code, const EndPoint &ep, TransferNode &node)
+: ConnectionBase(circuit_code, ep, node) {
 }
 
 Connection::~Connection() {

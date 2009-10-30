@@ -13,8 +13,7 @@
 #include <queue>
 #include "Poco/HashMap.h"
 #include "Poco/Mutex.h"
-#include "Poco/Net/SocketAddress.h"
-
+#include "fanni/EndPoint.h"
 #include "fanni/LockableTemplate.h"
 #include "fanni/Packets/PacketBase.h"
 #include "fanni/rUDP/rUDP_def.h"
@@ -22,6 +21,7 @@
 
 namespace Fanni {
 
+// TODO @@@ read from config file
 static const int CONNECTION_TIMEOUT = 100; // 100 sec
 static const int RESEND_TIMEOUT = 4; // 4 sec
 static const int MAX_RESENDING_TRIES = 0xffff; // will give up transferring after trying to resend 4 times
@@ -55,16 +55,16 @@ protected:
 	TransferNode &node;
 	const PacketHandlerFactory &packet_handler_factory;
 
-	const Poco::Net::SocketAddress addr;
+	const EndPoint ep;
     uint32_t circuit_code; // connection id
 	time_t last_packet_received;
 
 public:
-	ConnectionBase(uint32_t circuit_code, const Poco::Net::SocketAddress &addr, TransferNode &node);
+	ConnectionBase(uint32_t circuit_code, const EndPoint &ep, TransferNode &node);
 	virtual ~ConnectionBase();
 
 	const uint32_t getCircuitCode() const { return this->circuit_code; }
-	const Poco::Net::SocketAddress &getAddr() const { return this->addr; }
+	const EndPoint &getEndPoint() const { return this->ep; }
 	TransferNode &getTransferNode() const { return this->node; }
 	void sendPacket(PacketBase *packet);
 

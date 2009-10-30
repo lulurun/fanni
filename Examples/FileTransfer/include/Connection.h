@@ -11,8 +11,7 @@
 #include <string>
 #include "Poco/Mutex.h"
 #include "Poco/HashMap.h"
-#include "Poco/Net/SocketAddress.h"
-
+#include "fanni/EndPoint.h"
 #include "fanni/UUID.h"
 #include "fanni/LockableTemplate.h"
 #include "fanni/rUDP/ConnectionBase.h"
@@ -60,7 +59,7 @@ private:
 
 public:
 
-	Connection(uint32_t circuit_code, const Poco::Net::SocketAddress &addr, TransferNode &node);
+	Connection(uint32_t circuit_code, const EndPoint &ep, TransferNode &node);
 	virtual ~Connection();
 
 	// client event

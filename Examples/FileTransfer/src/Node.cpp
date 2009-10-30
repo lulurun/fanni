@@ -31,19 +31,19 @@ TransferNode(FTPacketFactorySingleton::get(), addr, port, thread_number)  {
 
 Node::~Node() {}
 
-ConnectionBase &Node::createConnection(const PacketBase *packet_base, const Poco::Net::SocketAddress &addr) {
+ConnectionBase &Node::createConnection(const PacketBase *packet_base, const EndPoint &ep) {
 	TRACE_LOG("enter");
 	ConnectionBase *conn = NULL;
 	if (packet_base->header.getPacketID() == OpenConnection_ID) {
 		// Server
 		const OpenConnectionPacket *packet = dynamic_cast<const OpenConnectionPacket *>(packet_base);
 		assert(packet);
-		conn = new Connection(packet->OpenConnection.Code, addr, *this);
+		conn = new Connection(packet->OpenConnection.Code, ep, *this);
 	} else if (packet_base->header.getPacketID() == OpenConnectionReply_ID) {
 		// Client
 		const OpenConnectionReplyPacket *packet = dynamic_cast<const OpenConnectionReplyPacket *>(packet_base);
 		assert(packet);
-		conn = new Connection(packet->OpenConnectionReply.Code, addr, *this);
+		conn = new Connection(packet->OpenConnectionReply.Code, ep, *this);
 	} else {
 		// throw Exception
 	}
@@ -61,25 +61,25 @@ bool Node::isSystemPacket(const PacketBase *packet) const {
 }
 
 // file sender methods
-void Node::connect(const Poco::Net::SocketAddress &addr) {
+void Node::connect(const EndPoint &ep) {
 	TRACE_LOG("enter");
 	int circuit_code = 1; // TODO @@@ should be a random number
 	std::auto_ptr<OpenConnectionPacket> packet(dynamic_cast<OpenConnectionPacket *> (this->packet_factory.createPacket(OpenConnection_ID)));
 	assert(packet.get());
 	packet->OpenConnection.Code = circuit_code;
-	this->sendPacket(packet.release(), addr);
+	this->sendPacket(packet.release(), ep);
 	TRACE_LOG("exit");
 }
 
-void Node::close(const Poco::Net::SocketAddress &addr) {
+void Node::close(const EndPoint &ep) {
 	std::auto_ptr<CloseConnectionPacket> packet(dynamic_cast<CloseConnectionPacket *> (this->packet_factory.createPacket(CloseConnection_ID)));
 	assert(packet.get());
-	this->sendPacket(packet.release(), addr);
+	this->sendPacket(packet.release(), ep);
 }
 
-void Node::startSendFile(const string &file_path, const Poco::Net::SocketAddress &addr) {
+void Node::startSendFile(const string &file_path, const EndPoint &ep) {
 	this->send_file_path = file_path;
-	this->connect(addr);
+	this->connect(ep);
 }
 
 const std::string& Node::getSendFile() const {

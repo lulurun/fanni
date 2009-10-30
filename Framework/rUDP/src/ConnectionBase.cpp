@@ -9,6 +9,7 @@
 #include <list>
 #include "Poco/ScopedLock.h"
 
+#include "fanni/EndPoint.h"
 #include "fanni/Packets/PacketBase.h"
 #include "fanni/rUDP/TransferNode.h"
 #include "fanni/rUDP/DefaultPacketAckPacket.h"
@@ -18,9 +19,9 @@ using namespace std;
 using namespace Poco;
 using namespace Fanni;
 
-ConnectionBase::ConnectionBase(uint32_t circuit_code, const Poco::Net::SocketAddress &addr, TransferNode &node) :
+ConnectionBase::ConnectionBase(uint32_t circuit_code, const EndPoint &ep, TransferNode &node) :
 	node(node), packet_handler_factory(node.getPacketHandlerFactory()),
-	addr(addr), circuit_code(circuit_code), last_packet_received(::time(NULL)) {
+	ep(ep), circuit_code(circuit_code), last_packet_received(::time(NULL)) {
 }
 
 ConnectionBase::~ConnectionBase() {
@@ -144,6 +145,6 @@ void ConnectionBase::add_resend_packet_nolock(const PacketBase* packet) {
 }
 
 void ConnectionBase::sendPacket(PacketBase *packet) {
-	this->node.sendPacket(packet, this->addr);
+	this->node.sendPacket(packet, this->ep);
 }
 

@@ -11,10 +11,9 @@
 #include <memory>
 #include "Poco/NObserver.h"
 #include "Poco/Net/DatagramSocket.h"
-#include "Poco/Net/SocketAddress.h"
 #include "Poco/Net/SocketNotification.h"
+#include "fanni/EndPoint.h"
 #include "fanni/Logger.h"
-
 #include "Receiver.h"
 
 namespace Fanni {
@@ -37,8 +36,8 @@ public:
 
 	void onReadable(const Poco::AutoPtr<Poco::Net::ReadableNotification>& pNf) {
 		std::auto_ptr<PacketBuffer> buffer(new PacketBuffer());
-		Poco::Net::SocketAddress sender;
-		int recv_len = this->socket.receiveFrom(buffer->getBuffer(), PACKET_BUF_LEN, sender);
+		EndPoint ep;
+		int recv_len = this->socket.receiveFrom(buffer->getBuffer(), PACKET_BUF_LEN, ep);
 		if (recv_len == -1) {
 			ERROR_LOG("rUDP", "recvfrom() returned -1");
 			return;
@@ -47,7 +46,7 @@ public:
 			return;
 		}
 		buffer->setLength(recv_len);
-		this->receiver_manager.deliverTask(new ReceiverTask(buffer.release(), sender));
+		this->receiver_manager.deliverTask(new ReceiverTask(buffer.release(), ep));
 	}
 
 	void onShutdown(const Poco::AutoPtr<Poco::Net::ShutdownNotification>& pNf) {
