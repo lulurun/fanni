@@ -166,8 +166,7 @@ void Connection::OnOpenConnectionReplyEvent::operator ()(Connection *conn) {
 	assert(packet.get());
 	packet->FileInfo.SenderTransferID = status.getSenderTransferID();
 	packet->FileInfo.Size = status.getFileSize();
-	PacketBuffer buffer(reinterpret_cast<const unsigned char*>(status.getFileName().c_str()), status.getFileName().size());
-	packet->FileInfo.Name = buffer;
+	packet->FileInfo.Name = status.getFileName();
 	conn->sendPacket(packet.release());
 	TRACE_LOG("exit");
 }
@@ -194,20 +193,21 @@ void Connection::OnFileInfoReplyEvent::operator ()(const UUID &receive_id, const
 	size_t left_size = total_size;
 	INFO_LOG("FileTransfer","start transferring file: " << status->getFileName() << " total size: " << total_size << " packets: " << total_size/FILE_PART_SIZE);
 	int data_number = 0;
+
+	unsigned char file_part_buf[FILE_PART_SIZE];
 	while(left_size > 0) {
 		int read_size = left_size > FILE_PART_SIZE ? FILE_PART_SIZE : left_size;
-		PacketBuffer buffer;
-		fs.read(reinterpret_cast<char*>(buffer.getBuffer()), read_size);
+		fs.read(reinterpret_cast<char*>(file_part_buf), read_size);
 		if (read_size != fs.gcount()) {
 			WARN_LOG("FileTransfer", "unmatched read size: " << read_size << " " << fs.gcount());
 		}
-		buffer.setLength(fs.gcount());
+		read_size = fs.gcount();
 		// send file data packet
 		std::auto_ptr<FileDataPacket> packet(dynamic_cast<FileDataPacket *>(FTPacketFactorySingleton::get().createPacket(FileData_ID)));
 		assert(packet.get());
 		packet->FileData.ReceiverTransferID = status->getReceiverTransferID();
 		packet->FileData.DataNumber = data_number++;
-		packet->FileData.Data = buffer;
+		packet->FileData.Data.setValue(file_part_buf, read_size);
 		packet->setFlag(PacketHeader::FLAG_RELIABLE);
 		conn->sendPacket(packet.release());
 		left_size -= read_size;

@@ -19,15 +19,11 @@ namespace Fanni {
 
 class ReceiverTask: public Poco::Notification {
 public:
-	PacketBuffer *data;
+	PacketBuffer data;
 	EndPoint ep;
 
-	ReceiverTask(PacketBuffer *data, const EndPoint &ep) :
-		data(data), ep(ep) {
-	}
-	~ReceiverTask() {
-		delete this->data;
-	}
+	ReceiverTask(PacketBuffer &data, const EndPoint &ep) : data(data), ep(ep) {}
+	~ReceiverTask() {}
 };
 
 class TransferNode;

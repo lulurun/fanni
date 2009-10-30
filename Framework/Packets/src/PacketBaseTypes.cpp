@@ -12,13 +12,13 @@ void SerializableUUID::serialize(PacketBuffer &buffer) const {
 	// @@@ check inside buffer
 	// TODO @@@ !!! ??? look into Poco
 
-	buffer.putBuf(&this->val, sizeof(UUID));
+	buffer->putBuf(&this->val, sizeof(UUID));
 }
 
 void SerializableUUID::deserialize(PacketBuffer &buffer) {
 	// @@@ check inside buffer
 	// TODO @@@ !!! ??? look into Poco
-	buffer.getBuf(&this->val, sizeof(UUID));
+	buffer->getBuf(&this->val, sizeof(UUID));
 }
 
 void SerializableUUID::operator=(const UUID &uuid) {
@@ -29,26 +29,26 @@ void SerializableUUID::operator=(const UUID &uuid) {
 // STRING len (0 - 256*256Bytes)
 void SerializableVariable2::serialize(PacketBuffer &buffer) const {
 	uint16_t length = val.size();
-	buffer.putValue<uint16_t>(length, false);
-	buffer.putBuf(&this->val[0], length);
+	buffer->putValue<uint16_t>(length, false);
+	buffer->putBuf(&this->val[0], length);
 }
 
 void SerializableVariable2::deserialize(PacketBuffer &buffer) {
-	uint16_t length = buffer.getValue<uint16_t>(false);
-	buffer.getBuf(this->val, length);
+	uint16_t length = buffer->getValue<uint16_t>(false);
+	buffer->getBuf(this->val, length);
 }
 
 // STRING len (0 - 256Bytes)
 void SerializableVariable1::serialize(PacketBuffer &buffer) const {
 	uint8_t length = val.size();
-	buffer.putValue<uint8_t>(length);
-	buffer.putBuf(&this->val[0], length);
+	buffer->putValue<uint8_t>(length);
+	buffer->putBuf(&this->val[0], length);
 }
 
 void SerializableVariable1::deserialize(PacketBuffer &buffer) {
 	// @@@ check inside buffer
-	uint8_t length = buffer.getValue<uint8_t>();
-	buffer.getBuf(this->val, length);
+	uint8_t length = buffer->getValue<uint8_t>();
+	buffer->getBuf(this->val, length);
 }
 
 // Quaternion
@@ -73,16 +73,16 @@ void SerializableQuaternion::serialize(PacketBuffer &buffer) const {
         fy = -this->y;
         fz = -this->z;
     }
-	buffer.putValue<float>(norm * fx);
-	buffer.putValue<float>(norm * fy);
-	buffer.putValue<float>(norm * fz);
+	buffer->putValue<float>(norm * fx);
+	buffer->putValue<float>(norm * fy);
+	buffer->putValue<float>(norm * fz);
 }
 
 void SerializableQuaternion::deserialize(PacketBuffer &buffer) {
 	// @@@ check inside buffer
-	this->x = buffer.getValue<float>();
-	this->y = buffer.getValue<float>();
-	this->z = buffer.getValue<float>();
+	this->x = buffer->getValue<float>();
+	this->y = buffer->getValue<float>();
+	this->z = buffer->getValue<float>();
 
     float xyzsum = 1 - (this->x*this->x + this->y*this->y + this->z*this->z);
     this->w = (xyzsum > static_cast<float>(0.0)) ? sqrt(xyzsum) : static_cast<float>(0.0);

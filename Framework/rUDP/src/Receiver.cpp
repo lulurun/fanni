@@ -32,7 +32,7 @@ void Receiver::doTask(Poco::Notification *task) {
 	assert(transfer_data);
 	//DEBUG_LOG(transfer_data->data->to_debug_string());
 
-	std::auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(*(transfer_data->data)));
+	std::auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(transfer_data->data));
 	assert(packet.get());
 	/*
 	DEBUG_LOG("incoming packet: ID " << packet->header.getPacketID());

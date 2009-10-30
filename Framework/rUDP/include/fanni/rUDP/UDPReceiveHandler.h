@@ -35,7 +35,7 @@ public:
 	}
 
 	void onReadable(const Poco::AutoPtr<Poco::Net::ReadableNotification>& pNf) {
-		std::auto_ptr<PacketBuffer> buffer(new PacketBuffer());
+		PacketBuffer buffer(new __PacketBuffer());
 		EndPoint ep;
 		int recv_len = this->socket.receiveFrom(buffer->getBuffer(), PACKET_BUF_LEN, ep);
 		if (recv_len == -1) {
@@ -46,7 +46,7 @@ public:
 			return;
 		}
 		buffer->setLength(recv_len);
-		this->receiver_manager.deliverTask(new ReceiverTask(buffer.release(), ep));
+		this->receiver_manager.deliverTask(new ReceiverTask(buffer, ep));
 	}
 
 	void onShutdown(const Poco::AutoPtr<Poco::Net::ShutdownNotification>& pNf) {

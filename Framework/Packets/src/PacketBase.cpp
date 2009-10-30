@@ -41,9 +41,9 @@ void PacketBase::serializePacket(PacketBuffer &buffer) const {
 	if (this->header.isAppendedAcks()) {
 		unsigned char ack_number = static_cast<unsigned char>(this->appended_acks.size());
 		for(int i=0; i<ack_number; i++) {
-			buffer.putValue<uint32_t>(appended_acks[i]);
+			buffer->putValue<uint32_t>(appended_acks[i]);
 		}
-		buffer.putValue<uint8_t>(ack_number);
+		buffer->putValue<uint8_t>(ack_number);
 	}
 	TRACE_LOG("exit");
 }
@@ -56,13 +56,13 @@ void PacketBase::deserializePacket(PacketBuffer &buffer) {
 	this->deserialize(buffer);
 	// acks
 	if (this->header.isAppendedAcks()) {
-		int buf_len = buffer.getLength();
-		buffer.resetPos(buf_len-1);
-		int ack_number = buffer.getValue<uint8_t>();
+		int buf_len = buffer->getLength();
+		buffer->resetPos(buf_len-1);
+		int ack_number = buffer->getValue<uint8_t>();
 		int ack_len = ack_number * 4 + 1;
-		buffer.resetPos(buf_len - ack_len);
+		buffer->resetPos(buf_len - ack_len);
 		for(int i=0; i<ack_number; i++) {
-			this->appended_acks.push_back(buffer.getValue<uint32_t>());
+			this->appended_acks.push_back(buffer->getValue<uint32_t>());
 		}
 	}
 	TRACE_LOG("exit");
