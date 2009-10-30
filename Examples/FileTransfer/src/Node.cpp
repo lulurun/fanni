@@ -31,17 +31,17 @@ TransferNode(FTPacketFactorySingleton::get(), addr, port, thread_number)  {
 
 Node::~Node() {}
 
-ConnectionBase &Node::createConnection(const PacketBase *packet_base, const EndPoint &ep) {
+ConnectionBase &Node::createConnection(const PacketBasePtr &packet_base, const EndPoint &ep) {
 	TRACE_LOG("enter");
 	ConnectionBase *conn = NULL;
 	if (packet_base->header.getPacketID() == OpenConnection_ID) {
 		// Server
-		const OpenConnectionPacket *packet = dynamic_cast<const OpenConnectionPacket *>(packet_base);
+		const OpenConnectionPacket *packet = dynamic_cast<const OpenConnectionPacket *>(packet_base.get());
 		assert(packet);
 		conn = new Connection(packet->OpenConnection.Code, ep, *this);
 	} else if (packet_base->header.getPacketID() == OpenConnectionReply_ID) {
 		// Client
-		const OpenConnectionReplyPacket *packet = dynamic_cast<const OpenConnectionReplyPacket *>(packet_base);
+		const OpenConnectionReplyPacket *packet = dynamic_cast<const OpenConnectionReplyPacket *>(packet_base.get());
 		assert(packet);
 		conn = new Connection(packet->OpenConnectionReply.Code, ep, *this);
 	} else {
@@ -52,7 +52,7 @@ ConnectionBase &Node::createConnection(const PacketBase *packet_base, const EndP
 	return *conn;
 }
 
-bool Node::isSystemPacket(const PacketBase *packet) const {
+bool Node::isSystemPacket(const PacketBasePtr &packet) const {
 	PacketHeader::PACKET_ID_TYPE packet_id = packet->header.getPacketID();
 	return (packet_id == OpenConnection_ID) ||
 		(packet_id == OpenConnectionReply_ID) ||
@@ -64,17 +64,19 @@ bool Node::isSystemPacket(const PacketBase *packet) const {
 void Node::connect(const EndPoint &ep) {
 	TRACE_LOG("enter");
 	int circuit_code = 1; // TODO @@@ should be a random number
-	std::auto_ptr<OpenConnectionPacket> packet(dynamic_cast<OpenConnectionPacket *> (this->packet_factory.createPacket(OpenConnection_ID)));
-	assert(packet.get());
+	OpenConnectionPacket *packet = dynamic_cast<OpenConnectionPacket *> (this->packet_factory.createPacket(OpenConnection_ID));
+	assert(packet);
+	PacketBasePtr packet_ptr(packet);
 	packet->OpenConnection.Code = circuit_code;
-	this->sendPacket(packet.release(), ep);
+	this->sendPacket(packet_ptr, ep);
 	TRACE_LOG("exit");
 }
 
 void Node::close(const EndPoint &ep) {
-	std::auto_ptr<CloseConnectionPacket> packet(dynamic_cast<CloseConnectionPacket *> (this->packet_factory.createPacket(CloseConnection_ID)));
-	assert(packet.get());
-	this->sendPacket(packet.release(), ep);
+	CloseConnectionPacket *packet = dynamic_cast<CloseConnectionPacket *> (this->packet_factory.createPacket(CloseConnection_ID));
+	assert(packet);
+	PacketBasePtr packet_ptr(packet);
+	this->sendPacket(packet_ptr, ep);
 }
 
 void Node::startSendFile(const string &file_path, const EndPoint &ep) {

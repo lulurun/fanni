@@ -40,14 +40,14 @@ public:
 		this->_tail = this->_head;
 	};
 	FixedLengthBuffer(const unsigned char *data, size_t len) {
-		this->_head = new unsigned char[len];
+		this->_head = new unsigned char[FixedLength];
 		::memcpy(this->_head, data, len);
 		this->_ptr = this->_head;
 		this->_tail = this->_head + len;
 	};
 	FixedLengthBuffer(const FixedLengthBuffer &buf) {
+		this->_head = new unsigned char[FixedLength];
 		size_t len = buf.getLength();
-		this->_head = new unsigned char[len];
 		::memcpy(this->_head, buf._head, len);
 		this->_ptr = this->_head;
 		this->_tail = this->_head + len;

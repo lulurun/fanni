@@ -208,14 +208,6 @@ public:
 	virtual ~SerializableVariable2() { };
 	virtual void serialize(PacketBuffer &buffer) const;
 	virtual void deserialize(PacketBuffer &buffer);
-	/*
-	const char *c_str() const {
-		char *c_str = new char[this->val.size() + 1];
-		::memcpy(c_str, &this->val[0], this->val.size());
-		c_str[this->val.size()] = '\0';
-		return c_str;
-	}
-	*/
 
 	std::string asString() const {
 		std::string str((char*)&this->val[0], 0, this->val.size());

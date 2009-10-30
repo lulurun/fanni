@@ -28,13 +28,14 @@ ConnectionBase::~ConnectionBase() {
 	for(RESEND_PACKET_MAP::Iterator it=this->resend_packet_map.begin(); it!=this->resend_packet_map.end(); it++) {
 		delete it->second;
 	}
+	this->resend_packet_map.clear();
 }
 
 void ConnectionBase::updateLastReceived() {
 	this->last_packet_received = ::time(NULL);
 }
 
-void ConnectionBase::processIncomingPacket(const PacketBase *packet) {
+void ConnectionBase::processIncomingPacket(const PacketBasePtr &packet) {
 	TRACE_LOG("enter");
 	this->updateLastReceived();
 	if (packet->header.isReliable()) {
@@ -50,7 +51,7 @@ void ConnectionBase::processIncomingPacket(const PacketBase *packet) {
 		}
 	}
 	if (packet->header.getPacketID() == DefaultPacketAckPacket::DefaultPacketAck_ID) {
-		const DefaultPacketAckPacket *ack_packet = dynamic_cast<const DefaultPacketAckPacket *>(packet);
+		const DefaultPacketAckPacket *ack_packet = dynamic_cast<const DefaultPacketAckPacket *>(packet.get());
 		assert(ack_packet);
 		int debug_count = 0;
 
@@ -69,7 +70,7 @@ void ConnectionBase::processIncomingPacket(const PacketBase *packet) {
 	TRACE_LOG("exit");
 }
 
-void ConnectionBase::processOutgoingPacket(const PacketBase *packet) {
+void ConnectionBase::processOutgoingPacket(const PacketBasePtr &packet) {
 	if (packet->header.isReliable() && !packet->header.isResent()) {
 	    Poco::FastMutex::ScopedLock lock(this->resend_packet_map);
 		this->add_resend_packet_nolock(packet);
@@ -82,13 +83,13 @@ void ConnectionBase::checkACK() {
     int total_count = 0;
     while (!this->ack_packet_queue.empty()) {
 		int count = 0;
-		// TODO @@@ leak !!?
-		DefaultPacketAckPacket *packet = new DefaultPacketAckPacket();
+		DefaultPacketAckPacket *ack_packet = new DefaultPacketAckPacket();
+		PacketBasePtr packet(ack_packet);
 		while (!this->ack_packet_queue.empty()) {
 			DefaultPacketAckPacket::PacketsBlock packets_block;
 			packets_block.ID = this->ack_packet_queue.front();
 			// TODO @@@ memory reallocate/copy inside "push" + coping packets_block
-			packet->Packets.push(packets_block);
+			ack_packet->Packets.push(packets_block);
 			this->ack_packet_queue.pop();
 			if (++count == MAX_ACK_NUMBER) break;
 		}
@@ -105,14 +106,13 @@ void ConnectionBase::checkRESEND() {
 	list<uint32_t> delete_list;
 	int resend_count = 0;
 	for(RESEND_PACKET_MAP::Iterator it=this->resend_packet_map.begin(); it!=this->resend_packet_map.end(); it++) {
-		// MEMO @@@ need copy this packet, because the packet will be deleted after sending
-		if ( it->second->shouldResend() ) {
-			PacketBase *packet = it->second->get();
+		if (it->second->shouldResend()) {
+			PacketBasePtr &packet = it->second->get();
 			packet->setFlag(PacketHeader::FLAG_RESENT);
 			packet->setFlag(PacketHeader::FLAG_RELIABLE);
 			this->sendPacket(packet);
 			resend_count++;
-		} else if (it->second->shouldGiveup() ) {
+		} else if (it->second->shouldGiveup()) {
 			WARN_LOG("rUDP", "give up resending packet: " << it->second->get()->header.getPacketID());
 			delete_list.push_back(it->first);
 		}
@@ -135,16 +135,17 @@ bool ConnectionBase::checkALIVE() {
 void ConnectionBase::remove_resend_packet_nolock(uint32_t seq) {
 	RESEND_PACKET_MAP::ConstIterator it = this->resend_packet_map.find(seq);
 	if (it != this->resend_packet_map.end()) {
-		if (it->second != NULL) delete it->second;
+		delete it->second;
 		this->resend_packet_map.erase(seq);
 	}
 }
 
-void ConnectionBase::add_resend_packet_nolock(const PacketBase* packet) {
-	this->resend_packet_map[packet->header.sequence] = new ResendPacket(packet);
+void ConnectionBase::add_resend_packet_nolock(const PacketBasePtr &packet) {
+	std::auto_ptr<ResendPacket> resend_packet(new ResendPacket(packet));
+	this->resend_packet_map[packet->header.sequence] = resend_packet.release();
 }
 
-void ConnectionBase::sendPacket(PacketBase *packet) {
+void ConnectionBase::sendPacket(PacketBasePtr &packet) {
 	this->node.sendPacket(packet, this->ep);
 }
 

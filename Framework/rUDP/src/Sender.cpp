@@ -23,12 +23,12 @@ Sender::~Sender() {
 	delete this->packet_serializer;
 }
 
-void Sender::doTask(Poco::Notification *task) {
+void Sender::doTask(Poco::Notification::Ptr &task) {
 	TRACE_LOG("enter");
-	SenderTask *transfer_data = dynamic_cast<SenderTask *>(task);
+	SenderTask *transfer_data = dynamic_cast<SenderTask *>(task.get());
 	assert(transfer_data);
 	int len = 0;
-	PacketBase *packet = transfer_data->data;
+
 	/*
 	DEBUG_LOG("outgoing packet: ID " << packet->header.getPacketID());
 	DEBUG_LOG("outgoing packet: seq " << packet->header.getSequenceNumber());
@@ -36,7 +36,7 @@ void Sender::doTask(Poco::Notification *task) {
 	DEBUG_LOG("outgoing packet: resend " << packet->header.isResent());
 	DEBUG_LOG("outgoing packet: zerocode " << packet->header.isZeroCoded());
 	*/
-	const unsigned char *resp_buf = this->packet_serializer->serialize(packet, &len);
+	const unsigned char *resp_buf = this->packet_serializer->serialize(transfer_data->data.get(), &len);
 	this->node.processOutgoingPacket(transfer_data->data, transfer_data->ep);
 	this->socket.sendTo(resp_buf, len, transfer_data->ep);
 	TRACE_LOG("exit");

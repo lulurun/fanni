@@ -5,6 +5,7 @@ namespace Fanni {
 
 PacketSerializer::PacketSerializer(const PacketFactory &packet_factory) :
 	factory(packet_factory) {
+		this->buf.assign(new __PacketBuffer());
 }
 
 PacketSerializer::~PacketSerializer() {

@@ -19,12 +19,12 @@ class TransferNode;
 class ConnectionBase;
 class ClientPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const = 0;
+	virtual void operator()(const PacketBasePtr &packet_base, ConnectionBase *conn_base) const = 0;
 };
 
 class SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, const EndPoint &ep, TransferNode &node) const = 0;
+	virtual void operator()(const PacketBasePtr &packet_base, const EndPoint &ep, TransferNode &node) const = 0;
 };
 
 class Fanni_RUDP_API PacketHandlerFactory {

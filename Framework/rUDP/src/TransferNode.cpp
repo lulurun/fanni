@@ -82,14 +82,14 @@ void TransferNode::stop() {
 	this->sender_manager->stop();
 }
 
-void TransferNode::sendPacket(PacketBase *packet, const EndPoint &ep) {
+void TransferNode::sendPacket(PacketBasePtr &packet, const EndPoint &ep) {
 	TRACE_LOG("enter");
 	if (!packet->header.isResent()) {
 		this->ac++;
 		packet->setSequence(this->ac.value());
 	}
-	std::auto_ptr<SenderTask> data(new SenderTask(packet, ep));
-	this->sender_manager->deliverTask(data.release());
+	// MEMO @@@ the task will be deleted after being processed
+	this->sender_manager->deliverTask(new SenderTask(packet, ep));
 	TRACE_LOG("exit");
 }
 
@@ -170,7 +170,7 @@ void TransferNode::onCheckALIVETimer(Poco::Timer &timer) {
 }
 
 // Reliable Packet Transfer
-void TransferNode::processIncomingPacket(const PacketBase *packet, const EndPoint &ep) {
+void TransferNode::processIncomingPacket(const PacketBasePtr &packet, const EndPoint &ep) {
 	if (this->isSystemPacket(packet)) {
 		const SystemPacketHandlerBase &handler = this->packet_handler_factory.getSystemHandler(packet->header.getPacketID());
 		handler(packet, ep, *this);
@@ -184,7 +184,7 @@ void TransferNode::processIncomingPacket(const PacketBase *packet, const EndPoin
 	}
 }
 
-void TransferNode::processOutgoingPacket(const PacketBase *packet, const EndPoint &ep) {
+void TransferNode::processOutgoingPacket(const PacketBasePtr &packet, const EndPoint &ep) {
 	ConnectionBase *conn = this->getConnection(ep);
 	if (conn) {
 		conn->processOutgoingPacket(packet);

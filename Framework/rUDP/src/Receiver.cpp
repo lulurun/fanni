@@ -26,13 +26,13 @@ Receiver::~Receiver() {
 	delete this->packet_serializer;
 }
 
-void Receiver::doTask(Poco::Notification *task) {
+void Receiver::doTask(Poco::Notification::Ptr &task) {
 	TRACE_LOG("enter");
-	ReceiverTask *transfer_data = dynamic_cast<ReceiverTask *>(task);
+	ReceiverTask *transfer_data = dynamic_cast<ReceiverTask *>(task.get());
 	assert(transfer_data);
 	//DEBUG_LOG(transfer_data->data->to_debug_string());
 
-	std::auto_ptr<PacketBase> packet(this->packet_serializer->deserialize(transfer_data->data));
+	PacketBasePtr packet(this->packet_serializer->deserialize(transfer_data->data));
 	assert(packet.get());
 	/*
 	DEBUG_LOG("incoming packet: ID " << packet->header.getPacketID());
@@ -41,7 +41,7 @@ void Receiver::doTask(Poco::Notification *task) {
 	DEBUG_LOG("incoming packet: resend " << packet->header.isResent());
 	DEBUG_LOG("incoming packet: zerocode " << packet->header.isZeroCoded());
 	*/
-	this->node.processIncomingPacket(packet.get(), transfer_data->ep);
+	this->node.processIncomingPacket(packet, transfer_data->ep);
 	// MEMO @@@ packet will be deleted here
 	TRACE_LOG("exit");
 }

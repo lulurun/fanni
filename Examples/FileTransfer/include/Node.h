@@ -27,8 +27,8 @@ private:
 public:
 	Node(const std::string &addr, uint16_t port, int thread_number);
 	virtual ~Node();
-	virtual ConnectionBase &createConnection(const PacketBase *packet, const EndPoint &ep);
-	virtual bool isSystemPacket(const PacketBase *packet) const;
+	virtual ConnectionBase &createConnection(const PacketBasePtr &packet, const EndPoint &ep);
+	virtual bool isSystemPacket(const PacketBasePtr &packet) const;
 
 	void startSendFile(const std::string &file_path, const EndPoint &ep);
 

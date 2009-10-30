@@ -17,7 +17,7 @@ namespace Fanni {
 
 class NullClientHandler: public ClientPacketHandlerBase {
 public:
-	void operator()(const PacketBase *packet, ConnectionBase *conn) const {
+	void operator()(const PacketBasePtr &packet, ConnectionBase *conn) const {
 		INFO_LOG("rUDP", "handler not defined for Packet: " << std::hex << packet->header.getPacketID() << std::dec
 				<< " from " << conn->getEndPoint().toString());
 	}
@@ -25,7 +25,7 @@ public:
 
 class NullSystemHandler: public SystemPacketHandlerBase {
 public:
-	void operator()(const PacketBase *packet, const EndPoint &ep, TransferNode &node) const {
+	void operator()(const PacketBasePtr &packet, const EndPoint &ep, TransferNode &node) const {
 		FATAL_LOG("rUDP", "system handler not defined for Packet: " << std::hex << packet->header.getPacketID() << std::dec
 				<< " from " << ep.toString());
 		// TODO @@@ throw exception
@@ -46,9 +46,11 @@ PacketHandlerFactory::~PacketHandlerFactory() {
 	for(CLIENT_HANDLER_MAP::Iterator it=this->ClientHandlerList.begin(); it!=this->ClientHandlerList.end(); it++) {
 		delete it->second;
 	}
+	this->ClientHandlerList.clear();
 	for(SYSTEM_HANDLER_MAP::Iterator it=this->SystemHandlerList.begin(); it!=this->SystemHandlerList.end(); it++) {
 		delete it->second;
 	}
+	this->SystemHandlerList.clear();
 }
 
 void PacketHandlerFactory::registerClientHandler(PacketHeader::PACKET_ID_TYPE packet_id, const ClientPacketHandlerBase *packet_handler) {

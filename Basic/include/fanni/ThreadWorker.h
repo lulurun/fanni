@@ -18,7 +18,7 @@ public:
 	void run();
 	void stop();
 
-	virtual void doTask(Poco::Notification *data) = 0;
+	virtual void doTask(Poco::Notification::Ptr &data) = 0;
 };
 
 }

@@ -40,5 +40,6 @@ void Worker::run() {
 }
 
 void Worker::stop() {
+	// MEMO @@@ this will cause the above "if (task)" return false
 	this->queue.wakeUpAll();
 }

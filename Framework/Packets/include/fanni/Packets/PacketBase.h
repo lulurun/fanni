@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "Poco/SharedPtr.h"
 #include "fanni/PacketBuffer.h"
 #include "fanni/Serializable.h"
 #include "fanni/Packets/Packets_def.h"
@@ -38,6 +39,8 @@ public:
 	virtual PacketBase *clone() const = 0;
 	virtual PacketBase *clone(const PacketBase *packet) const = 0;
 };
+
+typedef Poco::SharedPtr<PacketBase> PacketBasePtr;
 
 }
 

@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Poco/Util/ServerApplication.h"
 #include "Poco/Util/HelpFormatter.h"
+#include "fanni/Sleep.h"
 #include "fanni/Logger.h"
 #include "Node.h"
 
@@ -124,9 +125,9 @@ protected:
 				EndPoint connect_to_ep(this->ip, this->port);
 				INFO_LOG("FileTRansfer", "send " << this->path << " to " << connect_to_ep.toString());
 				node.startSendFile(this->path, connect_to_ep);
-				waitForTerminationRequest();
-
-				node.stop();
+				while(true) {
+					Fanni::Sleep(1999);
+				}
 			} catch (ErrorException &e) {
 				ERROR_LOG("FileTRansfer", "ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
 			} catch (...) {

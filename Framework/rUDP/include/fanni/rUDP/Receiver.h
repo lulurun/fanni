@@ -8,6 +8,7 @@
 #ifndef RECEIVER_H_
 #define RECEIVER_H_
 
+#include "Poco/AutoPtr.h"
 #include "fanni/EndPoint.h"
 #include "fanni/ThreadWorker.h"
 #include "fanni/ThreadManager.h"
@@ -41,7 +42,7 @@ protected:
 
 public:
 	virtual ~Receiver();
-	void doTask(Poco::Notification *data);
+	void doTask(Poco::Notification::Ptr &data);
 };
 
 class ReceiverManager: public ThreadManager {

@@ -8,6 +8,7 @@
 #ifndef SENDER_H_
 #define SENDER_H_
 
+#include "Poco/AutoPtr.h"
 #include "Poco/Net/DatagramSocket.h"
 #include "fanni/EndPoint.h"
 #include "fanni/ThreadWorker.h"
@@ -19,16 +20,11 @@ namespace Fanni {
 
 class SenderTask: public Poco::Notification {
 public:
-	PacketBase *data;
+	PacketBasePtr data;
 	EndPoint ep;
 
-	SenderTask(PacketBase *data, const EndPoint &ep) :
-		data(data), ep(ep) {
-	}
-
-	~SenderTask() {
-		delete this->data;
-	}
+	SenderTask(PacketBasePtr &data, const EndPoint &ep) : data(data), ep(ep) {}
+	~SenderTask() {}
 };
 
 class TransferNode;
@@ -46,7 +42,7 @@ protected:
 
 public:
 	virtual ~Sender();
-	void doTask(Poco::Notification *data);
+	void doTask(Poco::Notification::Ptr &data);
 };
 
 class SenderManager: public ThreadManager {

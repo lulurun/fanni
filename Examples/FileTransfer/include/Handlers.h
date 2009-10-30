@@ -25,21 +25,22 @@ namespace FileTransfer {
 // System Packet Handlers
 class OpenConnectionPacketHandler : public SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, const EndPoint &ep, TransferNode &node) const {
+	virtual void operator()(const PacketBasePtr &packet_base, const EndPoint &ep, TransferNode &node) const {
 		TRACE_LOG("enter");
 		ConnectionBase &conn = node.createConnection(packet_base, ep);
 		// send reply
-		std::auto_ptr<OpenConnectionReplyPacket> reply_packet(dynamic_cast<OpenConnectionReplyPacket *>(FTPacketFactorySingleton::get().createPacket(OpenConnectionReply_ID)));
-		assert(reply_packet.get());
+		OpenConnectionReplyPacket *reply_packet = dynamic_cast<OpenConnectionReplyPacket *>(FTPacketFactorySingleton::get().createPacket(OpenConnectionReply_ID));
+		assert(reply_packet);
+		PacketBasePtr packet(reply_packet);
 		reply_packet->OpenConnectionReply.Code = conn.getCircuitCode();
-		node.sendPacket(reply_packet.release(), ep);
+		node.sendPacket(packet, ep);
 		TRACE_LOG("exit");
 	};
 };
 
 class OpenConnectionReplyPacketHandler : public SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, const EndPoint &ep, TransferNode &node) const {
+	virtual void operator()(const PacketBasePtr &packet_base, const EndPoint &ep, TransferNode &node) const {
 		TRACE_LOG("enter");
 		ConnectionBase &conn_base = node.createConnection(packet_base, ep);
 		Connection *conn = dynamic_cast<Connection *>(&conn_base);
@@ -51,10 +52,12 @@ public:
 
 class CloseConnectionPacketHandler : public SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, const EndPoint &ep, TransferNode &node) const {
+	virtual void operator()(const PacketBasePtr &packet_base, const EndPoint &ep, TransferNode &node) const {
 		INFO_LOG("FileTransfer", "reply to close connection request");
-		std::auto_ptr<CloseConnectionReplyPacket> packet(dynamic_cast<CloseConnectionReplyPacket *>(FTPacketFactorySingleton::get().createPacket(CloseConnectionReply_ID)));
-		node.sendPacket(packet.release(), ep);
+		CloseConnectionReplyPacket *reply_packet = dynamic_cast<CloseConnectionReplyPacket *>(FTPacketFactorySingleton::get().createPacket(CloseConnectionReply_ID));
+		assert(reply_packet);
+		PacketBasePtr packet(reply_packet);
+		node.sendPacket(packet, ep);
 		// TODO @@@ solve this !!?
 		node.removeConnection(ep);
 	};
@@ -62,18 +65,19 @@ public:
 
 class CloseConnectionReplyPacketHandler : public SystemPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, const EndPoint &ep, TransferNode &node) const {
+	virtual void operator()(const PacketBasePtr &packet_base, const EndPoint &ep, TransferNode &node) const {
 		INFO_LOG("FileTransfer", "got close connection reply");
 		node.removeConnection(ep);
+		node.stop(); // just for test
 	};
 };
 
 // Connection Event Packet Handlers
 class FileInfoPacketHandler : public ClientPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const {
+	virtual void operator()(const PacketBasePtr &packet_base, ConnectionBase *conn_base) const {
 		TRACE_LOG("enter");
-		const FileInfoPacket *packet = dynamic_cast<const FileInfoPacket *>(packet_base);
+		const FileInfoPacket *packet = dynamic_cast<const FileInfoPacket *>(packet_base.get());
 		assert(packet);
 		Connection *conn = dynamic_cast<Connection *>(conn_base);
 		assert(conn);
@@ -84,9 +88,9 @@ public:
 
 class FileInfoReplyPacketHandler : public ClientPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const {
+	virtual void operator()(const PacketBasePtr &packet_base, ConnectionBase *conn_base) const {
 		TRACE_LOG("enter");
-		const FileInfoReplyPacket *packet = dynamic_cast<const FileInfoReplyPacket *>(packet_base);
+		const FileInfoReplyPacket *packet = dynamic_cast<const FileInfoReplyPacket *>(packet_base.get());
 		assert(packet);
 		Connection *conn = dynamic_cast<Connection *>(conn_base);
 		assert(conn);
@@ -97,9 +101,9 @@ public:
 
 class FileDataPacketHandler : public ClientPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const {
+	virtual void operator()(const PacketBasePtr &packet_base, ConnectionBase *conn_base) const {
 		TRACE_LOG("enter");
-		const FileDataPacket *packet = dynamic_cast<const FileDataPacket *>(packet_base);
+		const FileDataPacket *packet = dynamic_cast<const FileDataPacket *>(packet_base.get());
 		assert(packet);
 		Connection *conn = dynamic_cast<Connection *>(conn_base);
 		assert(conn);
@@ -110,9 +114,9 @@ public:
 
 class TransferCompletePacketHandler : public ClientPacketHandlerBase {
 public:
-	virtual void operator()(const PacketBase *packet_base, ConnectionBase *conn_base) const {
+	virtual void operator()(const PacketBasePtr &packet_base, ConnectionBase *conn_base) const {
 		TRACE_LOG("enter");
-		const TransferCompletePacket *packet = dynamic_cast<const TransferCompletePacket *>(packet_base);
+		const TransferCompletePacket *packet = dynamic_cast<const TransferCompletePacket *>(packet_base.get());
 		assert(packet);
 		Connection *conn = dynamic_cast<Connection *>(conn_base);
 		assert(conn);

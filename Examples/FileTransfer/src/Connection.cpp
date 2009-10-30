@@ -115,11 +115,12 @@ void Connection::OnFileInfoEvent::operator ()(uint32_t file_size, const std::str
 	UUID receive_id = UUIDGeneratorSingleton::get().Create();
 	Status &status = conn->createReceiveStatus(file_size, file_name, receive_id, send_id);
 	// send reply packet
-	std::auto_ptr<FileInfoReplyPacket> packet(dynamic_cast<FileInfoReplyPacket *>(FTPacketFactorySingleton::get().createPacket(FileInfoReply_ID)));
-	assert(packet.get());
+	FileInfoReplyPacket *packet = dynamic_cast<FileInfoReplyPacket *>(FTPacketFactorySingleton::get().createPacket(FileInfoReply_ID));
+	assert(packet);
+	PacketBasePtr packet_ptr(packet);
 	packet->FileInfo.ReceiverTransferID = status.getReceiverTransferID();
 	packet->FileInfo.SenderTransferID = status.getSenderTransferID();
-	conn->sendPacket(packet.release());
+	conn->sendPacket(packet_ptr);
 	TRACE_LOG("exit");
 }
 
@@ -132,10 +133,11 @@ void Connection::OnFileDataEvent::operator ()(const UUID &receive_id, int data_n
 	}
 	if (status->update(data_number, &data_buf[0], data_buf.size())) {
 		// send back to sender
-		std::auto_ptr<TransferCompletePacket> packet(dynamic_cast<TransferCompletePacket *>(FTPacketFactorySingleton::get().createPacket(TransferComplete_ID)));
-		assert(packet.get());
+		TransferCompletePacket *packet = dynamic_cast<TransferCompletePacket *>(FTPacketFactorySingleton::get().createPacket(TransferComplete_ID));
+		assert(packet);
+		PacketBasePtr packet_ptr(packet);
 		packet->FileData.SenderTransferID = status->getSenderTransferID();
-		conn->sendPacket(packet.release());
+		conn->sendPacket(packet_ptr);
 
 		INFO_LOG("FileTransfer", "TransferComplete: " << status->getFileName() << " " << status->getReceiverTransferID().toString());
 		string out_file = status->getFileName() + "_" + receive_id.toString();
@@ -162,12 +164,13 @@ void Connection::OnOpenConnectionReplyEvent::operator ()(Connection *conn) {
 
 	Status &status = conn->createSendStatus(file_size, file_path, UUIDGeneratorSingleton::get().Zero(), UUIDGeneratorSingleton::get().Create());
 	// send a FileInfoPacket
-	std::auto_ptr<FileInfoPacket> packet(dynamic_cast<FileInfoPacket *>(FTPacketFactorySingleton::get().createPacket(FileInfo_ID)));
-	assert(packet.get());
+	FileInfoPacket *packet = dynamic_cast<FileInfoPacket *>(FTPacketFactorySingleton::get().createPacket(FileInfo_ID));
+	assert(packet);
+	PacketBasePtr packet_ptr(packet);
 	packet->FileInfo.SenderTransferID = status.getSenderTransferID();
 	packet->FileInfo.Size = status.getFileSize();
 	packet->FileInfo.Name = status.getFileName();
-	conn->sendPacket(packet.release());
+	conn->sendPacket(packet_ptr);
 	TRACE_LOG("exit");
 }
 
@@ -203,13 +206,14 @@ void Connection::OnFileInfoReplyEvent::operator ()(const UUID &receive_id, const
 		}
 		read_size = fs.gcount();
 		// send file data packet
-		std::auto_ptr<FileDataPacket> packet(dynamic_cast<FileDataPacket *>(FTPacketFactorySingleton::get().createPacket(FileData_ID)));
-		assert(packet.get());
+		FileDataPacket *packet = dynamic_cast<FileDataPacket *>(FTPacketFactorySingleton::get().createPacket(FileData_ID));
+		assert(packet);
+		PacketBasePtr packet_ptr(packet);
 		packet->FileData.ReceiverTransferID = status->getReceiverTransferID();
 		packet->FileData.DataNumber = data_number++;
 		packet->FileData.Data.setValue(file_part_buf, read_size);
 		packet->setFlag(PacketHeader::FLAG_RELIABLE);
-		conn->sendPacket(packet.release());
+		conn->sendPacket(packet_ptr);
 		left_size -= read_size;
 		if (data_number % 5000 == 0) {
 			// MEMO @@@ do not send too much
@@ -226,9 +230,10 @@ void Connection::OnFileTransferCompleteEvent::operator ()(const UUID &send_id, C
 	// close this transfer
 	conn->closeSendTransfer(send_id);
 	INFO_LOG("FileTransfer", "send_transfer completed: " << send_id.toString());
-	std::auto_ptr<CloseConnectionPacket> packet(dynamic_cast<CloseConnectionPacket *>(FTPacketFactorySingleton::get().createPacket(CloseConnection_ID)));
-	assert(packet.get());
-	conn->sendPacket(packet.release());
+	CloseConnectionPacket *packet = dynamic_cast<CloseConnectionPacket *>(FTPacketFactorySingleton::get().createPacket(CloseConnection_ID));
+	assert(packet);
+	PacketBasePtr packet_ptr(packet);
+	conn->sendPacket(packet_ptr);
 	TRACE_LOG("exit");
 }
 

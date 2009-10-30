@@ -46,6 +46,7 @@ public:
 			return;
 		}
 		buffer->setLength(recv_len);
+		// MEMO @@@ the task will be deleted after being processed
 		this->receiver_manager.deliverTask(new ReceiverTask(buffer, ep));
 	}
 

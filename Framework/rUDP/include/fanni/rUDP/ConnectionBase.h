@@ -29,23 +29,23 @@ static const int MAX_RESENDING_TRIES = 0xffff; // will give up transferring afte
 // MEMO @@@ supposed to be used from only one thread
 class ResendPacket {
 private:
-	const PacketBase *packet;
+	PacketBasePtr packet;
 	std::time_t last_sent;
 	int resend_count;
 
 public:
-	ResendPacket(const PacketBase *packet) :
-		packet(packet->clone()), last_sent(::time(NULL)), resend_count(0){
-	}
-	~ResendPacket() { delete this->packet; }
+	ResendPacket(const PacketBasePtr &packet) :
+		packet(packet->clone()), last_sent(::time(NULL)), resend_count(0){}
+	~ResendPacket() {}
 
 	bool shouldResend() { return (::time(NULL) - this->last_sent ) > RESEND_TIMEOUT; }
 	bool shouldGiveup() { return this->resend_count >= MAX_RESENDING_TRIES; }
 
-	PacketBase *get() {
+	// MEMO @@@ only Call this before send packet
+	PacketBasePtr &get(){
 		this->last_sent = ::time(NULL);
 		this->resend_count++;
-		return this->packet->clone();
+		return this->packet;
 	}
 };
 
@@ -66,12 +66,12 @@ public:
 	const uint32_t getCircuitCode() const { return this->circuit_code; }
 	const EndPoint &getEndPoint() const { return this->ep; }
 	TransferNode &getTransferNode() const { return this->node; }
-	void sendPacket(PacketBase *packet);
+	void sendPacket(PacketBasePtr &packet);
 
 	void updateLastReceived();
 
-	virtual void processIncomingPacket(const PacketBase *packet);
-	virtual void processOutgoingPacket(const PacketBase *packet);
+	virtual void processIncomingPacket(const PacketBasePtr &packet);
+	virtual void processOutgoingPacket(const PacketBasePtr &packet);
 
 	// Reliable UDP
 private:
@@ -91,7 +91,7 @@ private:
 
 	// MEMO @@@ these methods are not thread safe
 	void remove_resend_packet_nolock(uint32_t seq);
-	void add_resend_packet_nolock(const PacketBase *packet);
+	void add_resend_packet_nolock(const PacketBasePtr &packet);
 };
 
 }
