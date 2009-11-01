@@ -34,8 +34,8 @@ TransferNode::TransferNode(PacketFactory &packet_factory, const std::string &add
 	this->reactor.addEventHandler(this->socket, NObserver<UDPServerHandler,
 			ShutdownNotification> (*this->udp_server_handler, &UDPServerHandler::onShutdown));
 	// init timers
-	this->check_ACK_timer = new Poco::Timer(0, 3000);
-	this->check_RESEND_timer = new Poco::Timer(0, 3000);
+	this->check_ACK_timer = new Poco::Timer(0, 1000);
+	this->check_RESEND_timer = new Poco::Timer(0, 4000);
 	this->check_ALIVE_timer = new Poco::Timer(0, 15000);
 }
 

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fanni.Basic", "Basic\Fanni.Basic.vcproj", "{D793532B-4C13-46BC-AF81-154463E9F0FD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fanni.Packets", "Framework\Packets\Fanni.Framework.Packets.vcproj", "{830FCAB6-E720-4B28-A10C-17DC1DDE28CA}"
@@ -34,6 +34,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LLPackets", "Protocol\LLPac
 		{830FCAB6-E720-4B28-A10C-17DC1DDE28CA} = {830FCAB6-E720-4B28-A10C-17DC1DDE28CA}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "memo", "memo\memo.vcproj", "{4A0BBA53-F237-4018-8B16-6DBAE7D5B6A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -64,6 +66,10 @@ Global
 		{E7652170-C191-4435-96EA-A598808B4EC7}.Debug|Win32.Build.0 = Debug|Win32
 		{E7652170-C191-4435-96EA-A598808B4EC7}.Release|Win32.ActiveCfg = Release|Win32
 		{E7652170-C191-4435-96EA-A598808B4EC7}.Release|Win32.Build.0 = Release|Win32
+		{4A0BBA53-F237-4018-8B16-6DBAE7D5B6A3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4A0BBA53-F237-4018-8B16-6DBAE7D5B6A3}.Debug|Win32.Build.0 = Debug|Win32
+		{4A0BBA53-F237-4018-8B16-6DBAE7D5B6A3}.Release|Win32.ActiveCfg = Release|Win32
+		{4A0BBA53-F237-4018-8B16-6DBAE7D5B6A3}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

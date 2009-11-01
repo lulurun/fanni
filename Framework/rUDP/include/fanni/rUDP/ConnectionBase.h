@@ -11,6 +11,7 @@
 
 #include <ctime>
 #include <queue>
+#include "Poco/SharedPtr.h"
 #include "Poco/HashMap.h"
 #include "Poco/Mutex.h"
 #include "fanni/EndPoint.h"
@@ -36,6 +37,10 @@ private:
 public:
 	ResendPacket(const PacketBasePtr &packet) :
 		packet(packet->clone()), last_sent(::time(NULL)), resend_count(0){}
+	ResendPacket(const ResendPacket &resend_packet) :
+		packet(resend_packet.packet), last_sent(::time(NULL)), resend_count(0){
+		// TODO @@@ should forbid calling this	
+	}
 	~ResendPacket() {}
 
 	bool shouldResend() { return (::time(NULL) - this->last_sent ) > RESEND_TIMEOUT; }
@@ -48,6 +53,8 @@ public:
 		return this->packet;
 	}
 };
+
+typedef Poco::SharedPtr<ResendPacket> ResendPacketPtr;
 
 class TransferNode;
 class Fanni_RUDP_API ConnectionBase {
@@ -76,7 +83,7 @@ public:
 	// Reliable UDP
 private:
 	typedef std::queue<uint32_t> __ACK_PACKET_QUEUE;
-	typedef Poco::HashMap<uint32_t, ResendPacket *> __RESEND_PACKET_MAP;
+	typedef Poco::HashMap<uint32_t, ResendPacketPtr> __RESEND_PACKET_MAP;
 public:
 	typedef lockable<__ACK_PACKET_QUEUE> ACK_PACKET_QUEUE;
 	typedef lockable<__RESEND_PACKET_MAP> RESEND_PACKET_MAP;

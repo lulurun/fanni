@@ -74,7 +74,7 @@ private:
 	ConnectionBase *getConnection_nolock(const EndPoint &ep);
 
 protected:
-	void addConnection(ConnectionBase *connection);
+	void addConnection(ConnectionBase *conn);
 
 public:
 	virtual bool isSystemPacket(const PacketBasePtr &packet) const = 0;

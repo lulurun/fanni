@@ -25,13 +25,11 @@ ConnectionBase::ConnectionBase(uint32_t circuit_code, const EndPoint &ep, Transf
 }
 
 ConnectionBase::~ConnectionBase() {
-	for(RESEND_PACKET_MAP::Iterator it=this->resend_packet_map.begin(); it!=this->resend_packet_map.end(); it++) {
-		delete it->second;
-	}
 	this->resend_packet_map.clear();
 }
 
 void ConnectionBase::updateLastReceived() {
+	// TODO @@@ Lock ?
 	this->last_packet_received = ::time(NULL);
 }
 
@@ -135,14 +133,13 @@ bool ConnectionBase::checkALIVE() {
 void ConnectionBase::remove_resend_packet_nolock(uint32_t seq) {
 	RESEND_PACKET_MAP::ConstIterator it = this->resend_packet_map.find(seq);
 	if (it != this->resend_packet_map.end()) {
-		delete it->second;
 		this->resend_packet_map.erase(seq);
 	}
 }
 
 void ConnectionBase::add_resend_packet_nolock(const PacketBasePtr &packet) {
-	std::auto_ptr<ResendPacket> resend_packet(new ResendPacket(packet));
-	this->resend_packet_map[packet->header.sequence] = resend_packet.release();
+	ResendPacketPtr resend_packet(new ResendPacket(packet));
+	this->resend_packet_map[packet->header.sequence] = resend_packet;
 }
 
 void ConnectionBase::sendPacket(PacketBasePtr &packet) {

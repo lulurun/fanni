@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="Fanni.Example.FileTransfer"
-	ProjectGUID="{81829B93-8C89-4792-8DCA-20EB29BE2500}"
-	RootNamespace="FileTransfer"
+	Name="memo"
+	ProjectGUID="{4A0BBA53-F237-4018-8B16-6DBAE7D5B6A3}"
+	RootNamespace="memo"
 	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\ext_libs\include;include;..\..\Framework\Packets\include;..\..\Basic\include;..\..\Framework\rUDP\include;..\..\Protocol\FTPackets\include"
+				AdditionalIncludeDirectories="..\ext_libs\include;include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;Fanni_DLL;Fanni_EXPORTS;Fanni_Packets_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -60,8 +60,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\bin\file_transferd.exe"
-				AdditionalLibraryDirectories="..\..\ext_libs\lib"
+				OutputFile="..\bin\memod.exe"
+				AdditionalLibraryDirectories="..\ext_libs\lib"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -162,59 +162,33 @@
 	</References>
 	<Files>
 		<Filter
-			Name="ソース ファイル"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			Name="Poco"
 			>
 			<File
-				RelativePath=".\src\Connection.cpp"
+				RelativePath=".\Poco\PocoMemo.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\file_transfer.cpp"
+				RelativePath=".\Poco\SharedPtr.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\Node.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\Status.cpp"
+				RelativePath=".\Poco\SocketAddress.h"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="ヘッダー ファイル"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			Name="include"
 			>
 			<File
-				RelativePath=".\include\Connection.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\FileUtils.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\Handlers.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\Node.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\Status.h"
+				RelativePath=".\include\MemoBase.h"
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="リソース ファイル"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+		<File
+			RelativePath=".\memo.cpp"
 			>
-		</Filter>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
