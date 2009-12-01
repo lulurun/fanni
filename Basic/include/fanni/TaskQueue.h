@@ -14,8 +14,9 @@
 namespace Fanni {
 
 class TaskBase {
-public:
+protected:
 	TaskBase() {};
+public:
 	virtual ~TaskBase() {};
 };
 

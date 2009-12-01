@@ -13,6 +13,7 @@
 #include "fanni/LLPackets/LLPackets.h"
 #include "fanni/LLUDP/UDPServerBase.h"
 #include "fanni/LLUDP/SystemPacketHandler.h"
+#include "fanni/LLUDP/LocalTaskHandler.h"
 #include "fanni/LLUDP/SystemPacketWorkerBase.h"
 #include "fanni/LLUDP/ConnectionManagerBase.h"
 
@@ -23,12 +24,14 @@ protected:
 	EndPoint server_ep;
 	SystemPacketHandlerFactory system_handler_factory;
 	ConnectionPacketHandlerFactory connection_handler_factory;
+	LocalTaskHandlerFactory task_handler_factory;
 
 public:
 	LLUDPBase(const EndPoint &ep) :
 	  UDPServerBase(ep), // start UDPServer
 	  server_ep(ep) {
 		  LLPackets::init(this->packet_factory);
+		  this->task_handler_factory.registerHandler("CloseConnection", new CloseConnectionTaskHandler());
 	};
 	virtual ~LLUDPBase() {};
 
@@ -41,20 +44,14 @@ public:
 	}
 
 	// SystemPacketWorkerBase
-	virtual void dispatch(PacketBasePtr &packet, const EndPoint &ep) {
-		try {
-			const SystemPacketHandlerBase &handler = this->system_handler_factory.getHandler(packet->header.getPacketID());
-			handler(*this, packet, ep);
-		} catch (Poco::NotFoundException &ex) {
-			ERROR_LOG("LLUDP", "packet handler not found" << ex.message());
-		}
+	virtual void dispatch(const PacketBasePtr &packet, const EndPoint &ep) {
+		const SystemPacketHandlerBase &handler = this->system_handler_factory.getHandler(packet->header.getPacketID());
+		handler(*this, packet, ep);
 	}
 
-	virtual void dispatch(const TaskPtr &pTask, const EndPoint &ep) {
-		const CloseConnectionTask *ccTask = dynamic_cast<const CloseConnectionTask *>(pTask.get());
-		if (ccTask) {
-			this->closeConnection(ep);
-		}
+	virtual void dispatch(const LocalTaskBasePtr &pLocTask) {
+		const LocalTaskHandlerBase &handler = this->task_handler_factory.getHandler(pLocTask->getName());
+		handler(*this, pLocTask);
 	}
 
 	const ConnectionPacketHandlerFactory &getConnectionHandlerFactory() const {

@@ -8,6 +8,7 @@
 #ifndef _FANNI_UDPPACKET_DATA_H_
 #define _FANNI_UDPPACKET_DATA_H_
 
+#include <string>
 #include "Fanni/TaskQueue.h"
 #include "fanni/EndPoint.h"
 #include "fanni/PacketBuffer.h"
@@ -21,14 +22,25 @@ public:
 	EndPoint ep;
 
 	IncomingData(PacketBuffer &data, const EndPoint &ep) : data(data), ep(ep) {}
-	~IncomingData() {}
+	virtual ~IncomingData() {}
 };
 
-class CloseConnectionTask : public TaskBase {
+class LocalTaskBase : public TaskBase {
+protected:
+	std::string name;
+	LocalTaskBase(const std::string &name): name(name) {};
+public:
+	virtual ~LocalTaskBase() {};
+	const std::string &getName() const { return this->name; };
+};
+
+typedef Poco::SharedPtr<LocalTaskBase> LocalTaskBasePtr;
+
+class CloseConnectionTask : public LocalTaskBase {
 public:
 	EndPoint ep;
-	CloseConnectionTask(const EndPoint &ep): ep(ep) {}
-	~CloseConnectionTask() {}
+	CloseConnectionTask(const EndPoint &ep): ep(ep), LocalTaskBase("CloseConnection") {}
+	virtual ~CloseConnectionTask() {}
 };
 
 // TODO @@@ read from config file

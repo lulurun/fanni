@@ -26,8 +26,8 @@ protected:
 	PacketSerializer *packet_serializer;
 
 	void doTask(TaskPtr &task);
-	virtual void dispatch(/* TODO @@@ const */ PacketBasePtr &packet, const EndPoint &ep) = 0;
-	virtual void dispatch(const TaskPtr &task, const EndPoint &ep) = 0;
+	virtual void dispatch(const PacketBasePtr &packet, const EndPoint &ep) = 0;
+	virtual void dispatch(const LocalTaskBasePtr &pLocTask) = 0;
 };
 
 }

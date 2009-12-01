@@ -16,14 +16,18 @@ SystemPacketWorkerBase::~SystemPacketWorkerBase() {
 }
 
 void SystemPacketWorkerBase::doTask(TaskPtr &pTask) {
-	CloseConnectionTask *ccTask = dynamic_cast<CloseConnectionTask *>(pTask.get());
-	if (ccTask) {
-		this->dispatch(pTask, ccTask->ep); // TODO @@@ review
-	} else {
+	try {
 		IncomingData *incoming_data = dynamic_cast<IncomingData *>(pTask.get());
-		assert(incoming_data);
-		PacketBasePtr packet = this->packet_serializer->deserialize(incoming_data->data);
-		this->dispatch(packet, incoming_data->ep);
+		if (incoming_data) {
+			PacketBasePtr packet = this->packet_serializer->deserialize(incoming_data->data);
+			this->dispatch(packet, incoming_data->ep);
+		} else {
+			LocalTaskBasePtr pLocTask = pTask.cast<LocalTaskBase>();
+			assert(pLocTask.get());
+			this->dispatch(pLocTask);
+		}
+	}catch (Poco::NotFoundException &ex) {
+		ERROR_LOG("LLUDP", "can not find handler: " << ex.message());
 	}
 }
 

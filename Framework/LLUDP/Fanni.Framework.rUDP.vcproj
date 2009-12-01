@@ -196,6 +196,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\LocalTaskHandler.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\SystemPacketHandler.cpp"
 				>
 			</File>
@@ -239,6 +243,10 @@
 			</File>
 			<File
 				RelativePath=".\include\fanni\LLUDP\LLUDPBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\fanni\LLUDP\LocalTaskHandler.h"
 				>
 			</File>
 			<File
