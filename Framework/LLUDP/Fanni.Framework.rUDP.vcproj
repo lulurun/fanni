@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="Fanni.rUDP"
+	Name="Fanni.LLUDP"
 	ProjectGUID="{0796ECFF-569D-477B-A8C0-159474FE28FB}"
 	RootNamespace="FanniFrameworkrUDP"
 	Keyword="Win32Proj"
@@ -42,8 +42,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\ext_libs\include;include;..\..\Framework\Packets\include;..\..\Basic\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;Fanni_DLL;Fanni_EXPORTS;Fanni_Packets_EXPORTS;Fanni_RUDP_EXPORTS"
+				AdditionalIncludeDirectories="..\..\ext_libs\include;include;..\..\Framework\Packets\include;..\..\Basic\include;..\..\Protocol\LLPackets\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;Fanni_DLL;Fanni_EXPORTS;Fanni_Packets_EXPORTS;Fanni_LLUDP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -62,12 +62,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\bin\FannirUDPd.dll"
+				OutputFile="..\..\bin\FanniLLUDPd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\ext_libs\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				ImportLibrary="..\..\lib\FannirUDPd.lib"
+				ImportLibrary="..\..\lib\FanniLLUDPd.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -176,23 +176,35 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\AckManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\ConnectionBase.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\PacketHandlerFactory.cpp"
+				RelativePath=".\src\ConnectionManagerBase.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\Receiver.cpp"
+				RelativePath=".\src\ConnectionPacketHandler.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\Sender.cpp"
+				RelativePath=".\src\ConnectionPacketWorkerBase.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\TransferNode.cpp"
+				RelativePath=".\src\SystemPacketHandler.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\SystemPacketWorkerBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\UDPServerBase.cpp"
 				>
 			</File>
 		</Filter>
@@ -202,35 +214,47 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\include\fanni\rUDP\ConnectionBase.h"
+				RelativePath=".\include\fanni\LLUDP\AckManager.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\fanni\rUDP\DefaultPacketAckPacket.h"
+				RelativePath=".\include\fanni\LLUDP\ConnectionBase.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\fanni\rUDP\PacketHandlerFactory.h"
+				RelativePath=".\include\fanni\LLUDP\ConnectionManagerBase.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\fanni\rUDP\Receiver.h"
+				RelativePath=".\include\fanni\LLUDP\ConnectionPacketHandler.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\fanni\rUDP\rUDP_def.h"
+				RelativePath=".\include\fanni\LLUDP\ConnectionPacketWorkerBase.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\fanni\rUDP\Sender.h"
+				RelativePath=".\include\fanni\LLUDP\LLUDP_def.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\fanni\rUDP\TransferNode.h"
+				RelativePath=".\include\fanni\LLUDP\LLUDPBase.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\fanni\rUDP\UDPReceiveHandler.h"
+				RelativePath=".\include\fanni\LLUDP\SystemPacketHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\fanni\LLUDP\SystemPacketWorkerBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\fanni\LLUDP\UDPData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\fanni\LLUDP\UDPServerBase.h"
 				>
 			</File>
 		</Filter>

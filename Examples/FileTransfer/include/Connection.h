@@ -5,76 +5,80 @@
  *      Author: lulu
  */
 
-#ifndef FILETRANSFERCLIENTCONNECTION_H_
-#define FILETRANSFERCLIENTCONNECTION_H_
+#ifndef FT_CONNECTION_H_
+#define FT_CONNECTION_H_
 
+#include <map>
 #include <string>
 #include "Poco/Mutex.h"
-#include "Poco/HashMap.h"
+#include "Poco/BasicEvent.h"
 #include "fanni/EndPoint.h"
 #include "fanni/UUID.h"
 #include "fanni/LockableTemplate.h"
-#include "fanni/rUDP/ConnectionBase.h"
+#include "fanni/LLUDP/ConnectionBase.h"
+#include "ConnectionHandler.h"
 #include "Status.h"
 
 namespace Fanni {
 namespace FileTransfer {
 
-class Node;
-class Connection : public ConnectionBase {
+class TransferNode;
+class TransferNodeConnectionBase : public ConnectionBase {
+protected:
+	int circuit_code;
 
-private:
-	typedef Poco::HashMap<std::string, Status *> __STATUS_MAP;
-	typedef lockable<__STATUS_MAP> STATUS_MAP;
-	STATUS_MAP receive_status_map;
-	STATUS_MAP send_status_map;
+	typedef lockable< std::map<std::string, StatusPtr> > STATUS_MAP;
+	STATUS_MAP status_map;
 
-	// client event
-	struct OnOpenConnectionReplyEvent {
-		void operator()(Connection *conn);
-	};
-	struct OnFileInfoReplyEvent {
-		void operator()(const UUID &receive_id, const UUID &send_id, Connection *conn);
-	};
-	struct OnFileTransferCompleteEvent  {
-		void operator()(const UUID &send_id, Connection *conn);
-	};
-	// server event
-	struct OnFileInfoEvent {
-		void operator()(uint32_t file_size, const std::string &file_name, const UUID &send_id, Connection *conn);
-	};
-	struct OnFileDataEvent {
-		void operator()(const UUID &receive_id, int data_number, const std::vector<unsigned char> &data_buf, Connection *conn);
-	};
-
-	Status &createReceiveStatus(uint32_t file_size, const std::string file_name, const UUID &receive_id, const UUID &send_id);
-	Status *getReceiveTransfer(const UUID &receive_id);
-	Status *_getReceiveTransfer_nolock(const UUID &receive_id);
-	void closeReceiveTransfer(const UUID &receive_id);
-
-	Status &createSendStatus(uint32_t file_size, const std::string file_name, const UUID &receive_id, const UUID &send_id);
-	Status *getSendTransfer(const UUID &send_id);
-	Status *_getSendTransfer_nolock(const UUID &send_id);
-	void closeSendTransfer(const UUID &send_id);
+	// status operations
+	virtual StatusPtr createStatus(uint32_t file_size, const std::string file_name, const UUID &trans_id) = 0;
+	StatusPtr &getTransfer(const UUID &trans_id);
+	StatusPtr &getTransfer_unsafe(const UUID &trans_id);
+	void closeTransfer(const UUID &trans_id);
 
 public:
+	TransferNodeConnectionBase(uint32_t circuit_code, const EndPoint &ep, const PacketSerializer &packet_serializer, LLUDPBase &udp);
+	virtual ~TransferNodeConnectionBase();
 
-	Connection(uint32_t circuit_code, const EndPoint &ep, TransferNode &node);
-	virtual ~Connection();
+	int getCircuitCode() const { return this->circuit_code;	}
+	//TransferNode &getTransferNode() const { return *dynamic_cast<TransferNode *>(&this->udp); };
 
-	// client event
-	OnOpenConnectionReplyEvent OnOpenConnectionReply;
-	OnFileInfoReplyEvent OnFileInfoReply;
-	OnFileTransferCompleteEvent OnFileTransferComplete;
+	Poco::BasicEvent<int> ClosedEvent;
+	Poco::BasicEvent<int> ConnectedEvent;
+};
+
+class ClientConnection : public TransferNodeConnectionBase {
+private:
+	void onFileInfoReply(const void* pSender, const FileInfoReplyPacket &packet);
+	void onTransferComplete(const void* pSender, const TransferCompletePacket &packet);
+	StatusPtr createStatus(uint32_t file_size, const std::string file_name, const UUID &trans_id);
+
+public:
+	ClientConnection(uint32_t circuit_code, const EndPoint &ep, const PacketSerializer &packet_serializer, LLUDPBase &udp);
+	virtual ~ClientConnection();
+
+	Poco::BasicEvent<const FileInfoReplyPacket> FileInfoReplyEvent;
+	Poco::BasicEvent<const TransferCompletePacket> TransferCompleteEvent;
+};
+
+class ServerConnection : public TransferNodeConnectionBase {
+private:
 	// server event
-	OnFileInfoEvent OnFileInfo;
-	OnFileDataEvent OnFileData;
+	void onFileInfo(const void* pSender, const FileInfoPacket &packet);
+	void onFileData(const void* pSender, const FileDataPacket &packet);
+	StatusPtr createStatus(uint32_t file_size, const std::string file_name, const UUID &trans_id);
 
+public:
+	ServerConnection(uint32_t circuit_code, const EndPoint &ep, const PacketSerializer &packet_serializer, LLUDPBase &udp);
+	virtual ~ServerConnection();
+
+	Poco::BasicEvent<const FileInfoPacket> FileInfoEvent;
+	Poco::BasicEvent<const FileDataPacket> FileDataEvent;
 };
 
 
 }
 }
 
-#endif /* FILETRANSFERCLIENTCONNECTION_H_ */
+#endif /* FT_CONNECTION_H_ */
 

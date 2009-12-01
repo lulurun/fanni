@@ -44,6 +44,7 @@ inline void INIT_LOGGER(const std::string &config_file) {
 
 };
 
+/*
 #define TRACE_LOG(message)	\
 	Poco::Logger::root().trace(message);
 #define DEBUG_LOG(name, ...)	\
@@ -56,5 +57,19 @@ inline void INIT_LOGGER(const std::string &config_file) {
 	{ Poco::LogStream ls(Poco::Logger::get(name)); ls.error() << __VA_ARGS__ << std::endl; }
 #define FATAL_LOG(name, ...)	\
 	{ Poco::LogStream ls(Poco::Logger::get(name)); ls.fatal() << __VA_ARGS__ << std::endl; }
+*/
+
+#define TRACE_LOG(message)	\
+	Poco::Logger::root().trace(message);
+#define DEBUG_LOG(name, ...)	\
+	{ Poco::LogStream ls(Poco::Logger::root()); ls.debug() << __VA_ARGS__ << std::endl; }
+#define INFO_LOG(name, ...)	\
+	{ Poco::LogStream ls(Poco::Logger::root()); ls.information() << __VA_ARGS__ << std::endl; }
+#define WARN_LOG(name, ...)	\
+	{ Poco::LogStream ls(Poco::Logger::root()); ls.warning() << __VA_ARGS__ << std::endl; }
+#define ERROR_LOG(name, ...)	\
+	{ Poco::LogStream ls(Poco::Logger::root()); ls.error() << __VA_ARGS__ << std::endl; }
+#define FATAL_LOG(name, ...)	\
+	{ Poco::LogStream ls(Poco::Logger::root()); ls.fatal() << __VA_ARGS__ << std::endl; }
 
 #endif /* LOGGER_H_ */

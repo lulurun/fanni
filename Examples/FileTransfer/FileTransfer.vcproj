@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\ext_libs\include;include;..\..\Framework\Packets\include;..\..\Basic\include;..\..\Framework\rUDP\include;..\..\Protocol\FTPackets\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;Fanni_DLL;Fanni_EXPORTS;Fanni_Packets_EXPORTS"
+				AdditionalIncludeDirectories="..\..\Protocol\LLPackets\include;..\..\ext_libs\include;include;..\..\Framework\Packets\include;..\..\Basic\include;..\..\Framework\LLUDP\include;..\..\Protocol\FTPackets\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;Fanni_DLL;Fanni_EXPORTS;Fanni_Packets_EXPORTS;Fanni_LLPackets_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -171,15 +171,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\file_transfer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\Node.cpp"
+				RelativePath=".\src\FileTransferApp.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\Status.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TransferNode.cpp"
 				>
 			</File>
 		</Filter>
@@ -193,19 +193,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\ConnectionHandler.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\FileUtils.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\Handlers.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\Node.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\Status.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\SystemHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\TransferNode.h"
 				>
 			</File>
 		</Filter>

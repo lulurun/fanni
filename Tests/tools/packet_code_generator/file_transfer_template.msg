@@ -1,5 +1,5 @@
 {
-	FileInfo Low 154 NotTrusted Unencoded
+	FileInfo Low 513 NotTrusted Unencoded
 	{
 		FileInfo		Single
 		{	SenderTransferID	LLUUID			}
@@ -9,7 +9,7 @@
 }
 
 {
-	FileInfoReply Low 155 NotTrusted Unencoded
+	FileInfoReply Low 514 NotTrusted Unencoded
 	{
 		FileInfo		Single
 		{	ReceiverTransferID	LLUUID	}
@@ -18,7 +18,7 @@
 }
 
 {
-	TransferComplete Low 156 NotTrusted Unencoded
+	TransferComplete Low 515 NotTrusted Unencoded
 	{
 		FileData Single
 		{	SenderTransferID	LLUUID	}
@@ -26,7 +26,7 @@
 }
 
 {
-	FileData High 17 NotTrusted Unencoded
+	FileData High 33 NotTrusted Unencoded
 	{
 		FileData Single
 		{	ReceiverTransferID	LLUUID	}
@@ -37,7 +37,7 @@
 
 // system packets
 {
-	OpenConnection Low 3 NotTrusted Unencoded
+	OpenConnection Low 516 NotTrusted Unencoded
 	{
 		OpenConnection		Single
 		{	Code		U32		}
@@ -45,7 +45,7 @@
 }
 
 {
-	OpenConnectionReply Low 4 NotTrusted Unencoded
+	OpenConnectionReply Low 517 NotTrusted Unencoded
 	{
 		OpenConnectionReply		Single
 		{	Code		U32		}
@@ -53,9 +53,9 @@
 }
 
 {
-	CloseConnection Low 5 NotTrusted Unencoded
+	CloseConnection Low 518 NotTrusted Unencoded
 }
 
 {
-	CloseConnectionReply Low 6 NotTrusted Unencoded
+	CloseConnectionReply Low 519 NotTrusted Unencoded
 }

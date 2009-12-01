@@ -51,11 +51,12 @@ private:
 	inline void memo2(Poco::Net::SocketAddress addr) {
 		std::cout << addr.toString() << std::endl;
 	}
+	/* compile warning
 	Poco::Net::SocketAddress &memo3() {
 		Poco::Net::SocketAddress addr("127.0.0.1", 9001);
 		return addr;
 	}
-
+	*/
 	Poco::Net::SocketAddress memo4() {
 		Poco::Net::SocketAddress addr("127.0.0.1", 9001);
 		return addr;

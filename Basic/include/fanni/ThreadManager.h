@@ -23,7 +23,7 @@ protected:
 public:
 	ThreadManager();
 	virtual ~ThreadManager();
-	void deliverTask(Poco::Notification *data);
+	void deliverTask(TaskPtr &data);
 	void start();
 	void stop();
 	void join();

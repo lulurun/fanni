@@ -5,7 +5,9 @@
 #include "fanni/Exception.h"
 #include "fanni/Packets/PacketBaseTypes.h"
 #include "fanni/Packets/PacketBase.h"
+#include "fanni/Packets/PacketFactory.h"
 #include "fanni/FTPackets/FTPacketsID.h"
+#include "fanni/FTPackets/FTPackets_def.h"
 
 namespace Fanni {
 
@@ -356,7 +358,12 @@ public:
 
 
 
+class Fanni_FTPackets_API FTPackets {
+public:
+    static void init(PacketFactory &packet_factory);
 };
+
+}
 
 #endif // FTPACKET_IMPL_H
 

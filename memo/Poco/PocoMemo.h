@@ -3,9 +3,12 @@
 
 #include <iostream>
 #include <vector>
-
 #include "MemoBase.h"
-#include "SocketAddress.h"
+#include "QueueMemo.h"
+//#include "SocketAddress.h"
+//#include "UDP.h"
+//#include "Factory.h"
+//#include "NotificationMemo.h"
 
 class PocoMemoSet {
 private:
@@ -13,7 +16,10 @@ private:
 	MEMO_LIST _list;
 
 	PocoMemoSet() {
-		this->registerMemo(new SocketAddressMemo());
+		//this->registerMemo(new SocketAddressMemo());
+		//this->registerMemo(new UDPMemo());
+		//this->registerMemo(new NotificationMemo());
+		this->registerMemo(new QueueMemo());
 	};
 
 public:

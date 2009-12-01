@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\ext_libs\include;include"
+				AdditionalIncludeDirectories="..\Basic\include;..\ext_libs\include;include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;Fanni_DLL;Fanni_EXPORTS;Fanni_Packets_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -165,15 +165,27 @@
 			Name="Poco"
 			>
 			<File
+				RelativePath=".\Poco\Factory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Poco\NotificationMemo.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Poco\PocoMemo.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Poco\SharedPtr.h"
+				RelativePath=".\Poco\QueueMemo.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Poco\SocketAddress.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Poco\UDP.h"
 				>
 			</File>
 		</Filter>

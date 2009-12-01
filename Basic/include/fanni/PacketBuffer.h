@@ -11,6 +11,7 @@
 #include "Poco/SharedPtr.h"
 #include "fanni/FixedLengthBuffer.h"
 #include "fanni/Serializable.h"
+#include "fanni/SingletonTemplate.h"
 
 namespace Fanni {
 
@@ -20,6 +21,15 @@ namespace Fanni {
 
 typedef FixedLengthBuffer<PACKET_BUF_LEN> __PacketBuffer;
 typedef Poco::SharedPtr<__PacketBuffer> PacketBuffer;
+
+// TODO @@@ finish me
+class PacketBufferPool {
+public:
+	static PacketBuffer CreatePacketBuffer() {
+		PacketBuffer buffer(new __PacketBuffer());
+		return buffer;
+	}
+};
 
 typedef Serializable<PacketBuffer> PacketSerializable;
 

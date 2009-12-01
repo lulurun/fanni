@@ -3,41 +3,29 @@
 
 namespace Fanni {
 
-PacketSerializer::PacketSerializer(const PacketFactory &packet_factory) :
-	factory(packet_factory) {
-		this->buf.assign(new __PacketBuffer());
+PacketSerializer::PacketSerializer(const PacketFactory &packet_factory):
+	packet_factory(packet_factory) {
 }
 
-PacketSerializer::~PacketSerializer() {
+PacketSerializer::~PacketSerializer() {}
+
+PacketBuffer PacketSerializer::serialize(const PacketBasePtr &packet) const {
+	PacketBuffer buf(new __PacketBuffer());
+	packet->serializePacket(buf);
+	return buf;
 }
 
-const unsigned char *PacketSerializer::serialize(const PacketBase *obj, int *len) {
-	// @@@ lock(this->buf) is not needed if each worker has its own PacketSerializer
-	this->buf->clear();
-	obj->serializePacket(this->buf);
-	*len = this->buf->getLength();
-	return this->buf->getConstBuffer();
-}
-
-PacketBase *PacketSerializer::deserialize(const unsigned char *in, int len) {
-	// @@@ lock(this->buf) is not needed if each work has its own PacketSerializer
-	this->buf->clear();
-	this->buf->putBuf(in, len);
-	return this->deserialize(this->buf);
-}
-
-PacketBase *PacketSerializer::deserialize(PacketBuffer &in) {
-	// @@@ lock(this->buf) is not needed if each work has its own PacketSerializer
-	in->resetPos();
+PacketBasePtr PacketSerializer::deserialize(PacketBuffer &buffer) const {
+	buffer->resetPos();
 	PacketHeader header;
-	header.deserialize(in);
-	PacketBase *packet = this->factory.createPacket(header.getPacketID());
-	if (packet == NULL) {
+	header.deserialize(buffer);
+	PacketBasePtr packet = this->packet_factory.createPacket(header.getPacketID());
+	if (packet.get() == NULL) {
 		ErrorException::throw_exception(EXP_Packet, EXP_PRE_MSG, "unknown packet: %08x", header.getPacketID());
 	}
-	in->resetPos();
-	packet->deserializePacket(in); // TODO @@@ header is deserialized twice !!
-	return packet; // @@@ this packet will be deleted by "Receiver"
+	buffer->resetPos();
+	packet->deserializePacket(buffer); // TODO @@@ header is deserialized twice !!
+	return packet;
 }
 
 bool PacketSerializer::isZerocoded(PacketBuffer &buf) {

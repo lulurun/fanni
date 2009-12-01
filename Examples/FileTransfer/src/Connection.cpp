@@ -13,10 +13,9 @@
 #include "fanni/Sleep.h"
 #include "fanni/EndPoint.h"
 #include "fanni/Logger.h"
-#include "fanni/FTPackets/FTPacketFactory.h"
 #include "fanni/FTPackets/FTPacketsID.h"
 #include "fanni/FTPackets/FTPackets.h"
-#include "Node.h"
+#include "TransferNode.h"
 #include "FileUtils.h"
 #include "Connection.h"
 
@@ -24,177 +23,83 @@ using namespace std;
 using namespace Fanni;
 using namespace Fanni::FileTransfer;
 
-Connection::Connection(uint32_t circuit_code, const EndPoint &ep, TransferNode &node)
-: ConnectionBase(circuit_code, ep, node) {
+TransferNodeConnectionBase::TransferNodeConnectionBase(uint32_t circuit_code, const EndPoint &ep, const PacketSerializer &packet_serializer, LLUDPBase &udp):
+	ConnectionBase(ep, packet_serializer, udp), circuit_code(circuit_code) {
 }
 
-Connection::~Connection() {
-	// TODO @@@ thread safe
-	for(STATUS_MAP::Iterator it=this->receive_status_map.begin(); it!=this->receive_status_map.end(); it++) {
-		delete it->second;
-	}
-	for(STATUS_MAP::Iterator it=this->send_status_map.begin(); it!=this->send_status_map.end(); it++) {
-		delete it->second;
-	}
+TransferNodeConnectionBase::~TransferNodeConnectionBase() {
+	INFO_LOG("LLUDP", "TransferNodeConnectionBase destoryed");
 }
 
-// ================
-// receive transfer
-Status &Connection::createReceiveStatus(uint32_t file_size, const std::string file_name, const UUID &receive_id, const UUID &send_id) {
-	Status *status = new Status(file_size, file_name, receive_id, send_id, true);
-	Poco::FastMutex::ScopedLock l(this->receive_status_map);
-	this->receive_status_map[status->getReceiverTransferID().toString()] = status;
-	return *status;
+StatusPtr &TransferNodeConnectionBase::getTransfer(const UUID &trans_id) {
+	Poco::FastMutex::ScopedLock l(this->status_map);
+	return this->getTransfer_unsafe(trans_id);
 }
 
-Status *Connection::getReceiveTransfer(const UUID &transfer_id) {
-	Poco::FastMutex::ScopedLock l(this->receive_status_map);
-	return this->_getReceiveTransfer_nolock(transfer_id);
-}
-
-Status *Connection::_getReceiveTransfer_nolock(const UUID &transfer_id) {
-	STATUS_MAP::Iterator it = this->receive_status_map.find(transfer_id.toString());
-	if (it == this->receive_status_map.end()) {
-		return NULL;
+StatusPtr &TransferNodeConnectionBase::getTransfer_unsafe(const UUID &trans_id) {
+	STATUS_MAP::iterator it = this->status_map.find(trans_id.toString());
+	if (it == this->status_map.end()) {
+		throw Poco::NotFoundException("unknown transfer ID: ", trans_id.toString());
 	} else {
 		return it->second;
 	}
 }
 
-void Connection::closeReceiveTransfer(const UUID &transfer_id) {
-	Poco::FastMutex::ScopedLock l(this->receive_status_map);
-	Status *status = this->_getReceiveTransfer_nolock(transfer_id);
-	if (status) {
-		INFO_LOG("FileTransfer", "receive transfer success: " << transfer_id.toString());
-		this->receive_status_map.erase(transfer_id.toString());
-		delete status;
-	} else {
-		WARN_LOG("FileTransfer", "receive transfer: " << transfer_id.toString() << " is no longer under manage");
+void TransferNodeConnectionBase::closeTransfer(const UUID &trans_id) {
+	try {
+		Poco::FastMutex::ScopedLock l(this->status_map);
+		StatusPtr &pStatus = this->getTransfer_unsafe(trans_id); // TODO @@@ needed ?
+		INFO_LOG("FileTransfer", "send transfer success: " << trans_id.toString());
+		this->status_map.erase(trans_id.toString());
+	} catch (Poco::NotFoundException &ex) {
+		WARN_LOG("FileTransfer", "send transfer is no longer under manage: " << ex.message());
 	}
 }
 
 // ================
-// send transfer
-Status &Connection::createSendStatus(uint32_t file_size, const std::string file_name, const UUID &receive_id, const UUID &send_id) {
-	Status *status = new Status(file_size, file_name, receive_id, send_id, false);
-	Poco::FastMutex::ScopedLock l(this->send_status_map);
-	this->send_status_map[status->getSenderTransferID().toString()] = status;
-	return *status;
+// ClientConnection
+ClientConnection::ClientConnection(uint32_t circuit_code, const EndPoint &ep, const PacketSerializer &packet_serializer, LLUDPBase &udp):
+	TransferNodeConnectionBase(circuit_code, ep, packet_serializer, udp) {
+	this->FileInfoReplyEvent += Poco::Delegate<ClientConnection, const FileInfoReplyPacket>(this, &ClientConnection::onFileInfoReply);
+	this->TransferCompleteEvent += Poco::Delegate<ClientConnection, const TransferCompletePacket>(this, &ClientConnection::onTransferComplete);
 }
 
-Status *Connection::getSendTransfer(const UUID &transfer_id) {
-	Poco::FastMutex::ScopedLock l(this->send_status_map);
-	return this->_getSendTransfer_nolock(transfer_id);
+ClientConnection::~ClientConnection() {
+	this->FileInfoReplyEvent -= Poco::Delegate<ClientConnection, const FileInfoReplyPacket>(this, &ClientConnection::onFileInfoReply);
+	this->TransferCompleteEvent -= Poco::Delegate<ClientConnection, const TransferCompletePacket>(this, &ClientConnection::onTransferComplete);
+	INFO_LOG("LLUDP", "ClientConnection destoryed");
 }
 
-Status *Connection::_getSendTransfer_nolock(const UUID &transfer_id) {
-	STATUS_MAP::Iterator it = this->send_status_map.find(transfer_id.toString());
-	if (it == this->send_status_map.end()) {
-		// not found
-		return NULL;
-	} else {
-		return it->second;
-	}
+StatusPtr ClientConnection::createStatus(uint32_t file_size, const std::string file_name, const UUID &trans_id) {
+	StatusPtr pStatus(new Status(file_size, file_name, trans_id, false));
+	Poco::FastMutex::ScopedLock l(this->status_map);
+	this->status_map[trans_id.toString()] = pStatus;
+	return pStatus;
 }
 
-void Connection::closeSendTransfer(const UUID &transfer_id) {
-	Poco::FastMutex::ScopedLock l(this->send_status_map);
-	Status *status = this->_getSendTransfer_nolock(transfer_id);
-	if (status) {
-		INFO_LOG("FileTransfer", "send transfer success: " << transfer_id.toString());
-		this->send_status_map.erase(transfer_id.toString());
-		delete status;
-	} else {
-		WARN_LOG("FileTransfer","send transfer: " << transfer_id.toString() << " is no longer under manage");
-	}
-}
-
-//Server Events
-void Connection::OnFileInfoEvent::operator ()(uint32_t file_size, const std::string &file_name, const UUID &send_id, Connection *conn) {
+void ClientConnection::onFileInfoReply(const void* pSender, const FileInfoReplyPacket &packet) {
 	TRACE_LOG("enter");
-	UUID receive_id = UUIDGeneratorSingleton::get().Create();
-	Status &status = conn->createReceiveStatus(file_size, file_name, receive_id, send_id);
-	// send reply packet
-	FileInfoReplyPacket *packet = dynamic_cast<FileInfoReplyPacket *>(FTPacketFactorySingleton::get().createPacket(FileInfoReply_ID));
-	assert(packet);
-	PacketBasePtr packet_ptr(packet);
-	packet->FileInfo.ReceiverTransferID = status.getReceiverTransferID();
-	packet->FileInfo.SenderTransferID = status.getSenderTransferID();
-	conn->sendPacket(packet_ptr);
-	TRACE_LOG("exit");
-}
-
-void Connection::OnFileDataEvent::operator ()(const UUID &receive_id, int data_number, const vector<unsigned char> &data_buf, Connection *conn) {
-	TRACE_LOG("enter");
-	Status *status = conn->getReceiveTransfer(receive_id);
-	if (status == NULL) {
-		ERROR_LOG("FileTransfer", "unknown transfer id: " << receive_id.toString());
-		return;
-	}
-	if (status->update(data_number, &data_buf[0], data_buf.size())) {
-		// send back to sender
-		TransferCompletePacket *packet = dynamic_cast<TransferCompletePacket *>(FTPacketFactorySingleton::get().createPacket(TransferComplete_ID));
-		assert(packet);
-		PacketBasePtr packet_ptr(packet);
-		packet->FileData.SenderTransferID = status->getSenderTransferID();
-		conn->sendPacket(packet_ptr);
-
-		INFO_LOG("FileTransfer", "TransferComplete: " << status->getFileName() << " " << status->getReceiverTransferID().toString());
-		string out_file = status->getFileName() + "_" + receive_id.toString();
-		ofstream fs(out_file.c_str(), ios::binary);
-		if (fs.fail()) {
-			ERROR_LOG("FileTransfer", "unable to open file for writing" << out_file);
-			return;
-		}
-		fs.write(reinterpret_cast<const char *>(status->getFileBuffer()), status->getFileSize());
-		fs.close();
-		// close this transfer, release memory // server
-		conn->closeReceiveTransfer(receive_id);
-	}
-	TRACE_LOG("exit");
-}
-
-// Client Events
-void Connection::OnOpenConnectionReplyEvent::operator ()(Connection *conn) {
-	TRACE_LOG("enter");
-	Node *node = dynamic_cast<Node *>(&conn->node);
-	assert(node);
-	string file_path = node->getSendFile();
-	size_t file_size = FileUtils::get_file_size(file_path);
-
-	Status &status = conn->createSendStatus(file_size, file_path, UUIDGeneratorSingleton::get().Zero(), UUIDGeneratorSingleton::get().Create());
-	// send a FileInfoPacket
-	FileInfoPacket *packet = dynamic_cast<FileInfoPacket *>(FTPacketFactorySingleton::get().createPacket(FileInfo_ID));
-	assert(packet);
-	PacketBasePtr packet_ptr(packet);
-	packet->FileInfo.SenderTransferID = status.getSenderTransferID();
-	packet->FileInfo.Size = status.getFileSize();
-	packet->FileInfo.Name = status.getFileName();
-	conn->sendPacket(packet_ptr);
-	TRACE_LOG("exit");
-}
-
-// memo @@@ client_transfer_id is for multiple file transfer ...
-void Connection::OnFileInfoReplyEvent::operator ()(const UUID &receive_id, const UUID &send_id, Connection *conn) {
-	TRACE_LOG("enter");
-	Status *status = conn->getSendTransfer(send_id);
-	if (!status) {
-		ERROR_LOG("FileTransfer", "can not find file transfer status for " << send_id.toString());
+	/*
+	StatusPtr pStatus;
+	try {
+		pStatus = conn->getTransfer(send_id);
+	} catch (Poco::NotFoundException &ex) {
+		WARN_LOG("FileTransfer", "onFileInfoReply" << ex.message());
 		return;
 	}
 	// update receiver transfer id
-	status->setReceiverTransferID(receive_id);
+	pStatus->setReceiverTransferID(receive_id);
 	// read file , send
-	ifstream fs(status->getFileName().c_str(), ios::binary);
+	ifstream fs(pStatus->getFileName().c_str(), ios::binary);
 	if (fs.fail()) {
-		ERROR_LOG("FileTransfer", "unable to open file for reading" << status->getFileName());
+		ERROR_LOG("FileTransfer", "unable to open file for reading" << pStatus->getFileName());
 		status->failed();
 		return;
 	}
 
-	size_t total_size = status->getFileSize();
+	size_t total_size = pStatus->getFileSize();
 	size_t left_size = total_size;
-	INFO_LOG("FileTransfer","start transferring file: " << status->getFileName() << " total size: " << total_size << " packets: " << total_size/FILE_PART_SIZE);
+	INFO_LOG("FileTransfer", "start transferring file: " << pStatus->getFileName() << " total size: " << total_size << " packets: " << total_size/FILE_PART_SIZE);
 	int data_number = 0;
 
 	unsigned char file_part_buf[FILE_PART_SIZE];
@@ -206,13 +111,12 @@ void Connection::OnFileInfoReplyEvent::operator ()(const UUID &receive_id, const
 		}
 		read_size = fs.gcount();
 		// send file data packet
-		FileDataPacket *packet = dynamic_cast<FileDataPacket *>(FTPacketFactorySingleton::get().createPacket(FileData_ID));
-		assert(packet);
-		PacketBasePtr packet_ptr(packet);
-		packet->FileData.ReceiverTransferID = status->getReceiverTransferID();
+		FileDataPacket *packet = new FileDataPacket();
+		packet->FileData.ReceiverTransferID = pStatus->getReceiverTransferID();
 		packet->FileData.DataNumber = data_number++;
 		packet->FileData.Data.setValue(file_part_buf, read_size);
 		packet->setFlag(PacketHeader::FLAG_RELIABLE);
+		PacketBasePtr packet_ptr(packet);
 		conn->sendPacket(packet_ptr);
 		left_size -= read_size;
 		if (data_number % 5000 == 0) {
@@ -221,20 +125,88 @@ void Connection::OnFileInfoReplyEvent::operator ()(const UUID &receive_id, const
 		}
 	}
 	fs.close();
-
+	*/
 	TRACE_LOG("exit");
 }
 
-void Connection::OnFileTransferCompleteEvent::operator ()(const UUID &send_id, Connection *conn) {
+void ClientConnection::onTransferComplete(const void* pSender, const TransferCompletePacket &packet) {
 	TRACE_LOG("enter");
+	/*
 	// close this transfer
-	conn->closeSendTransfer(send_id);
+	conn->closeTransfer(send_id);
 	INFO_LOG("FileTransfer", "send_transfer completed: " << send_id.toString());
-	CloseConnectionPacket *packet = dynamic_cast<CloseConnectionPacket *>(FTPacketFactorySingleton::get().createPacket(CloseConnection_ID));
-	assert(packet);
+	*/
+	TRACE_LOG("exit");
+}
+
+// ================
+// ServerConnection
+ServerConnection::ServerConnection(uint32_t circuit_code, const EndPoint &ep, const PacketSerializer &packet_serializer, LLUDPBase &udp):
+	TransferNodeConnectionBase(circuit_code, ep, packet_serializer, udp) {
+	this->FileInfoEvent += Poco::Delegate<ServerConnection, const FileInfoPacket>(this, &ServerConnection::onFileInfo);
+	this->FileDataEvent += Poco::Delegate<ServerConnection, const FileDataPacket>(this, &ServerConnection::onFileData);
+}
+
+ServerConnection::~ServerConnection() {
+	this->FileInfoEvent -= Poco::Delegate<ServerConnection, const FileInfoPacket>(this, &ServerConnection::onFileInfo);
+	this->FileDataEvent -= Poco::Delegate<ServerConnection, const FileDataPacket>(this, &ServerConnection::onFileData);
+	INFO_LOG("LLUDP", "ServerConnection destoryed");
+}
+
+StatusPtr ServerConnection::createStatus(uint32_t file_size, const std::string file_name, const UUID &trans_id) {
+	StatusPtr pStatus(new Status(file_size, file_name, trans_id, true));
+	Poco::FastMutex::ScopedLock l(this->status_map);
+	this->status_map[trans_id.toString()] = pStatus;
+	return pStatus;
+}
+
+//Server Events
+void ServerConnection::onFileInfo(const void* pSender, const FileInfoPacket &packet) {
+	TRACE_LOG("enter");
+	/*
+	UUID trans_id = UUIDGeneratorSingleton::get().Create();
+	StatusPtr status = conn->createStatus(file_size, file_name, trans_id);
+	INFO_LOG("FileTransfer", "got file info, prepare to receive: " << pStatus->getFileName() << " " << pStatus->getReceiverTransferID().toString());
+	// send reply packet
+	FileInfoReplyPacket *packet = new FileInfoReplyPacket();
+	packet->FileInfo.ReceiverTransferID = pStatus->getReceiverTransferID();
+	packet->FileInfo.SenderTransferID = pStatus->getSenderTransferID();
 	PacketBasePtr packet_ptr(packet);
 	conn->sendPacket(packet_ptr);
+	*/
 	TRACE_LOG("exit");
 }
 
+void ServerConnection::onFileData(const void* pSender, const FileDataPacket &packet) {
+	TRACE_LOG("enter");
+	/*
+	StatusPtr pStatus;
+	try {
+		pStatus = conn->getTransfer(receive_id);
+	} catch (Poco::NotFoundException &ex) {
+		WARN_LOG("FileTransfer", "onFileInfoReply" << ex.message());
+		return;
+	}
+	if (pStatus->update(data_number, &data_buf[0], data_buf.size())) {
+		// send back to sender
+		TransferCompletePacket *packet = new TransferCompletePacket();
+		PacketBasePtr packet_ptr(packet);
+		packet->FileData.SenderTransferID = pStatus->getSenderTransferID();
+		conn->sendPacket(packet_ptr);
+
+		INFO_LOG("FileTransfer", "TransferComplete: " << pStatus->getFileName() << " " << receive_id.toString());
+		string out_file = pStatus->getFileName() + "_" + receive_id.toString();
+		ofstream fs(out_file.c_str(), ios::binary);
+		if (fs.fail()) {
+			ERROR_LOG("FileTransfer", "unable to open file for writing" << out_file);
+			return;
+		}
+		fs.write(reinterpret_cast<const char *>(pStatus->getFileBuffer()), pStatus->getFileSize());
+		fs.close();
+		// close this transfer, release memory // server
+		conn->closeTransfer(receive_id);
+	}
+	*/
+	TRACE_LOG("exit");
+}
 

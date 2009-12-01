@@ -19,7 +19,8 @@ void PacketBase::setSequence(uint32_t seq) {
 
 void PacketBase::setID(uint32_t id) {
 	this->header.freq = (PacketHeader::Frequency)(id >> 16);
-	this->header.id = id << 16 >> 16;
+	//this->header.id = id << 16 >> 16;
+	this->header.id = id;
 }
 
 void PacketBase::appendAck(uint32_t ack_seq) {

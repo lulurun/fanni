@@ -4,6 +4,7 @@
 using namespace Poco;
 using namespace Fanni;
 
+// TODO @@@ currently not working
 ThreadManager::ThreadManager() {
 	// @@@ do not use the Poco::defaultpool
 	this->thread_pool = new ThreadPool();
@@ -13,7 +14,7 @@ ThreadManager::~ThreadManager() {
 	delete this->thread_pool;
 }
 
-void ThreadManager::deliverTask(Poco::Notification *data) {
+void ThreadManager::deliverTask(TaskPtr &data) {
 	Worker *worker = NULL;
 	{
 		this->delivery_ac++;
@@ -40,10 +41,7 @@ void ThreadManager::addWorker(Worker *worker) {
 }
 
 void ThreadManager::stop() {
-	for (WORKER_LIST_TYPE::iterator it = this->worker_list.begin(); it
-			!= this->worker_list.end(); it++) {
-		(*it)->stop();
-	}
+	this->worker_list.clear();
 	this->thread_pool->joinAll();
 }
 

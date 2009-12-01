@@ -209,6 +209,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\fanni\DynamicFactory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\fanni\EndPoint.h"
 				>
 			</File>
@@ -241,6 +245,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\fanni\Queue.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\fanni\Serializable.h"
 				>
 			</File>
@@ -250,6 +258,10 @@
 			</File>
 			<File
 				RelativePath=".\include\fanni\Sleep.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\fanni\TaskQueue.h"
 				>
 			</File>
 			<File

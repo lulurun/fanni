@@ -8,12 +8,13 @@
 #ifndef SINGLETONTEMPLATE_H_
 #define SINGLETONTEMPLATE_H_
 
+#include <cassert>
 #include <memory>
 #include "Poco/Mutex.h"
 
 namespace Fanni {
 
-// TODO @@@ not thrad safe
+/*
 template<class T>
 class Singleton {
 private:
@@ -35,6 +36,27 @@ std::auto_ptr<T> Singleton<T>::instance(NULL);
 
 template<class T>
 Poco::Mutex Singleton<T>::mutex;
+*/
+
+template <class T>
+class Singleton
+{
+public:
+  static T &get() {
+	  static T *m_pInstance = NULL;
+	  if(!m_pInstance) {
+		  m_pInstance = new T;
+	  }
+      assert(m_pInstance !=NULL);
+      return *m_pInstance;
+  }
+protected:
+  Singleton();
+  ~Singleton();
+private:
+  Singleton(Singleton const&);
+  Singleton& operator=(Singleton const&);
+};
 
 }
 

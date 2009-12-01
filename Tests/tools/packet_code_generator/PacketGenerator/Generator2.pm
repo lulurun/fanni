@@ -4,8 +4,7 @@ use strict;
 use PacketGenerator::CodeTemplate::Packets_Include;
 use PacketGenerator::CodeTemplate::PacketsID_Include;
 use PacketGenerator::CodeTemplate::Packets_def_Include;
-use PacketGenerator::CodeTemplate::PacketFactory_Include;
-use PacketGenerator::CodeTemplate::PacketFactory_Src;
+use PacketGenerator::CodeTemplate::Packets_Src;
 
 my $limit = 1000; # max is 473
 
@@ -193,27 +192,21 @@ sub _generate_packet_classes_header {
     return $text;
 }
 
-sub PacketFactory_Src {
+sub Packets_Src {
     my $packet_list = shift;
-    my $init_all_packets = "";
+    my $register_all_packets = "";
     my $count = 0;
     foreach my $packet (@$packet_list) {
 	my $classname = $packet->{name} . "Packet";
 	my $packet_name = $packet->{name};
-	$init_all_packets .=<< "INIT_PACKET";
-    PacketList[$packet_name\_ID] = new $classname();
-INIT_PACKET
+	$register_all_packets .=<< "REGISTER_PACKET";
+	packet_factory.registerPacket<$classname>($packet_name\_ID);
+REGISTER_PACKET
         last if ++$count == $limit;
     }
 
-    my $text = $CodeTemplate::PacketFactory_Src::Template;
-    $text =~ s/{InitAllPackets}/$init_all_packets/;
-    return $text;
-}
-
-sub PacketFactory_Include {
-    my $packet_list = shift;
-    my $text = $CodeTemplate::PacketFactory_Include::Template;
+    my $text = $CodeTemplate::Packets_Src::Template;
+    $text =~ s/{RegisterAllPackets}/$register_all_packets/;
     return $text;
 }
 

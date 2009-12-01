@@ -10,17 +10,14 @@ namespace Fanni {
 
 class Fanni_Packets_API PacketSerializer {
 private:
-	// @@@ not thread safe
-	PacketBuffer buf;
-	const PacketFactory &factory;
+	const PacketFactory &packet_factory;
 
 public:
 	PacketSerializer(const PacketFactory &packet_factory);
 	virtual ~PacketSerializer();
 
-	const unsigned char *serialize(const PacketBase *packet, int *len);
-	PacketBase *deserialize(const unsigned char *in, int len);
-	PacketBase *deserialize(PacketBuffer &buf);
+	PacketBuffer serialize(const PacketBasePtr &packet) const;
+	PacketBasePtr deserialize(PacketBuffer &buf) const;
 
 	static bool isZerocoded(PacketBuffer &buf);
 	static bool isAppendedAcks(PacketBuffer &buf);

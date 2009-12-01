@@ -11,13 +11,20 @@ our $Template =<< "CODE_TEMPLATE";
 #include "fanni/Exception.h"
 #include "fanni/Packets/PacketBaseTypes.h"
 #include "fanni/Packets/PacketBase.h"
+#include "fanni/Packets/PacketFactory.h"
 #include "fanni/{IMPL_PREFIX}Packets/{IMPL_PREFIX}PacketsID.h"
+#include "fanni/{IMPL_PREFIX}Packets/{IMPL_PREFIX}Packets_def.h"
 
 namespace Fanni {
 
 {PacketClasses}
 
+class Fanni_{IMPL_PREFIX}Packets_API {IMPL_PREFIX}Packets {
+public:
+    static void init(PacketFactory &packet_factory);
 };
+
+}
 
 #endif // {IMPL_PREFIX}PACKET_IMPL_H
 

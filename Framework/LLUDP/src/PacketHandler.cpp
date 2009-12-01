@@ -10,8 +10,8 @@
 
 #include "fanni/Exception.h"
 #include "fanni/EndPoint.h"
-#include "fanni/rUDP/PacketHandlerFactory.h"
-#include "fanni/rUDP/TransferNode.h"
+#include "fanni/LLUDP/PacketHandler.h"
+#include "fanni/LLUDP/LLUDPBase.h"
 
 namespace Fanni {
 
@@ -25,7 +25,7 @@ public:
 
 class NullSystemHandler: public SystemPacketHandlerBase {
 public:
-	void operator()(const PacketBasePtr &packet, const EndPoint &ep, TransferNode &node) const {
+	void operator()(const PacketBasePtr &packet, const EndPoint &ep, UDPBase &udp) const {
 		FATAL_LOG("rUDP", "system handler not defined for Packet: " << std::hex << packet->header.getPacketID() << std::dec
 				<< " from " << ep.toString());
 		// TODO @@@ throw exception
@@ -58,7 +58,7 @@ void PacketHandlerFactory::registerClientHandler(PacketHeader::PACKET_ID_TYPE pa
 	this->ClientHandlerList[packet_id] = packet_handler;
 }
 
-void PacketHandlerFactory::registerSyetemHandler(PacketHeader::PACKET_ID_TYPE packet_id, const SystemPacketHandlerBase *packet_handler) {
+void PacketHandlerFactory::registerSystemHandler(PacketHeader::PACKET_ID_TYPE packet_id, const SystemPacketHandlerBase *packet_handler) {
 	// MEMO @@@ not thread safe, call me in one thread
 	this->SystemHandlerList[packet_id] = packet_handler;
 }

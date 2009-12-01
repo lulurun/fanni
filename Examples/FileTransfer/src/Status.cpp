@@ -1,12 +1,12 @@
 #include <cassert>
+#include "fanni/Logger.h"
 #include "Status.h"
 
 using namespace Fanni;
 using namespace Fanni::FileTransfer;
 
-Status::Status(uint32_t file_size, const std::string file_name, const UUID &receive_id, const UUID &send_id, bool mem_alloc) :
-	file_size(file_size), file_name(file_name), receive_id(receive_id),
-	send_id(send_id), transfered_size(0), start_time(::time(NULL)),
+Status::Status(uint32_t file_size, const std::string file_name, const UUID &trans_id, bool mem_alloc) :
+	file_size(file_size), file_name(file_name), trans_id(trans_id), transfered_size(0), start_time(::time(NULL)),
 	block_size((int)(file_size/FILE_PART_SIZE) + 1), internal_count(0), _error(false),
 	file_buffer(NULL), data_block_map(NULL) {
 	if (mem_alloc) {
@@ -17,18 +17,14 @@ Status::Status(uint32_t file_size, const std::string file_name, const UUID &rece
 }
 
 Status::~Status() {
+	INFO_LOG("FileTransfer", "release Status");
 	if (this->file_buffer) delete [] this->file_buffer;
 	if (this->data_block_map) delete [] this->data_block_map;
 }
 
-void Status::setReceiverTransferID(const UUID &transfer_id) {
+void Status::setTransferID(const UUID &trans_id) {
 	Poco::FastMutex::ScopedLock l(this->mutex);
-	this->receive_id = transfer_id;
-}
-
-void Status::setSenderTransferID(const UUID &transfer_id) {
-	Poco::FastMutex::ScopedLock l(this->mutex);
-	this->send_id = transfer_id;
+	this->trans_id = trans_id;
 }
 
 // return true if all data has been received

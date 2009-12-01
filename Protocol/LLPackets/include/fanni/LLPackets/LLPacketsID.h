@@ -265,7 +265,7 @@ typedef enum {
 	 LandStatRequest_ID = 0xffff01a5,
 	 Error_ID = 0xffff01a7,
 	 ObjectIncludeInSearch_ID = 0xffff01a8,
-} PacketID;
+} LLPacketID;
 
 
 };

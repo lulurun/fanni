@@ -5,7 +5,9 @@
 #include "fanni/Exception.h"
 #include "fanni/Packets/PacketBaseTypes.h"
 #include "fanni/Packets/PacketBase.h"
+#include "fanni/Packets/PacketFactory.h"
 #include "fanni/LLPackets/LLPacketsID.h"
+#include "fanni/LLPackets/LLPackets_def.h"
 
 namespace Fanni {
 
@@ -19155,7 +19157,12 @@ public:
 
 
 
+class Fanni_LLPackets_API LLPackets {
+public:
+    static void init(PacketFactory &packet_factory);
 };
+
+}
 
 #endif // LLPACKET_IMPL_H
 

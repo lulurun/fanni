@@ -25,8 +25,7 @@ if (! -e $base_output_dir) {
 my $packet_def_include = &_get_include_output_file($base_output_dir, $output_prefix, "Packets_def.h");
 my $packet_id_include = &_get_include_output_file($base_output_dir, $output_prefix, "PacketsID.h");
 my $packet_impl_include = &_get_include_output_file($base_output_dir, $output_prefix, "Packets.h");
-my $packet_factory_include = &_get_include_output_file($base_output_dir, $output_prefix, "PacketFactory.h");
-my $packet_factory_src = &_get_src_output_file($base_output_dir, $output_prefix, "PacketFactory.cpp");
+my $packets_src = &_get_src_output_file($base_output_dir, $output_prefix, "Packets.cpp");
 # test data generator (CSharp)
 my $csharp_test_src = $base_dir . "/../packet_code_test/TestDataGenerator.cs";
 
@@ -41,8 +40,7 @@ if ($act eq "packet") {
     &save_file(&Generator2::Packets_def_Include($packet_list), $packet_def_include);
     &save_file(&Generator2::PacketsID_Include($packet_list), $packet_id_include);
     &save_file(&Generator2::Packets_Include($packet_list), $packet_impl_include);
-    &save_file(&Generator2::PacketFactory_Include($packet_list), $packet_factory_include);
-    &save_file(&Generator2::PacketFactory_Src($packet_list), $packet_factory_src);
+    &save_file(&Generator2::Packets_Src($packet_list), $packets_src);
     &save_file(&CSharpDataGenerator::CSharpTest_Src($packet_list), $csharp_test_src);
 } else {
     die "unknown action -" . $act . "-\n";
