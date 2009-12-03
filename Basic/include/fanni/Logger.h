@@ -27,11 +27,17 @@ static int DEFUALT_LOGGING_LEVEL = Poco::Message::PRIO_DEBUG;
 #else
 static int DEFUALT_LOGGING_LEVEL = Poco::Message::PRIO_INFORMATION;
 #endif
-	
+
 static std::string DEFAULT_CONFIG_FILE_PATH = "logger.properties";
 static const std::string DEFAULT_CONFIG_STRING =
 	"logging.loggers.root.channel.class = ConsoleChannel\n"
-	"logging.loggers.app.name = Application\n"
+	"logging.loggers.LLUDP.name = LLUDP\n"
+	"logging.loggers.LLUDP.channel = c0\n"
+	"logging.loggers.Example.name = FileTransfer\n"
+	"logging.loggers.app.channel = c0\n"
+	"logging.loggers.app.name = Basic\n"
+	"logging.loggers.app.channel = c0\n"
+	"logging.loggers.app.name = Packets\n"
 	"logging.loggers.app.channel = c0\n"
 	"logging.formatters.f1.class = PatternFormatter\n"
 	"logging.formatters.f1.pattern = %Y/%m/%d %H:%M:%S[%q] - %t\n"
@@ -47,7 +53,7 @@ static const std::string DEFAULT_CONFIG_STRING =
 // TODO @@@ should manage multiple _loggers
 class Logger {
 public:
-	Logger() {
+	static void Initialize() {
 		try {
 			Poco::Util::LoggingConfigurator configurator;
 			Poco::File config_file(DEFAULT_CONFIG_FILE_PATH);
@@ -62,14 +68,6 @@ public:
 			;// TODO @@@ ...
 		}
 	};
-	~Logger() { };
-
-	Poco::Logger &getLogger(const std::string &name = "") const {
-		return Poco::Logger::root();
-	}
-};
-
-typedef Singleton<Logger> LoggerSingleton;
 
 };
 
@@ -93,12 +91,14 @@ typedef Singleton<Logger> LoggerSingleton;
 #define DEBUG_LOG(name, ...)	\
 	{ Poco::LogStream ls(Poco::Logger::root()); ls.debug() << __VA_ARGS__ << std::endl; }
 #define INFO_LOG(name, ...)	\
-	{ Poco::LogStream ls(LoggerSingleton::get().getLogger()); ls.information() << __VA_ARGS__ << std::endl; }
+	{ Poco::LogStream ls(Poco::Logger::get(name)); ls.information() << __VA_ARGS__ << std::endl; }
 #define WARN_LOG(name, ...)	\
 	{ Poco::LogStream ls(Poco::Logger::root()); ls.warning() << __VA_ARGS__ << std::endl; }
 #define ERROR_LOG(name, ...)	\
 	{ Poco::LogStream ls(Poco::Logger::root()); ls.error() << __VA_ARGS__ << std::endl; }
 #define FATAL_LOG(name, ...)	\
 	{ Poco::LogStream ls(Poco::Logger::root()); ls.fatal() << __VA_ARGS__ << std::endl; }
+
+}
 
 #endif /* LOGGER_H_ */
