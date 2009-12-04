@@ -8,13 +8,13 @@ ConnectionManagerBase::ConnectionManagerBase() {
 	this->check_ALIVE_timer = new Poco::Timer(0, 15000); // TODO @@@ MAGIC NUMBER !
 	// TODO @@@ do not use Poco::DefaultThreadPool
 	this->check_ALIVE_timer->start(Poco::TimerCallback<ConnectionManagerBase>(*this, &ConnectionManagerBase::onCheckALIVETimer));
-	INFO_LOG("LLUDP", "ConnectionManagerBase started");
+	DEBUG_LOG("ConnectionManagerBase started");
 }
 
 ConnectionManagerBase::~ConnectionManagerBase() {
 	this->check_ALIVE_timer->stop();
 	delete this->check_ALIVE_timer;
-	INFO_LOG("LLUDP", "ConnectionManagerBase stopped");
+	DEBUG_LOG("ConnectionManagerBase stopped");
 }
 
 void ConnectionManagerBase::onCheckALIVETimer(Poco::Timer &timer) {
@@ -29,7 +29,7 @@ void ConnectionManagerBase::onCheckALIVETimer(Poco::Timer &timer) {
 		}
 	}
 	if (remove_list.size() > 0) {
-		INFO_LOG("LLUDP", "remove " << remove_list.size() << " client connections");
+		INFO_LOG("remove " << remove_list.size() << " client connections");
 		for (std::list<const EndPoint>::iterator it = remove_list.begin(); it != remove_list.end(); it++) {
 			this->conn_map.erase(it->toString());
 		}
@@ -74,9 +74,9 @@ ConnectionBasePtr ConnectionManagerBase::addConnection(const PacketBasePtr &pack
 
 void ConnectionManagerBase::closeConnection(const EndPoint &ep) {
 	{
+		INFO_LOG("remove connection " << ep.toString());
 		Poco::FastMutex::ScopedLock l(this->conn_map);
 		this->conn_map.erase(ep.toString()); // TODO @@@ handle not found exception
-		INFO_LOG("LLUDP", "Connection removed");
 	}
 	this->ConnectionRemoved(this, ep);
 }

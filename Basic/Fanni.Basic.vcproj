@@ -187,6 +187,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\Logger.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\ThreadManager.cpp"
 				>
 			</File>

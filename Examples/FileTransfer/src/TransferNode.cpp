@@ -40,33 +40,33 @@ TransferNode::TransferNode(const EndPoint &server_ep) : LLUDPBase(server_ep) {
 TransferNode::~TransferNode() {}
 
 void TransferNode::onConnectionAdded(const void* pSender, const EndPoint &ep) {
-	INFO_LOG("FileTransfer", "added new connection from: " << ep.toString());
+	INFO_LOG("added new connection from: " << ep.toString());
 }
 
 void TransferNode::onConnectionRemoved(const void* pSender, const EndPoint &ep) {
-	INFO_LOG("FileTransfer", "removed connection from: " << ep.toString());
+	INFO_LOG("removed connection from: " << ep.toString());
 }
 
 void TransferNode::onConnected(const void* pSender, const EndPoint &ep) {
-	INFO_LOG("FileTransfer", "connected to: " << ep.toString());
+	INFO_LOG("connected to: " << ep.toString());
 	this->connected.set();
 }
 
 void TransferNode::onDisconnected(const void* pSender, const EndPoint &ep) {
-	INFO_LOG("FileTransfer", "disconnected from: " << ep.toString());
+	INFO_LOG("disconnected from: " << ep.toString());
 	this->disconnected.set();
 }
 
 ConnectionBasePtr TransferNode::createConnection(const PacketBasePtr &packet_base, const EndPoint &ep) {
 	PacketHeader::PACKET_ID_TYPE packet_id = packet_base->header.getPacketID();
 	if (packet_id == OpenConnection_ID) {
-		INFO_LOG("FileTransfer", "Server: new connection from: " << ep.toString());
+		INFO_LOG("Server: new connection from: " << ep.toString());
 		Poco::SharedPtr<OpenConnectionPacket> packet = packet_base.cast<OpenConnectionPacket>();
 		assert(packet.get());
 		ConnectionBasePtr pConn(new ServerConnection(packet->OpenConnection.Code, ep, *this->packet_serializer, *this));
 		return pConn;
 	} else if (packet_id == OpenConnectionReply_ID) {
-		INFO_LOG("FileTransfer", "Client: new connection to: " << ep.toString());
+		INFO_LOG("Client: new connection to: " << ep.toString());
 		Poco::SharedPtr<OpenConnectionReplyPacket> packet = packet_base.cast<OpenConnectionReplyPacket>();
 		ConnectionBasePtr pConn(new ClientConnection(packet->OpenConnectionReply.Code, ep, *this->packet_serializer, *this));
 		return pConn;

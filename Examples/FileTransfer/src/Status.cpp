@@ -17,7 +17,7 @@ Status::Status(uint32_t file_size, const std::string file_name, const UUID &tran
 }
 
 Status::~Status() {
-	INFO_LOG("FileTransfer", "release Status");
+	DEBUG_LOG("release Status");
 	if (this->file_buffer) delete [] this->file_buffer;
 	if (this->data_block_map) delete [] this->data_block_map;
 }

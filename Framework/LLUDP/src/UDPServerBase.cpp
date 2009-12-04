@@ -12,13 +12,13 @@ UDPServerBase::UDPServerBase(const EndPoint &server_ep) {
 	this->reactor.addEventHandler(this->socket, Poco::NObserver<UDPServerBase,
 		Poco::Net::ShutdownNotification>(*this, &UDPServerBase::onShutdown));
 	this->reactor_thread.start(this->reactor); // TODO @@@ do not start automatically
-	INFO_LOG("LLUDP", "UDPServer started");
+	DEBUG_LOG("UDPServer started");
 }
 
 UDPServerBase::~UDPServerBase() {
 	this->reactor.stop();
 	this->reactor_thread.join();
-	INFO_LOG("LLUDP", "UDPServer stopped");
+	DEBUG_LOG("UDPServer stopped");
 }
 
 void UDPServerBase::onReadable(const Poco::AutoPtr<Poco::Net::ReadableNotification>& pNf) {
@@ -26,18 +26,18 @@ void UDPServerBase::onReadable(const Poco::AutoPtr<Poco::Net::ReadableNotificati
 	EndPoint ep;
 	int recv_len = this->socket.receiveFrom(buffer->getBuffer(), PACKET_BUF_LEN, ep);
 	if (recv_len == -1) {
-		ERROR_LOG("LLUDP", "recvfrom() returned -1");
+		ERROR_LOG("recvfrom() returned -1");
 		return;
 	} else if (recv_len == 0) {
-		ERROR_LOG("LLUDP", "Connection Close");
+		ERROR_LOG("Connection Close");
 		return;
 	}
-	INFO_LOG("LLUDP", "UDP data received");
+	INFO_LOG("UDP data received");
 	buffer->setLength(recv_len);
 	this->processIncomingData(buffer, ep);
 }
 
 void UDPServerBase::onShutdown(const Poco::AutoPtr<Poco::Net::ShutdownNotification>& pNf) {
-	INFO_LOG("LLUDP", "shutdown udp server");
+	INFO_LOG("shutdown udp server");
 }
 

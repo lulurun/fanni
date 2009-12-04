@@ -5,99 +5,47 @@
  *      Author: lulu
  */
 
-#ifndef LOGGER_H_
-#define LOGGER_H_
+#ifndef FANNI_LOGGER_H_
+#define FANNI_LOGGER_H_
 
 #include <string>
-#include "Poco/File.h"
-#include "Poco/FileStream.h"
-#include "Poco/Path.h"
 #include "Poco/Logger.h"
+#include "Poco/SharedPtr.h"
 #include "Poco/LogStream.h"
-#include "Poco/ConsoleChannel.h"
-#include "Poco/Message.h"
-#include "Poco/Util/LoggingConfigurator.h"
-#include "Poco/Util/PropertyFileConfiguration.h"
-#include "fanni/SingletonTemplate.h"
+#include "fanni/Basic_def.h"
 
 namespace Fanni {
 
-#ifdef _DEBUG
-static int DEFUALT_LOGGING_LEVEL = Poco::Message::PRIO_DEBUG;
-#else
-static int DEFUALT_LOGGING_LEVEL = Poco::Message::PRIO_INFORMATION;
-#endif
-
-static std::string DEFAULT_CONFIG_FILE_PATH = "logger.properties";
-static const std::string DEFAULT_CONFIG_STRING =
-	"logging.loggers.root.channel.class = ConsoleChannel\n"
-	"logging.loggers.LLUDP.name = LLUDP\n"
-	"logging.loggers.LLUDP.channel = c0\n"
-	"logging.loggers.Example.name = FileTransfer\n"
-	"logging.loggers.app.channel = c0\n"
-	"logging.loggers.app.name = Basic\n"
-	"logging.loggers.app.channel = c0\n"
-	"logging.loggers.app.name = Packets\n"
-	"logging.loggers.app.channel = c0\n"
-	"logging.formatters.f1.class = PatternFormatter\n"
-	"logging.formatters.f1.pattern = %Y/%m/%d %H:%M:%S[%q] - %t\n"
-	"logging.channels.c0.class = SplitterChannel\n"
-	"logging.channels.c0.channel1 = c1\n"
-	"logging.channels.c0.channel2 = c2\n"
-	"logging.channels.c1.class = ConsoleChannel\n"
-	"logging.channels.c1.formatter = f1\n"
-	"logging.channels.c2.class = FileChannel\n"
-	"logging.channels.c2.path = run.log\n"
-	"logging.channels.c2.formatter = f1\n";
-
-// TODO @@@ should manage multiple _loggers
-class Logger {
+// TODO @@@ how to manage multiple _loggers
+class Fanni_API Logger {
 public:
-	static void Initialize() {
-		try {
-			Poco::Util::LoggingConfigurator configurator;
-			Poco::File config_file(DEFAULT_CONFIG_FILE_PATH);
-			if (!config_file.exists())
-			{
-				Poco::FileOutputStream fos(DEFAULT_CONFIG_FILE_PATH);
-				fos << DEFAULT_CONFIG_STRING;
-				fos.close();
-			}
-			configurator.configure(new Poco::Util::PropertyFileConfiguration(DEFAULT_CONFIG_FILE_PATH));
-		} catch (Poco::Exception &ex) {
-			;// TODO @@@ ...
-		}
-	};
-
+	static Poco::SharedPtr<Poco::LogStream> &LogStream();
+	static void Initialize();
 };
 
-/*
-#define TRACE_LOG(message)	\
-	Poco::Logger::root().trace(message);
-#define DEBUG_LOG(name, ...)	\
-	{ Poco::LogStream ls(Poco::Logger::get(name)); ls.debug() << __VA_ARGS__ << std::endl; }
-#define INFO_LOG(name, ...)	\
-	{ Poco::LogStream ls(Poco::Logger::get(name)); ls.information() << __VA_ARGS__ << std::endl; }
-#define WARN_LOG(name, ...)	\
-	{ Poco::LogStream ls(Poco::Logger::get(name)); ls.warning() << __VA_ARGS__ << std::endl; }
-#define ERROR_LOG(name, ...)	\
-	{ Poco::LogStream ls(Poco::Logger::get(name)); ls.error() << __VA_ARGS__ << std::endl; }
-#define FATAL_LOG(name, ...)	\
-	{ Poco::LogStream ls(Poco::Logger::get(name)); ls.fatal() << __VA_ARGS__ << std::endl; }
-*/
+#ifdef _DEBUG
 
+#ifndef WIN32
 #define TRACE_LOG(message)	\
-	Poco::Logger::root().trace(message);
-#define DEBUG_LOG(name, ...)	\
-	{ Poco::LogStream ls(Poco::Logger::root()); ls.debug() << __VA_ARGS__ << std::endl; }
-#define INFO_LOG(name, ...)	\
-	{ Poco::LogStream ls(Poco::Logger::get(name)); ls.information() << __VA_ARGS__ << std::endl; }
-#define WARN_LOG(name, ...)	\
-	{ Poco::LogStream ls(Poco::Logger::root()); ls.warning() << __VA_ARGS__ << std::endl; }
-#define ERROR_LOG(name, ...)	\
-	{ Poco::LogStream ls(Poco::Logger::root()); ls.error() << __VA_ARGS__ << std::endl; }
-#define FATAL_LOG(name, ...)	\
-	{ Poco::LogStream ls(Poco::Logger::root()); ls.fatal() << __VA_ARGS__ << std::endl; }
+	{ Logger::pLogStream->trace() << __PRETTY_FUNCTION__ << " " << message << std::endl; }
+#else
+#define TRACE_LOG(message)
+#endif
+#define DEBUG_LOG(...)	\
+	{ Logger::LogStream()->debug() << __VA_ARGS__ << std::endl; }
+#else
+#define TRACE_LOG(message)
+#define DEBUG_LOG(...)
+#endif
+
+#define INFO_LOG(...)	\
+	{ Logger::LogStream()->information() << __VA_ARGS__ << std::endl; }
+#define WARN_LOG(...)	\
+	{ Logger::LogStream()->warning() << __VA_ARGS__ << std::endl; }
+#define ERROR_LOG(...)	\
+	{ Logger::LogStream()->error() << __VA_ARGS__ << std::endl; }
+#define FATAL_LOG(...)	\
+	{ Logger::LogStream()->fatal() << __VA_ARGS__ << std::endl; }
 
 }
 

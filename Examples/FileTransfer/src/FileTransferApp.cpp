@@ -79,7 +79,6 @@ protected:
 	}
 
 	void setPort(const std::string& name, const std::string& value) {
-		DEBUG_LOG("FileTransfer", "set port: " << value);
 		this->port = ::atoi(value.c_str());
 	}
 
@@ -109,7 +108,7 @@ protected:
 			TransferNode node(server_ep);
 			waitForTerminationRequest();
 		} catch (ErrorException &e) {
-			ERROR_LOG("FileTransfer", "ERROR Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
+			ERROR_LOG("startServer Exception: " << e.get_func() << " at L" << e.get_line() << " " << e.get_msg());
 		}
 	}
 
@@ -118,16 +117,16 @@ protected:
 			EndPoint server_ep("0.0.0.0", 0);
 			TransferNode node(server_ep);
 			EndPoint connect_ep(this->ip, this->port);
-			INFO_LOG("FileTransfer", "send " << this->path << " to " << connect_ep.toString());
+			INFO_LOG("send " << this->path << " to " << connect_ep.toString());
 			ClientConnection &cConn = node.connect(connect_ep);
 			//cConn.sendFile(this->path);
 			if (node.disconnect(cConn)) {
-				INFO_LOG("FileTransfer", "disconnected");
+				INFO_LOG("disconnected");
 			} else {
-				INFO_LOG("FileTransfer", "disconnected without receiving reply");
+				INFO_LOG("disconnected without receiving reply");
 			}
 		} catch (Poco::Exception &ex) {
-			ERROR_LOG("FileTransfer", "Exception: " << ex.message());
+			ERROR_LOG("startClient Exception: " << ex.message());
 		}
 	}
 
@@ -135,7 +134,7 @@ protected:
 	{
 		bool _error = false;
 		if (!_server_mode) {
-			INFO_LOG("FileTransfer", "enter client mode");
+			INFO_LOG("enter client mode");
 			if ( this->ip.empty() ) {
 				cout << "requires host" << endl;
 				_error = true;
@@ -160,8 +159,8 @@ protected:
 			if (_error) {
 				return 1;
 			}
-			INFO_LOG("FileTransfer", "enter server mode");
-			INFO_LOG("FileTransfer", "listening port: " << this->port);
+			INFO_LOG("enter server mode");
+			INFO_LOG("listening port: " << this->port);
 			this->startServer();
 		}
 

@@ -1,3 +1,4 @@
+#include "fanni/Logger.h"
 #include "fanni/ThreadManager.h"
 #include "fanni/Exception.h"
 
@@ -43,5 +44,6 @@ void ThreadManager::addWorker(Worker *worker) {
 void ThreadManager::stop() {
 	this->worker_list.clear();
 	this->thread_pool->joinAll();
+	DEBUG_LOG("ThreadManager stopped");
 }
 

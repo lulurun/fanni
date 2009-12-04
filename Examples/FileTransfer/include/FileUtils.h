@@ -20,7 +20,7 @@ public:
 		size_t file_size = 0;
 		std::ifstream fs(file_path.c_str());
 		if(fs.fail()) {
-			ERROR_LOG("FileTransfer", "can not open file: " << file_path);
+			ERROR_LOG("can not open file: " << file_path);
 			return 0;
 		}
 		fs.seekg(0, std::ios::end); //move to end of file

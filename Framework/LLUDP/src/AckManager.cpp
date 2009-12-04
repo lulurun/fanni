@@ -13,13 +13,13 @@ AckManager::AckManager(ConnectionBase &conn) : conn(conn) {
 	this->check_ACK_timer = new Poco::Timer(0, 250); // TODO @@@ MAGIC NUMBER !
 	// TODO @@@ do not use Poco::DefaultThreadPool
 	this->check_ACK_timer->start(Poco::TimerCallback<AckManager>(*this, &AckManager::onCheckACKTimer));
-	INFO_LOG("LLUDP", "AckManager started");
+	DEBUG_LOG("AckManager started");
 }
 
 AckManager::~AckManager() {
 	this->check_ACK_timer->stop();
 	delete this->check_ACK_timer;
-	INFO_LOG("LLUDP", "AckManager stopped");
+	DEBUG_LOG("AckManager stopped");
 }
 
 void AckManager::processIncomingPacket(const PacketBasePtr &packet) {
@@ -41,7 +41,7 @@ void AckManager::processIncomingPacket(const PacketBasePtr &packet) {
 		const PacketAckPacket *ack_packet = dynamic_cast<const PacketAckPacket *>(packet.get());
 		assert(ack_packet);
 		int debug_count = 0;
-		DEBUG_LOG("LLUDP", "removing resend packets: " << ack_packet->Packets.val.size());
+		DEBUG_LOG("removing resend packets: " << ack_packet->Packets.val.size());
 		for(std::vector<PacketAckPacket::PacketsBlock>::const_iterator it = ack_packet->Packets.val.begin(); it!=ack_packet->Packets.val.end(); it++) {
 			this->removeResendPacket_unsafe(it->ID);
 			debug_count++;
@@ -79,13 +79,13 @@ void AckManager::checkACK() {
 		this->conn.sendPacket(packet);
 		total_count += count;
     }
-    DEBUG_LOG("LLUDP", "ACKed " << total_count << " packets");
+    DEBUG_LOG("ACKed " << total_count << " packets");
 }
 
 void AckManager::checkRESEND() {
     Poco::FastMutex::ScopedLock lock(this->resend_packet_map);
 	if (this->resend_packet_map.empty()) return;
-	DEBUG_LOG("LLUDP", "number of resend packets: " << this->resend_packet_map.size());
+	DEBUG_LOG("number of resend packets: " << this->resend_packet_map.size());
 	std::list<uint32_t> delete_list;
 	int resend_count = 0;
 	for(RESEND_PACKET_MAP::iterator it=this->resend_packet_map.begin(); it!=this->resend_packet_map.end(); it++) {
@@ -96,15 +96,15 @@ void AckManager::checkRESEND() {
 			this->conn.sendPacket(packet);
 			resend_count++;
 		} else if (it->second->shouldGiveup()) {
-			WARN_LOG("LLUDP", "give up resending packet: " << it->second->get()->header.getPacketID());
+			WARN_LOG("give up resending packet: " << it->second->get()->header.getPacketID());
 			delete_list.push_back(it->first);
 		}
 	}
-	DEBUG_LOG("LLUDP", "giveup resending " << delete_list.size() << " packets");
+	DEBUG_LOG("giveup resending " << delete_list.size() << " packets");
 	for(std::list<uint32_t>::const_iterator it=delete_list.begin(); it!=delete_list.end(); it++ ) {
 		this->removeResendPacket_unsafe(*it);
 	}
-	DEBUG_LOG("LLUDP", "resending " << resend_count << " packets");
+	DEBUG_LOG("resending " << resend_count << " packets");
 }
 
 void AckManager::removeResendPacket_unsafe(uint32_t seq) {

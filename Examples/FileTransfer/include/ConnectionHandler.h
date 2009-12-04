@@ -79,7 +79,7 @@ public:
 class CloseConnectionPacketHandler : public ConnectionPacketHandlerBase {
 public:
 	virtual void operator()(ConnectionBase *conn_base, const PacketBasePtr &packet_base) const {
-		INFO_LOG("FileTransfer", "reply to close connection request, remove connection: " << conn_base->getEndPoint().toString());
+		INFO_LOG("reply to close connection request, remove connection: " << conn_base->getEndPoint().toString());
 		PacketBasePtr packet(new CloseConnectionReplyPacket());
 		conn_base->sendPacket(packet);
 		conn_base->getUDPBase().scheduleCloseConnection(conn_base->getEndPoint());
@@ -89,7 +89,7 @@ public:
 class CloseConnectionReplyPacketHandler : public ConnectionPacketHandlerBase {
 public:
 	virtual void operator()(ConnectionBase *conn_base, const PacketBasePtr &packet_base) const {
-		INFO_LOG("FileTransfer", "got close connection reply, remove connection: " << conn_base->getEndPoint().toString());
+		INFO_LOG("got close connection reply, remove connection: " << conn_base->getEndPoint().toString());
 		conn_base->getUDPBase().scheduleCloseConnection(conn_base->getEndPoint());
 	};
 };

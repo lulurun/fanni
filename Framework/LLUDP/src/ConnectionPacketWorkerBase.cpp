@@ -7,11 +7,11 @@ using namespace Fanni;
 
 ConnectionPacketWorkerBase::ConnectionPacketWorkerBase(const EndPoint &ep, const PacketSerializer &packet_serializer) :
 	ep(ep), packet_serializer(packet_serializer) {
-	INFO_LOG("LLUDP", "ConnectionPacketWorker started");
+	DEBUG_LOG("ConnectionPacketWorker started");
 }
 
 ConnectionPacketWorkerBase::~ConnectionPacketWorkerBase() {
-	INFO_LOG("LLUDP", "ConnectionPacketWorker stopped");
+	DEBUG_LOG("ConnectionPacketWorker stopped");
 }
 
 void ConnectionPacketWorkerBase::doTask(TaskPtr &task) {

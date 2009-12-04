@@ -28,7 +28,7 @@ TransferNodeConnectionBase::TransferNodeConnectionBase(uint32_t circuit_code, co
 }
 
 TransferNodeConnectionBase::~TransferNodeConnectionBase() {
-	INFO_LOG("LLUDP", "TransferNodeConnectionBase destoryed");
+	DEBUG_LOG("TransferNodeConnectionBase destoryed");
 }
 
 StatusPtr &TransferNodeConnectionBase::getTransfer(const UUID &trans_id) {
@@ -49,10 +49,10 @@ void TransferNodeConnectionBase::closeTransfer(const UUID &trans_id) {
 	try {
 		Poco::FastMutex::ScopedLock l(this->status_map);
 		StatusPtr &pStatus = this->getTransfer_unsafe(trans_id); // TODO @@@ needed ?
-		INFO_LOG("FileTransfer", "send transfer success: " << trans_id.toString());
+		INFO_LOG("send transfer success: " << trans_id.toString());
 		this->status_map.erase(trans_id.toString());
 	} catch (Poco::NotFoundException &ex) {
-		WARN_LOG("FileTransfer", "send transfer is no longer under manage: " << ex.message());
+		WARN_LOG("send transfer is no longer under manage: " << ex.message());
 	}
 }
 
@@ -67,7 +67,7 @@ ClientConnection::ClientConnection(uint32_t circuit_code, const EndPoint &ep, co
 ClientConnection::~ClientConnection() {
 	this->FileInfoReplyEvent -= Poco::Delegate<ClientConnection, const FileInfoReplyPacket>(this, &ClientConnection::onFileInfoReply);
 	this->TransferCompleteEvent -= Poco::Delegate<ClientConnection, const TransferCompletePacket>(this, &ClientConnection::onTransferComplete);
-	INFO_LOG("LLUDP", "ClientConnection destoryed");
+	DEBUG_LOG("ClientConnection destoryed");
 }
 
 StatusPtr ClientConnection::createStatus(uint32_t file_size, const std::string file_name, const UUID &trans_id) {
@@ -150,7 +150,7 @@ ServerConnection::ServerConnection(uint32_t circuit_code, const EndPoint &ep, co
 ServerConnection::~ServerConnection() {
 	this->FileInfoEvent -= Poco::Delegate<ServerConnection, const FileInfoPacket>(this, &ServerConnection::onFileInfo);
 	this->FileDataEvent -= Poco::Delegate<ServerConnection, const FileDataPacket>(this, &ServerConnection::onFileData);
-	INFO_LOG("LLUDP", "ServerConnection destoryed");
+	DEBUG_LOG("ServerConnection destoryed");
 }
 
 StatusPtr ServerConnection::createStatus(uint32_t file_size, const std::string file_name, const UUID &trans_id) {

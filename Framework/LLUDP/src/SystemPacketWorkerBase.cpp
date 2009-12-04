@@ -7,12 +7,12 @@ using namespace Fanni;
 
 SystemPacketWorkerBase::SystemPacketWorkerBase() {
 	this->packet_serializer = new PacketSerializer(this->packet_factory);
-	INFO_LOG("LLUDP", "SystemPacketWorker started");
+	DEBUG_LOG("SystemPacketWorker started");
 }
 
 SystemPacketWorkerBase::~SystemPacketWorkerBase() {
 	delete this->packet_serializer;
-	INFO_LOG("LLUDP", "SystemPacketWorker stopped");
+	DEBUG_LOG("SystemPacketWorker stopped");
 }
 
 void SystemPacketWorkerBase::doTask(TaskPtr &pTask) {
@@ -27,7 +27,7 @@ void SystemPacketWorkerBase::doTask(TaskPtr &pTask) {
 			this->dispatch(pLocTask);
 		}
 	}catch (Poco::NotFoundException &ex) {
-		ERROR_LOG("LLUDP", "can not find handler: " << ex.message());
+		WARN_LOG("can not find packet handler: " << ex.message());
 	}
 }
 

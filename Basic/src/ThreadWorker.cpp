@@ -18,7 +18,7 @@ Worker::Worker() : _stop(false) {
 
 Worker::~Worker() {
 	this->stop();
-	INFO_LOG("Basic", "Worker stopped");
+	DEBUG_LOG("worker stopped");
 }
 
 void Worker::addTask(TaskPtr &data) {
@@ -32,10 +32,12 @@ void Worker::run() {
 			try {
 				this->doTask(pTask);
 			} catch (Poco::Exception &e) {
-				ERROR_LOG("Basic", "worker loop terminated: " << e.message());
+				ERROR_LOG("worker loop terminated: " << e.message());
 			}
-		} else
+		} else {
+			DEBUG_LOG("break worker loop");
 			break;
+		}
 	}
 }
 
@@ -49,12 +51,12 @@ void Worker::stop() {
 			this->_stop = true;
 			this->addTask(StopTaskInstance);
 			if (this->_thread.tryJoin(5000)) {
-				INFO_LOG("Basic", "Worker stopped successfully");
+				INFO_LOG("Worker stopped successfully");
 			} else {
-				INFO_LOG("Basic", "Worker stopped after timeout");
+				WARN_LOG("Worker stopped after timeout");
 			}
 		} catch (Poco::Exception &ex) {
-			ERROR_LOG("Basic", "Stop Worker Exception: " << ex.message());
+			ERROR_LOG("Stop Worker Exception: " << ex.message());
 		}
 	}
 }

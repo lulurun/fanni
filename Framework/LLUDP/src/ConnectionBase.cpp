@@ -11,7 +11,7 @@ ConnectionBase::ConnectionBase(const EndPoint &ep, const PacketSerializer &packe
 
 ConnectionBase::~ConnectionBase() {
 	delete this->ack_mgr;
-	INFO_LOG("LLUDP", "ConnectionBase destoryed");
+	DEBUG_LOG("ConnectionBase destoryed");
 }
 
 void ConnectionBase::dispatch(const PacketBasePtr &packet) {
