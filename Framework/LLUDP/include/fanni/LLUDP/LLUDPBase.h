@@ -30,8 +30,8 @@ public:
 	LLUDPBase(const EndPoint &ep) :
 	  UDPServerBase(ep), // start UDPServer
 	  server_ep(ep) {
-		  LLPackets::init(this->packet_factory);
-		  this->task_handler_factory.registerHandler("CloseConnection", new CloseConnectionTaskHandler());
+		LLPackets::init(this->packet_factory);
+		this->task_handler_factory.registerHandler("CloseConnection", new CloseConnectionTaskHandler());
 	};
 	virtual ~LLUDPBase() {};
 
@@ -45,13 +45,21 @@ public:
 
 	// SystemPacketWorkerBase
 	virtual void dispatch(const PacketBasePtr &packet, const EndPoint &ep) {
-		const SystemPacketHandlerBase &handler = this->system_handler_factory.getHandler(packet->header.getPacketID());
-		handler(*this, packet, ep);
+		try {
+			const SystemPacketHandlerBase &handler = this->system_handler_factory.getHandler(packet->header.getPacketID());
+			handler(*this, packet, ep);
+		} catch (Poco::NotFoundException &ex) {
+			ERROR_LOG("Exception: " << packet->header.getPacketID() << " " << ep.toString() << " " << ex.message());
+		}
 	}
 
 	virtual void dispatch(const LocalTaskBasePtr &pLocTask) {
-		const LocalTaskHandlerBase &handler = this->task_handler_factory.getHandler(pLocTask->getName());
-		handler(*this, pLocTask);
+		try {
+			const LocalTaskHandlerBase &handler = this->task_handler_factory.getHandler(pLocTask->getName());
+			handler(*this, pLocTask);
+		} catch (Poco::NotFoundException &ex) {
+			ERROR_LOG("Exception: " << pLocTask->getName() << " " << ex.message());
+		}
 	}
 
 	const ConnectionPacketHandlerFactory &getConnectionHandlerFactory() const {

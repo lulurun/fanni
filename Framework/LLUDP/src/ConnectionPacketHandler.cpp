@@ -18,7 +18,7 @@ void ConnectionPacketHandlerFactory::registerHandler(PacketHeader::PACKET_ID_TYP
 	if (it == this->handler_map.end()) {
 		this->handler_map[packet_id] = handler;
 	} else {
-		throw Poco::ExistsException();
+		throw Poco::ExistsException("ConnectionPacketHandlerFactory: handler already registered");
 	}
 }
 
@@ -28,7 +28,7 @@ const ConnectionPacketHandlerBase &ConnectionPacketHandlerFactory::getHandler(Pa
 	if (it != this->handler_map.end()) {
 		return *it->second;
 	} else {
-		throw Poco::NotFoundException();
+		throw Poco::NotFoundException("ConnectionPacketHandlerFactory: handler not found");
 	}
 }
 

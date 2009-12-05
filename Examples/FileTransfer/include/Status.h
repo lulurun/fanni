@@ -11,6 +11,7 @@
 #include <ctime>
 #include <string>
 #include "Poco/Mutex.h"
+#include "Poco/Event.h"
 #include "Poco/SharedPtr.h"
 #include "fanni/win_stdint.h"
 #include "fanni/UUID.h"
@@ -36,18 +37,26 @@ private:
 
 	unsigned char *file_buffer;
 	bool *data_block_map;
+
+	Poco::Event CompleteEvent;
+
 public:
 	Status(uint32_t file_size, const std::string file_name, const UUID &trans_id, bool mem_alloc = false);
 	~Status();
 
-	inline const size_t getFileSize() const { return this->file_size; }
-	inline const std::string &getFileName() const { return this->file_name; }
-	inline const UUID &getTransferID() const { return this->trans_id; }
-	inline const time_t &getStartTime() const { return this->start_time; }
-	inline const unsigned char *getFileBuffer() const { return this->file_buffer; }
-	inline const bool isFailed() const { return this->_error; }
-	inline void failed() { this->_error = true; }
+	const size_t getFileSize() const { return this->file_size; }
+	const std::string &getFileName() const { return this->file_name; }
+	const UUID &getTransferID() const { return this->trans_id; }
+	const time_t &getStartTime() const { return this->start_time; }
+	const unsigned char *getFileBuffer() const { return this->file_buffer; }
+	const bool isFailed() const { return this->_error; }
+	void failed() {
+		this->_error = true;
+		this->setComplete();
+	}
 
+	void setComplete();
+	void waitComplete();
 	void setTransferID(const UUID &trans_id);
 	// return true if all data has been received
 	bool update(int data_number, const unsigned char *data, size_t len);

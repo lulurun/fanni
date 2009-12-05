@@ -1,6 +1,7 @@
 #ifndef THREAD_WORKER_H_
 #define THREAD_WORKER_H_
 
+#include <string>
 #include "Poco/SharedPtr.h"
 #include "Poco/Runnable.h"
 #include "Poco/Thread.h"
@@ -13,6 +14,7 @@ class Fanni_API Worker : public Poco::Runnable {
 protected:
 	Poco::Thread _thread;
 	TaskQueue _queue;
+	std::string _name;
 
 	void run();
 	virtual void doTask(TaskPtr &task) = 0;
@@ -21,11 +23,13 @@ public:
 	Worker();
 	virtual ~Worker();
 	void addTask(TaskPtr &task);
-	void start();
-	void stop();
+	void setName(const std::string &name);
 
 private:
-	bool _stop; // TODO @@@ unsafe??
+	void start();
+	void stop();
+	// TODO @@@ unsafe??
+	volatile bool _stop; // @@@ used for polling
 };
 
 }

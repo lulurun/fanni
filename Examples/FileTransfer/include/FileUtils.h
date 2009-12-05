@@ -16,12 +16,12 @@ namespace FileTransfer {
 
 class FileUtils {
 public:
-	static size_t get_file_size(const std::string &file_path) {
-		size_t file_size = 0;
+	static int get_file_size(const std::string &file_path) {
+		int file_size = 0;
 		std::ifstream fs(file_path.c_str());
 		if(fs.fail()) {
 			ERROR_LOG("can not open file: " << file_path);
-			return 0;
+			return -1;
 		}
 		fs.seekg(0, std::ios::end); //move to end of file
 		file_size = fs.tellg();

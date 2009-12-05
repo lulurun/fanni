@@ -12,9 +12,9 @@
 
 namespace Fanni {
 
-	inline void Sleep(long milliseconds) {
-		Poco::Thread::sleep(milliseconds);
-	}
+inline void Sleep(long milliseconds) {
+	Poco::Thread::sleep(milliseconds);
+}
 
 }
 

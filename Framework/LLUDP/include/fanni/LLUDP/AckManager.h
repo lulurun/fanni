@@ -40,7 +40,7 @@ public:
 	AckManager(ConnectionBase &conn);
 	virtual ~AckManager();
 	void processIncomingPacket(const PacketBasePtr &packet);
-	void processOutgoingPacket(const PacketBasePtr &packet);
+	void processOutgoingPacket(PacketBasePtr &packet);
 };
 
 }

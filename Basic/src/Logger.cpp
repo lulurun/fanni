@@ -1,3 +1,4 @@
+#include <map>
 #include "Poco/File.h"
 #include "Poco/Message.h"
 #include "Poco/FileStream.h"
@@ -37,7 +38,8 @@ static const std::string DEFAULT_CONFIG_STRING =
 	"logging.channels.c2.formatter = f1\n";
 
 static Poco::SharedPtr<Poco::LogStream> pLogStream = new Poco::LogStream(Poco::Logger::root());
-Poco::SharedPtr<Poco::LogStream> &Logger::LogStream() {
+Poco::SharedPtr<Poco::LogStream> &Logger::GetLogStream(const std::string &name) {
+	// TODO @@@ implement get("name")
 	return pLogStream;
 }
 
@@ -55,7 +57,7 @@ void Logger::Initialize() {
 
 		//Logger::pLogStream.assign(new Poco::LogStream(Poco::Logger::root()));
 	} catch (Poco::Exception &ex) {
-		;// TODO @@@ ...
+		throw ex;// TODO @@@ ...
 	}
 };
 

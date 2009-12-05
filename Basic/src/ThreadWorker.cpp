@@ -12,13 +12,16 @@ using namespace std;
 using namespace Fanni;
 using namespace Poco;
 
-Worker::Worker() : _stop(false) {
+Worker::Worker() : _name(""), _stop(false) {
 	this->start();
 }
 
 Worker::~Worker() {
 	this->stop();
-	DEBUG_LOG("worker stopped");
+}
+
+void Worker::setName(const std::string &name) {
+	this->_name = name;
 }
 
 void Worker::addTask(TaskPtr &data) {
@@ -32,10 +35,9 @@ void Worker::run() {
 			try {
 				this->doTask(pTask);
 			} catch (Poco::Exception &e) {
-				ERROR_LOG("worker loop terminated: " << e.message());
+				ERROR_LOG(this->_name << " caught exception: " << e.message());
 			}
 		} else {
-			DEBUG_LOG("break worker loop");
 			break;
 		}
 	}
@@ -50,9 +52,7 @@ void Worker::stop() {
 		try {
 			this->_stop = true;
 			this->addTask(StopTaskInstance);
-			if (this->_thread.tryJoin(5000)) {
-				INFO_LOG("Worker stopped successfully");
-			} else {
+			if (!this->_thread.tryJoin(5000)) {
 				WARN_LOG("Worker stopped after timeout");
 			}
 		} catch (Poco::Exception &ex) {

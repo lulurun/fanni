@@ -44,7 +44,6 @@ public:
 		ConnectionBasePtr pConnBase = udp.addConnection(packet_base, ep);
 		ClientConnection *cConn = dynamic_cast<ClientConnection *>(pConnBase.get());
 		assert(cConn);
-		//cConn->OnOpenConnectionReply(();
 		TRACE_LOG("exit");
 	};
 };

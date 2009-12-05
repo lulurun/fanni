@@ -49,7 +49,15 @@ void AckManager::processIncomingPacket(const PacketBasePtr &packet) {
 	}
 }
 
-void AckManager::processOutgoingPacket(const PacketBasePtr &packet) {
+void AckManager::processOutgoingPacket(PacketBasePtr &packet) {
+	if (!packet->header.isResent()) {
+		packet->setSequence(this->sequence_counter++);
+		if (packet->header.isReliable()) {
+			Poco::FastMutex::ScopedLock lock(this->resend_packet_map);
+			ResendPacketPtr pResendPacket(new ResendPacket(packet));
+			this->resend_packet_map[packet->header.getSequenceNumber()] = pResendPacket;
+		}
+	}
 }
 
 // Timer
@@ -85,7 +93,6 @@ void AckManager::checkACK() {
 void AckManager::checkRESEND() {
     Poco::FastMutex::ScopedLock lock(this->resend_packet_map);
 	if (this->resend_packet_map.empty()) return;
-	DEBUG_LOG("number of resend packets: " << this->resend_packet_map.size());
 	std::list<uint32_t> delete_list;
 	int resend_count = 0;
 	for(RESEND_PACKET_MAP::iterator it=this->resend_packet_map.begin(); it!=this->resend_packet_map.end(); it++) {
@@ -100,11 +107,18 @@ void AckManager::checkRESEND() {
 			delete_list.push_back(it->first);
 		}
 	}
-	DEBUG_LOG("giveup resending " << delete_list.size() << " packets");
-	for(std::list<uint32_t>::const_iterator it=delete_list.begin(); it!=delete_list.end(); it++ ) {
-		this->removeResendPacket_unsafe(*it);
+#ifdef _DEBUG
+	DEBUG_LOG("number of resend packets: " << this->resend_packet_map.size());
+	if (!delete_list.empty()) {
+		DEBUG_LOG("giveup resending " << delete_list.size() << " packets");
+		for(std::list<uint32_t>::const_iterator it=delete_list.begin(); it!=delete_list.end(); it++ ) {
+			this->removeResendPacket_unsafe(*it);
+		}
 	}
-	DEBUG_LOG("resending " << resend_count << " packets");
+	if (resend_count > 0) {
+		DEBUG_LOG("resending " << resend_count << " packets");
+	}
+#endif
 }
 
 void AckManager::removeResendPacket_unsafe(uint32_t seq) {

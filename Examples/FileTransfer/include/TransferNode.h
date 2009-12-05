@@ -22,7 +22,6 @@ namespace FileTransfer {
 
 class TransferNode : public LLUDPBase {
 private:
-	std::string send_file_path;
 	Poco::Event connected;
 	Poco::Event disconnected;
 
@@ -41,11 +40,6 @@ public:
 
 	ClientConnection &connect(const EndPoint &ep);
 	bool disconnect(const ClientConnection &cConn);
-
-	void sendFile(const std::string &file_path, const EndPoint &ep);
-
-	const std::string &getSendFile() const { return this->send_file_path; };
-
 };
 
 }

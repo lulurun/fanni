@@ -30,7 +30,7 @@ public:
 		assert(packet);
 		ServerConnection *sConn = dynamic_cast<ServerConnection *>(conn_base);
 		assert(sConn);
-		//sConn->FileIn(sConn, packet);
+		sConn->FileInfoEvent(sConn, *packet);
 		TRACE_LOG("exit");
 	};
 };
@@ -43,7 +43,7 @@ public:
 		assert(packet);
 		ServerConnection *sConn = dynamic_cast<ServerConnection *>(conn_base);
 		assert(sConn);
-		//sConn->onFileData(packet);
+		sConn->FileDataEvent(sConn, *packet);
 		TRACE_LOG("exit");
 	};
 };
@@ -57,7 +57,7 @@ public:
 		assert(packet);
 		ClientConnection *cConn = dynamic_cast<ClientConnection *>(conn_base);
 		assert(cConn);
-		//cConn->onFileInfoReply(packet);
+		cConn->FileInfoReplyEvent(cConn, *packet);
 		TRACE_LOG("exit");
 	};
 };
@@ -70,7 +70,7 @@ public:
 		assert(packet);
 		ClientConnection *cConn = dynamic_cast<ClientConnection *>(conn_base);
 		assert(cConn);
-		//cConn->onFileTransferComplete(packet);
+		cConn->TransferCompleteEvent(cConn, *packet);
 		TRACE_LOG("exit");
 	};
 };

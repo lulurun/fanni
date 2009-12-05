@@ -29,7 +29,7 @@ private:
 		if (it == _map.end())
 			_map[packet_id] = ptr.release();
 		else
-			throw Poco::ExistsException();
+			throw Poco::ExistsException("PacketFactory: packet already registered");
 	}
 
 public:
@@ -46,7 +46,7 @@ public:
 		if (it != _map.end())
 			return it->second->createInstance();
 		else
-			throw Poco::NotFoundException();
+			throw Poco::NotFoundException("PacketFacotry: packet not registered");
 	};
 
 	template<class C>
@@ -62,7 +62,7 @@ public:
 			delete it->second;
 			_map.erase(it);
 		}
-		else throw Poco::NotFoundException();
+		else throw Poco::NotFoundException("PacketFacotry: packet type not found");
 	}
 	
 	bool isClass(const PacketHeader::PACKET_ID_TYPE &packet_id) const

@@ -46,7 +46,7 @@ public:
 // TODO @@@ read from config file
 static const int CONNECTION_TIMEOUT = 100; // 100 sec
 static const int RESEND_TIMEOUT = 4; // 4 sec
-static const int MAX_RESENDING_TRIES = 0xffff; // will give up transferring after trying to resend 4 times
+static const int MAX_RESENDING_TRIES = 0xffff; // will give up transferring after trying to resend n times
 
 // MEMO @@@ supposed to be used from only one thread
 class ResendPacket {

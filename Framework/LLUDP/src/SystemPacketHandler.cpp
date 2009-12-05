@@ -18,7 +18,7 @@ void SystemPacketHandlerFactory::registerHandler(PacketHeader::PACKET_ID_TYPE pa
 	if (it == this->handler_map.end()) {
 		this->handler_map[packet_id] = handler;
 	} else {
-		throw Poco::ExistsException();
+		throw Poco::ExistsException("SystemPacketHandlerFactory: handler already registered");
 	}
 }
 
@@ -28,7 +28,7 @@ const SystemPacketHandlerBase &SystemPacketHandlerFactory::getHandler(PacketHead
 	if (it != this->handler_map.end()) {
 		return *it->second;
 	} else {
-		throw Poco::NotFoundException();
+		throw Poco::NotFoundException("SystemPacketHandlerFactory: handler not found");
 	}
 }
 

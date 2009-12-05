@@ -32,6 +32,7 @@ protected:
 
 	// status operations
 	virtual StatusPtr createStatus(uint32_t file_size, const std::string file_name, const UUID &trans_id) = 0;
+	void addTransferStatus(StatusPtr &pStatus);
 	StatusPtr &getTransfer(const UUID &trans_id);
 	StatusPtr &getTransfer_unsafe(const UUID &trans_id);
 	void closeTransfer(const UUID &trans_id);
@@ -56,6 +57,8 @@ private:
 public:
 	ClientConnection(uint32_t circuit_code, const EndPoint &ep, const PacketSerializer &packet_serializer, LLUDPBase &udp);
 	virtual ~ClientConnection();
+
+	bool sendFile(const std::string &file_path);
 
 	Poco::BasicEvent<const FileInfoReplyPacket> FileInfoReplyEvent;
 	Poco::BasicEvent<const TransferCompletePacket> TransferCompleteEvent;

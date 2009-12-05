@@ -32,7 +32,6 @@ void UDPServerBase::onReadable(const Poco::AutoPtr<Poco::Net::ReadableNotificati
 		ERROR_LOG("Connection Close");
 		return;
 	}
-	INFO_LOG("UDP data received");
 	buffer->setLength(recv_len);
 	this->processIncomingData(buffer, ep);
 }

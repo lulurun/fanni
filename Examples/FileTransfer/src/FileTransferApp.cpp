@@ -119,7 +119,7 @@ protected:
 			EndPoint connect_ep(this->ip, this->port);
 			INFO_LOG("send " << this->path << " to " << connect_ep.toString());
 			ClientConnection &cConn = node.connect(connect_ep);
-			//cConn.sendFile(this->path);
+			cConn.sendFile(this->path);
 			if (node.disconnect(cConn)) {
 				INFO_LOG("disconnected");
 			} else {

@@ -19,6 +19,7 @@ using namespace Fanni;
 using namespace Fanni::FileTransfer;
 
 TransferNode::TransferNode(const EndPoint &server_ep) : LLUDPBase(server_ep) {
+	this->setName("TransferNode");
 	FTPackets::init(this->packet_factory);
 
 	this->system_handler_factory.registerHandler(OpenConnection_ID, new OpenConnectionPacketHandler());
@@ -109,10 +110,5 @@ bool TransferNode::disconnect(const ClientConnection &cConn) {
 	} else {
 		return false;
 	}
-}
-
-void TransferNode::sendFile(const string &file_path, const EndPoint &ep) {
-	this->send_file_path = file_path;
-
 }
 

@@ -16,8 +16,16 @@ ConnectionBase::~ConnectionBase() {
 
 void ConnectionBase::dispatch(const PacketBasePtr &packet) {
 	this->ack_mgr->processIncomingPacket(packet);
-	const ConnectionPacketHandlerBase &handler = this->connection_handler_factory.getHandler(packet->header.getPacketID());
-	handler(this, packet);
+	if (packet->header.getPacketID() == PacketAck_ID) {
+		// @@@ not handler for ACK
+		return;
+	}
+	try {
+		const ConnectionPacketHandlerBase &handler = this->connection_handler_factory.getHandler(packet->header.getPacketID());
+		handler(this, packet);
+	} catch (Poco::NotFoundException &ex) {
+		ERROR_LOG("Exception: " << packet->header.getPacketID() << " " << ex.message());
+	}
 }
 
 void ConnectionBase::sendPacket(PacketBasePtr &packet) {

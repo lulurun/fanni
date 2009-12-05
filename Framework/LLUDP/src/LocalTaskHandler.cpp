@@ -27,7 +27,7 @@ void LocalTaskHandlerFactory::registerHandler(const std::string &task_name, cons
 	if (it == this->handler_map.end()) {
 		this->handler_map[task_name] = handler;
 	} else {
-		throw Poco::ExistsException();
+		throw Poco::ExistsException("LocalTaskHandlerFactory: handler already registered");
 	}
 }
 
@@ -37,7 +37,7 @@ const LocalTaskHandlerBase &LocalTaskHandlerFactory::getHandler(const std::strin
 	if (it != this->handler_map.end()) {
 		return *it->second;
 	} else {
-		throw Poco::NotFoundException();
+		throw Poco::NotFoundException("LocalTaskHandlerFactory: handler not found");
 	}
 }
 

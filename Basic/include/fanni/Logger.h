@@ -19,7 +19,7 @@ namespace Fanni {
 // TODO @@@ how to manage multiple _loggers
 class Fanni_API Logger {
 public:
-	static Poco::SharedPtr<Poco::LogStream> &LogStream();
+	static Poco::SharedPtr<Poco::LogStream> &GetLogStream(const std::string &name = "");
 	static void Initialize();
 };
 
@@ -27,25 +27,25 @@ public:
 
 #ifndef WIN32
 #define TRACE_LOG(message)	\
-	{ Logger::pLogStream->trace() << __PRETTY_FUNCTION__ << " " << message << std::endl; }
+	{ Logger::GetLogStream()->trace() << __PRETTY_FUNCTION__ << " " << message << std::endl; }
 #else
 #define TRACE_LOG(message)
 #endif
 #define DEBUG_LOG(...)	\
-	{ Logger::LogStream()->debug() << __VA_ARGS__ << std::endl; }
+	{ Logger::GetLogStream()->debug() << __VA_ARGS__ << std::endl; }
 #else
 #define TRACE_LOG(message)
 #define DEBUG_LOG(...)
 #endif
 
 #define INFO_LOG(...)	\
-	{ Logger::LogStream()->information() << __VA_ARGS__ << std::endl; }
+	{ Logger::GetLogStream()->information() << __VA_ARGS__ << std::endl; }
 #define WARN_LOG(...)	\
-	{ Logger::LogStream()->warning() << __VA_ARGS__ << std::endl; }
+	{ Logger::GetLogStream()->warning() << __VA_ARGS__ << std::endl; }
 #define ERROR_LOG(...)	\
-	{ Logger::LogStream()->error() << __VA_ARGS__ << std::endl; }
+	{ Logger::GetLogStream()->error() << __VA_ARGS__ << std::endl; }
 #define FATAL_LOG(...)	\
-	{ Logger::LogStream()->fatal() << __VA_ARGS__ << std::endl; }
+	{ Logger::GetLogStream()->fatal() << __VA_ARGS__ << std::endl; }
 
 }
 
