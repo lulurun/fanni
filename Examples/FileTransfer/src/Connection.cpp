@@ -148,7 +148,7 @@ void ClientConnection::onFileInfoReply(const void* pSender, const FileInfoReplyP
 		PacketBasePtr pPacket(packet);
 		this->sendPacket(pPacket);
 		left_size -= read_size;
-		if (data_number % 1000 == 0) {
+		if (data_number % 50 == 0) {
 			// MEMO @@@ do not send too much
 			Sleep(250);
 		}

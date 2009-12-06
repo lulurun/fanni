@@ -15,6 +15,7 @@ ConnectionBase::~ConnectionBase() {
 }
 
 void ConnectionBase::dispatch(const PacketBasePtr &packet) {
+	this->last_received.update();
 	this->ack_mgr->processIncomingPacket(packet);
 	if (packet->header.getPacketID() == PacketAck_ID) {
 		// @@@ not handler for ACK
@@ -35,7 +36,7 @@ void ConnectionBase::sendPacket(PacketBasePtr &packet) {
 }
 
 bool ConnectionBase::checkALIVE() {
-	return true; // TODO @@@
+	return !this->last_received.isElapsed(CONNECTION_TIMEOUT*1000);
 }
 
 LLUDPBase &ConnectionBase::getUDPBase() const {

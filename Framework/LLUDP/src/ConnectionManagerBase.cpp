@@ -5,7 +5,7 @@
 using namespace Fanni;
 
 ConnectionManagerBase::ConnectionManagerBase() {
-	this->check_ALIVE_timer = new Poco::Timer(0, 15000); // TODO @@@ MAGIC NUMBER !
+	this->check_ALIVE_timer = new Poco::Timer(0, 5000); // TODO @@@ MAGIC NUMBER !
 	// TODO @@@ do not use Poco::DefaultThreadPool
 	this->check_ALIVE_timer->start(Poco::TimerCallback<ConnectionManagerBase>(*this, &ConnectionManagerBase::onCheckALIVETimer));
 	DEBUG_LOG("ConnectionManagerBase started");
@@ -22,6 +22,7 @@ void ConnectionManagerBase::onCheckALIVETimer(Poco::Timer &timer) {
 	Poco::FastMutex::ScopedLock l(this->conn_map);
 	if (this->conn_map.empty())
 		return;
+	INFO_LOG("check alive for " << this->conn_map.size() << " connections");
 	std::list<const EndPoint> remove_list;
 	for (CONNECTION_MAP::iterator it = this->conn_map.begin(); it!= this->conn_map.end(); it++) {
 		if (!it->second->checkALIVE()) {
@@ -31,7 +32,7 @@ void ConnectionManagerBase::onCheckALIVETimer(Poco::Timer &timer) {
 	if (remove_list.size() > 0) {
 		INFO_LOG("remove " << remove_list.size() << " client connections");
 		for (std::list<const EndPoint>::iterator it = remove_list.begin(); it != remove_list.end(); it++) {
-			this->conn_map.erase(it->toString());
+			this->closeConnection(*it);
 		}
 	}
 	TRACE_LOG("exit");

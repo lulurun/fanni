@@ -18,6 +18,37 @@
 
 namespace Fanni {
 
+// TODO @@@ not thread safe
+class ConnectionStatistics {
+public:
+	/* TODO @@@ should not be here ??
+	Poco::Timestamp created;
+	Poco::Timestamp destroyed;
+	*/
+	int send_packets;
+	int received_packets;
+	int acked_packets;
+	int resend_packets;
+	int giveup_packets;
+
+	ConnectionStatistics() : send_packets(0), received_packets(0),
+		acked_packets(0), resend_packets(0), giveup_packets(0) {}
+	~ConnectionStatistics() {};
+	const std::string toString() const {
+		char buffer[256];
+		std::sprintf(buffer,
+			"send packets    %d\n"
+			"receive packets %d\n"
+			"acked packets   %d\n"
+			"resend packets  %d\n"
+			"giveup packets  %d\n",
+			this->send_packets, this->received_packets,
+			this->acked_packets, this->resend_packets, this->giveup_packets);
+		std::string result(buffer);
+		return result;
+	}
+};
+
 class ConnectionBase;
 class AckManager {
 private:
@@ -35,6 +66,8 @@ private:
 
 	Poco::AtomicCounter sequence_counter;
 	ConnectionBase &conn;
+
+	ConnectionStatistics stat;
 
 public:
 	AckManager(ConnectionBase &conn);

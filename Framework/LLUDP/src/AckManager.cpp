@@ -19,6 +19,7 @@ AckManager::AckManager(ConnectionBase &conn) : conn(conn) {
 AckManager::~AckManager() {
 	this->check_ACK_timer->stop();
 	delete this->check_ACK_timer;
+	INFO_LOG("stat: \n" << this->stat.toString());
 	DEBUG_LOG("AckManager stopped");
 }
 
@@ -47,6 +48,8 @@ void AckManager::processIncomingPacket(const PacketBasePtr &packet) {
 			debug_count++;
 		}
 	}
+	// stat
+	this->stat.received_packets++;
 }
 
 void AckManager::processOutgoingPacket(PacketBasePtr &packet) {
@@ -58,6 +61,8 @@ void AckManager::processOutgoingPacket(PacketBasePtr &packet) {
 			this->resend_packet_map[packet->header.getSequenceNumber()] = pResendPacket;
 		}
 	}
+	// stat
+	this->stat.send_packets++;
 }
 
 // Timer
@@ -87,6 +92,7 @@ void AckManager::checkACK() {
 		this->conn.sendPacket(packet);
 		total_count += count;
     }
+	this->stat.acked_packets += total_count;
     DEBUG_LOG("ACKed " << total_count << " packets");
 }
 
@@ -107,18 +113,19 @@ void AckManager::checkRESEND() {
 			delete_list.push_back(it->first);
 		}
 	}
-#ifdef _DEBUG
+
 	DEBUG_LOG("number of resend packets: " << this->resend_packet_map.size());
 	if (!delete_list.empty()) {
 		DEBUG_LOG("giveup resending " << delete_list.size() << " packets");
 		for(std::list<uint32_t>::const_iterator it=delete_list.begin(); it!=delete_list.end(); it++ ) {
 			this->removeResendPacket_unsafe(*it);
 		}
+		this->stat.giveup_packets += delete_list.size();
 	}
 	if (resend_count > 0) {
-		DEBUG_LOG("resending " << resend_count << " packets");
+		this->stat.resend_packets += resend_count;
+		DEBUG_LOG("resend " << resend_count << " packets");
 	}
-#endif
 }
 
 void AckManager::removeResendPacket_unsafe(uint32_t seq) {
