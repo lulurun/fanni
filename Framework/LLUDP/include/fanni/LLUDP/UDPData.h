@@ -46,7 +46,7 @@ public:
 
 // TODO @@@ read from config file
 static const int CONNECTION_TIMEOUT = 15000; // 15 sec
-static const int RESEND_TIMEOUT = 500; // 0.5 sec
+static const int RESEND_TIMEOUT = 750; // 0.5 sec
 static const int MAX_RESENDING_TRIES = 0x5; // will give up transferring after trying to resend n times
 
 // MEMO @@@ supposed to be used from only one thread

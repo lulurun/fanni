@@ -9,7 +9,7 @@
 
 using namespace Fanni;
 
-AckManager::AckManager(ConnectionBase &conn) : conn(conn) {
+AckManager::AckManager(ConnectionBase &conn) : conn(conn), received_packet_list(10000 /* TODO @@@ */) {
 	this->check_ACK_timer = new Poco::Timer(0, 250); // TODO @@@ MAGIC NUMBER !
 	// TODO @@@ do not use Poco::DefaultThreadPool
 	this->check_ACK_timer->start(Poco::TimerCallback<AckManager>(*this, &AckManager::onCheckACKTimer));
@@ -23,11 +23,22 @@ AckManager::~AckManager() {
 	DEBUG_LOG("AckManager stopped");
 }
 
-void AckManager::processIncomingPacket(const PacketBasePtr &packet) {
+// =====
+// * return true if this packet needs to be dispatched
+bool AckManager::processIncomingPacket(const PacketBasePtr &packet) {
+	// stat
+	this->stat.received_packets++;
 	// ACK
 	if (packet->header.isReliable()) {
 	    Poco::FastMutex::ScopedLock lock(this->ack_packet_queue);
 		this->ack_packet_queue.push_back(packet->header.getSequenceNumber());
+		if (packet->header.isResent()) {
+			if ( this->received_packet_list.checkReceived(packet->header.getSequenceNumber()) ) {
+				// already received, need not to dispatch
+				DEBUG_LOG("packet " << packet->header.getPacketID() << "("  << packet->header.getSequenceNumber() << ") has been already received");
+				return false;
+			}
+		}
 	}
 	// RESEND
     Poco::FastMutex::ScopedLock lock(this->resend_packet_map);
@@ -47,9 +58,9 @@ void AckManager::processIncomingPacket(const PacketBasePtr &packet) {
 			this->removeResendPacket_unsafe(it->ID);
 			debug_count++;
 		}
+		return false;
 	}
-	// stat
-	this->stat.received_packets++;
+	return true;
 }
 
 void AckManager::processOutgoingPacket(PacketBasePtr &packet) {
