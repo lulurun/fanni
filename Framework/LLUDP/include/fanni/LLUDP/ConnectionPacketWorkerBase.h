@@ -17,18 +17,14 @@
 
 namespace Fanni {
 
-class Fanni_LLUDP_API ConnectionPacketWorkerBase : public Worker {
+class Fanni_LLUDP_API ConnectionPacketWorker : public Worker {
 public:
-	ConnectionPacketWorkerBase(const EndPoint &ep, const PacketSerializer &packet_serializer);
-	virtual ~ConnectionPacketWorkerBase();
-	const EndPoint &getEndPoint() const;
+	ConnectionPacketWorker(const EndPoint &ep, const PacketSerializer &packet_serializer);
+	virtual ~ConnectionPacketWorker();
 
 protected:
-	EndPoint ep;
 	const PacketSerializer &packet_serializer;
-
 	void doTask(TaskPtr &task);
-	virtual void dispatch(const PacketBasePtr &packet) = 0;
 };
 
 }

@@ -19,18 +19,87 @@ protected:
 	void run();
 	virtual void doTask(TaskPtr &task) = 0;
 
+	void start();
+	void stop();
+
 public:
 	Worker();
 	virtual ~Worker();
 	void addTask(TaskPtr &task);
+	void addUrgentTask(TaskPtr &task);
 	void setName(const std::string &name);
 
-private:
-	void start();
-	void stop();
+protected:
 	// TODO @@@ unsafe??
 	volatile bool _stop; // @@@ used for polling
 };
+
+/*
+template<class T>
+class Fanni_API ThreadWorker : public Poco::Runnable {
+private:
+	typedef T
+protected:
+	Poco::Thread _thread;
+	Queue<T> _queue;
+	std::string _name;
+
+	void run() {
+		while (!_stop) {
+			TaskPtr pTask(this->_queue.get());
+			if (pTask) {
+				try {
+					this->doTask(pTask);
+				} catch (Poco::Exception &e) {
+					ERROR_LOG(this->_name << " caught exception: " << e.message());
+				}
+			} else {
+				break;
+			}
+		}
+	};
+	virtual void doTask(T &task) = 0;
+
+	void start() {
+		this->_thread.start(*this);
+	};
+	void stop() {
+		if (!_stop) {
+			try {
+				this->_stop = true;
+				this->addUrgentTask(StopTaskInstance);
+				if (!this->_thread.tryJoin(5000)) {
+					WARN_LOG("Worker stopped after timeout");
+				}
+			} catch (Poco::Exception &ex) {
+				ERROR_LOG("Stop Worker Exception: " << ex.message());
+			}
+		}
+	};
+
+public:
+	ThreadWorker() : _name(""), _stop(false){
+		this->start();
+	};
+	virtual ~ThreadWorker() {
+		this->stop();
+	};
+	void addTask(T &task) {
+		this->queue.put(task);
+	};
+	void addUrgentTask(T &task) {
+		this->queue.put_front(task);
+	};
+	void setName(const std::string &name) {
+		this->name = name;
+	};
+
+protected:
+	// TODO @@@ unsafe??
+	volatile bool _stop; // @@@ used for polling
+};
+
+*/
 
 }
 

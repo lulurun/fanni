@@ -30,6 +30,12 @@ public:
 		this->_cond.broadcast();
 	}
 
+	void put_front(const DATA_TYPE &data) {
+		Poco::FastMutex::ScopedLock lock(this->_mutex);
+		this->_queue.push_front(data);
+		this->_cond.broadcast();
+	}
+
 	DATA_TYPE get() {
 		Poco::FastMutex::ScopedLock lock(this->_mutex);
 		while(this->_queue.empty()) {

@@ -5,6 +5,7 @@
 
 using namespace Fanni;
 
+#if 0
 ConnectionPacketWorkerBase::ConnectionPacketWorkerBase(const EndPoint &ep, const PacketSerializer &packet_serializer) :
 	ep(ep), packet_serializer(packet_serializer) {
 	DEBUG_LOG("ConnectionPacketWorker started");
@@ -26,3 +27,4 @@ const EndPoint &ConnectionPacketWorkerBase::getEndPoint() const {
 	return this->ep;
 }
 
+#endif

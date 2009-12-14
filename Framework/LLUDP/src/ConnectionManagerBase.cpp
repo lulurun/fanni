@@ -26,6 +26,7 @@ void ConnectionManagerBase::onCheckALIVETimer(Poco::Timer &timer) {
 	std::list<const EndPoint> remove_list;
 	for (CONNECTION_MAP::iterator it = this->conn_map.begin(); it!= this->conn_map.end(); it++) {
 		if (!it->second->checkALIVE()) {
+			ERROR_LOG("Connection to " << it->second->getEndPoint().toString() << " timeout");
 			remove_list.push_back(it->second->getEndPoint());
 		}
 	}

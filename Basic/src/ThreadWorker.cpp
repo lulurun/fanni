@@ -28,6 +28,10 @@ void Worker::addTask(TaskPtr &data) {
 	this->_queue.put(data);
 }
 
+void Worker::addUrgentTask(TaskPtr &data) {
+	this->_queue.put_front(data);
+}
+
 void Worker::run() {
 	while (!_stop) {
 		TaskPtr pTask(this->_queue.get());
@@ -51,7 +55,7 @@ void Worker::stop() {
 	if (!_stop) {
 		try {
 			this->_stop = true;
-			this->addTask(StopTaskInstance);
+			this->addUrgentTask(StopTaskInstance);
 			if (!this->_thread.tryJoin(5000)) {
 				WARN_LOG("Worker stopped after timeout");
 			}

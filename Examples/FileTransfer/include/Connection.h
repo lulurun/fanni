@@ -44,8 +44,6 @@ public:
 	int getCircuitCode() const { return this->circuit_code;	}
 	//TransferNode &getTransferNode() const { return *dynamic_cast<TransferNode *>(&this->udp); };
 
-	Poco::BasicEvent<int> ClosedEvent;
-	Poco::BasicEvent<int> ConnectedEvent;
 };
 
 class ClientConnection : public TransferNodeConnectionBase {

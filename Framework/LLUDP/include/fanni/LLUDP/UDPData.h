@@ -45,9 +45,9 @@ public:
 };
 
 // TODO @@@ read from config file
-static const int CONNECTION_TIMEOUT = 15000; // 15 sec
-static const int RESEND_TIMEOUT = 750; // 0.5 sec
-static const int MAX_RESENDING_TRIES = 0x5; // will give up transferring after trying to resend n times
+static const int CONNECTION_TIMEOUT = 15 * 1000000; // 15 sec
+static const int RESEND_TIMEOUT = 750 * 1000; // 0.75 sec
+static const int MAX_RESENDING_TRIES = 0xffff; // will give up transferring after trying to resend n times
 
 // MEMO @@@ supposed to be used from only one thread
 // ResendPacket is managed by each connection(thread)

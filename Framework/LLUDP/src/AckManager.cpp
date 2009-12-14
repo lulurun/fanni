@@ -26,6 +26,7 @@ AckManager::~AckManager() {
 // =====
 // * return true if this packet needs to be dispatched
 bool AckManager::processIncomingPacket(const PacketBasePtr &packet) {
+	bool ret = true;
 	// stat
 	this->stat.received_packets++;
 	// ACK
@@ -35,8 +36,8 @@ bool AckManager::processIncomingPacket(const PacketBasePtr &packet) {
 		if (packet->header.isResent()) {
 			if ( this->received_packet_list.checkReceived(packet->header.getSequenceNumber()) ) {
 				// already received, need not to dispatch
-				DEBUG_LOG("packet " << packet->header.getPacketID() << "("  << packet->header.getSequenceNumber() << ") has been already received");
-				return false;
+				//DEBUG_LOG("packet " << packet->header.getPacketID() << "("  << packet->header.getSequenceNumber() << ") has been already received");
+				ret = false;
 			}
 		}
 	}
@@ -52,15 +53,13 @@ bool AckManager::processIncomingPacket(const PacketBasePtr &packet) {
 	if (packet->header.getPacketID() == PacketAck_ID) {
 		const PacketAckPacket *ack_packet = dynamic_cast<const PacketAckPacket *>(packet.get());
 		assert(ack_packet);
-		int debug_count = 0;
 		DEBUG_LOG("removing resend packets: " << ack_packet->Packets.val.size());
 		for(std::vector<PacketAckPacket::PacketsBlock>::const_iterator it = ack_packet->Packets.val.begin(); it!=ack_packet->Packets.val.end(); it++) {
 			this->removeResendPacket_unsafe(it->ID);
-			debug_count++;
 		}
-		return false;
+		ret = false;
 	}
-	return true;
+	return ret;
 }
 
 void AckManager::processOutgoingPacket(PacketBasePtr &packet) {

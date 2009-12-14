@@ -4,23 +4,31 @@
 using namespace Fanni;
 
 ConnectionBase::ConnectionBase(const EndPoint &ep, const PacketSerializer &packet_serializer, LLUDPBase &udp) :
-	ConnectionPacketWorkerBase(ep, packet_serializer),
-	connection_handler_factory(udp.getConnectionHandlerFactory()), udp(udp) {
-	this->ack_mgr = new AckManager(*this); // @@@ start ack manager
+	packet_serializer(packet_serializer), connection_handler_factory(udp.getConnectionHandlerFactory()),
+	ep(ep), udp(udp), ack_mgr(*this) {
 }
 
 ConnectionBase::~ConnectionBase() {
-	delete this->ack_mgr;
+	this->close();
 	DEBUG_LOG("ConnectionBase destoryed");
 }
 
-void ConnectionBase::dispatch(const PacketBasePtr &packet) {
+const EndPoint &ConnectionBase::getEndPoint() const {
+	return this->ep;
+}
+
+LLUDPBase &ConnectionBase::getUDPBase() const {
+	return this->udp;
+}
+
+void ConnectionBase::doTask(TaskPtr &task) {
+	IncomingData *incoming_data = dynamic_cast<IncomingData *>(task.get());
+	assert(incoming_data);
+	assert(incoming_data->ep.toString() == this->getEndPoint().toString()); // TODO @@@ ???
+	PacketBasePtr packet = this->packet_serializer.deserialize(incoming_data->data);
+
 	this->last_received.update();
-	if (this->ack_mgr->processIncomingPacket(packet)) {
-		if (packet->header.getPacketID() == PacketAck_ID) {
-			// @@@ not handler for ACK
-			return;
-		}
+	if (this->ack_mgr.processIncomingPacket(packet)) {
 		try {
 			const ConnectionPacketHandlerBase &handler = this->connection_handler_factory.getHandler(packet->header.getPacketID());
 			handler(this, packet);
@@ -31,16 +39,16 @@ void ConnectionBase::dispatch(const PacketBasePtr &packet) {
 }
 
 void ConnectionBase::sendPacket(PacketBasePtr &packet) {
-	this->ack_mgr->processOutgoingPacket(packet);
+	this->ack_mgr.processOutgoingPacket(packet);
 	PacketBuffer buffer = this->packet_serializer.serialize(packet);
 	this->udp.sendData(buffer, this->ep);
 }
 
 bool ConnectionBase::checkALIVE() {
-	return !this->last_received.isElapsed(CONNECTION_TIMEOUT*1000);
+	return !this->last_received.isElapsed(CONNECTION_TIMEOUT);
 }
 
-LLUDPBase &ConnectionBase::getUDPBase() const {
-	return this->udp;
+void ConnectionBase::close() {
+	this->stop();
 }
 

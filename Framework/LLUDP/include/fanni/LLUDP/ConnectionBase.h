@@ -13,7 +13,11 @@
 #include "Poco/SharedPtr.h"
 #include "Poco/DateTimeFormatter.h"
 #include "Poco/Timestamp.h"
+#include "fanni/EndPoint.h"
+#include "fanni/TaskQueue.h"
+#include "fanni/ThreadWorker.h"
 #include "fanni/Packets/PacketBase.h"
+#include "fanni/Packets/PacketSerializer.h"
 #include "fanni/LLUDP/LLUDP_def.h"
 #include "fanni/LLUDP/ConnectionPacketHandler.h"
 #include "fanni/LLUDP/ConnectionPacketWorkerBase.h"
@@ -22,11 +26,15 @@
 namespace Fanni {
 
 class LLUDPBase;
-class Fanni_LLUDP_API ConnectionBase : public ConnectionPacketWorkerBase {
-protected:
+class Fanni_LLUDP_API ConnectionBase : public Worker {
+private:
+	const PacketSerializer &packet_serializer;
 	const ConnectionPacketHandlerFactory &connection_handler_factory;
+
+protected:
+	EndPoint ep;
 	LLUDPBase &udp; // TODO @@@ change to ConnectionManagerBase
-	AckManager *ack_mgr;
+	AckManager ack_mgr;
 	Poco::Timestamp last_received;
 
 public:
@@ -35,8 +43,13 @@ public:
 	void sendPacket(PacketBasePtr &packet);
 	bool checkALIVE();
 	LLUDPBase &getUDPBase() const;
+	const EndPoint &getEndPoint() const;
 
-	virtual void dispatch(const PacketBasePtr &packet);
+	void doTask(TaskPtr &pTask);
+	virtual void close();
+
+	Poco::BasicEvent<int> ClosedEvent;
+	Poco::BasicEvent<int> ConnectedEvent;
 };
 
 typedef Poco::SharedPtr<ConnectionBase> ConnectionBasePtr;
