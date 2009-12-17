@@ -5,22 +5,26 @@
 #include "Poco/SharedPtr.h"
 #include "Poco/Runnable.h"
 #include "Poco/Thread.h"
+#include "Poco/AtomicCounter.h"
 #include "fanni/Basic_def.h"
 #include "fanni/TaskQueue.h"
 
 namespace Fanni {
 
 class Fanni_API Worker : public Poco::Runnable {
+private:
+	void setBusy() { this->_busy = 1; }
+	void setFree() { this->_busy = 0; }
+
 protected:
 	Poco::Thread _thread;
 	TaskQueue _queue;
 	std::string _name;
 
+	Poco::AtomicCounter _busy;
+
 	void run();
 	virtual void doTask(TaskPtr &task) = 0;
-
-	void start();
-	void stop();
 
 public:
 	Worker();
@@ -29,10 +33,17 @@ public:
 	void addUrgentTask(TaskPtr &task);
 	void setName(const std::string &name);
 
+	void start();
+	void stop();
+
+	bool isFree() const { return !this->_busy; };
+
 protected:
 	// TODO @@@ unsafe??
 	volatile bool _stop; // @@@ used for polling
 };
+
+typedef Poco::SharedPtr<Worker> WorkerPtr;
 
 /*
 template<class T>

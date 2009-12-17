@@ -1,5 +1,6 @@
 #include <list>
 #include "fanni/Logger.h"
+#include "fanni/TaskQueue.h"
 #include "fanni/LLUDP/ConnectionManagerBase.h"
 
 using namespace Fanni;
@@ -50,17 +51,6 @@ ConnectionBasePtr &ConnectionManagerBase::getConnection_unsafe(const EndPoint &e
 		throw Poco::NotFoundException("unknown connection");
 	} else {
 		return it->second;
-	}
-}
-
-bool ConnectionManagerBase::tryDispatch(PacketBuffer &buffer, const EndPoint &ep) const {
-	Poco::FastMutex::ScopedLock l(this->conn_map);
-	if (this->isConnected_unsafe(ep)) {
-		TaskPtr pTask(new IncomingData(buffer, ep));
-		this->getConnection_unsafe(ep)->addTask(pTask);
-		return true;
-	} else {
-		return false;
 	}
 }
 

@@ -17,13 +17,13 @@
 
 namespace Fanni {
 
-class IncomingData : public TaskBase {
+class SystemPacketData : public TaskBase {
 public:
-	PacketBuffer data;
+	PacketBufferPtr pBuf;
 	EndPoint ep;
 
-	IncomingData(PacketBuffer &data, const EndPoint &ep) : data(data), ep(ep) {}
-	virtual ~IncomingData() {}
+	SystemPacketData(PacketBufferPtr &pBuf, const EndPoint &ep) : pBuf(pBuf), ep(ep) {}
+	virtual ~SystemPacketData() {}
 };
 
 class LocalTaskBase : public TaskBase {
@@ -44,42 +44,6 @@ public:
 	virtual ~CloseConnectionTask() {}
 };
 
-// TODO @@@ read from config file
-static const int CONNECTION_TIMEOUT = 15 * 1000000; // 15 sec
-static const int RESEND_TIMEOUT = 750 * 1000; // 0.75 sec
-static const int MAX_RESENDING_TRIES = 0xffff; // will give up transferring after trying to resend n times
-
-// MEMO @@@ supposed to be used from only one thread
-// ResendPacket is managed by each connection(thread)
-class ResendPacket {
-private:
-	PacketBasePtr packet;
-	Poco::Timestamp last_sent;
-	int resend_count;
-
-	ResendPacket(ResendPacket &resend_packet);
-	ResendPacket &operator=(ResendPacket &resend_packet);
-
-public:
-	ResendPacket(const PacketBasePtr &packet) :
-		packet(packet->clone()), last_sent(), resend_count(0){}
-	~ResendPacket() {}
-
-	bool shouldResend() {
-		return this->last_sent.isElapsed(RESEND_TIMEOUT);
-	}
-	bool shouldGiveup() { return this->resend_count >= MAX_RESENDING_TRIES; }
-
-	// MEMO @@@ only Call this before send packet
-	PacketBasePtr &get(){
-		this->last_sent.update();
-		this->resend_count++;
-		return this->packet;
-	}
-};
-
-typedef Poco::SharedPtr<ResendPacket> ResendPacketPtr;
-
-};
+}
 
 #endif // _FANNI_UDPPACKET_DATA_H_

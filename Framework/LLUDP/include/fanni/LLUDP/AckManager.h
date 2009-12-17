@@ -14,9 +14,44 @@
 #include "Poco/AtomicCounter.h"
 #include "fanni/LockableTemplate.h"
 #include "fanni/Packets/PacketBase.h"
-#include "fanni/LLUDP/UDPData.h"
 
 namespace Fanni {
+
+// TODO @@@ karn's algo
+static const int CONNECTION_TIMEOUT = 15 * 1000000; // 15 sec
+static const int RESEND_TIMEOUT = 750 * 1000; // 0.75 sec
+static const int MAX_RESENDING_TRIES = 0xffff; // will give up transferring after trying to resend n times
+
+// TODO @@@ not thread safe
+// ResendPacket is managed by each connection(thread)
+class ResendPacket {
+private:
+	PacketBasePtr packet;
+	Poco::Timestamp last_sent;
+	int resend_count;
+
+	ResendPacket(ResendPacket &resend_packet);
+	ResendPacket &operator=(ResendPacket &resend_packet);
+
+public:
+	ResendPacket(const PacketBasePtr &packet) :
+		packet(packet->clone()), last_sent(), resend_count(0){}
+	~ResendPacket() {}
+
+	bool shouldResend() {
+		return this->last_sent.isElapsed(RESEND_TIMEOUT);
+	}
+	bool shouldGiveup() { return this->resend_count >= MAX_RESENDING_TRIES; }
+
+	// MEMO @@@ only Call this before send packet
+	PacketBasePtr &get(){
+		this->last_sent.update();
+		this->resend_count++;
+		return this->packet;
+	}
+};
+
+typedef Poco::SharedPtr<ResendPacket> ResendPacketPtr;
 
 // TODO @@@ not thread safe
 class ConnectionStatistics {
@@ -123,10 +158,10 @@ private:
 	void removeResendPacket_unsafe(uint32_t seq);
 
 public:
-	AckManager(ConnectionBase &conn);
+	AckManager(ConnectionBase &pConn);
 	virtual ~AckManager();
-	bool processIncomingPacket(const PacketBasePtr &packet);
-	void processOutgoingPacket(PacketBasePtr &packet);
+	bool processIncomingPacket(const PacketBasePtr &pPacket);
+	void processOutgoingPacket(PacketBasePtr &pPacket);
 };
 
 }

@@ -64,12 +64,12 @@ ConnectionBasePtr TransferNode::createConnection(const PacketBasePtr &packet_bas
 		INFO_LOG("Server: new connection from: " << ep.toString());
 		Poco::SharedPtr<OpenConnectionPacket> packet = packet_base.cast<OpenConnectionPacket>();
 		assert(packet.get());
-		ConnectionBasePtr pConn(new ServerConnection(packet->OpenConnection.Code, ep, *this->packet_serializer, *this));
+		ConnectionBasePtr pConn(new ServerConnection(packet->OpenConnection.Code, ep, this->packet_serializer, *this));
 		return pConn;
 	} else if (packet_id == OpenConnectionReply_ID) {
 		INFO_LOG("Client: new connection to: " << ep.toString());
 		Poco::SharedPtr<OpenConnectionReplyPacket> packet = packet_base.cast<OpenConnectionReplyPacket>();
-		ConnectionBasePtr pConn(new ClientConnection(packet->OpenConnectionReply.Code, ep, *this->packet_serializer, *this));
+		ConnectionBasePtr pConn(new ClientConnection(packet->OpenConnectionReply.Code, ep, this->packet_serializer, *this));
 		return pConn;
 	} else {
 		throw Poco::ApplicationException("unexpected packet type: ", packet_base->header.getPacketID()); // TODO @@@ ???
@@ -87,8 +87,8 @@ ClientConnection &TransferNode::connect(const EndPoint &ep) {
 	OpenConnectionPacket *packet = new OpenConnectionPacket();
 	packet->OpenConnection.Code = circuit_code;
 	PacketBasePtr pPacket(packet);
-	PacketBuffer buffer = this->packet_serializer->serialize(pPacket);
-	this->sendData(buffer, ep);
+	PacketBufferPtr pBuf = this->packet_serializer.serialize(pPacket);
+	this->sendData(pBuf, ep);
 	if (this->connected.tryWait(5000)) {
 		ConnectionBasePtr &pConnBase = this->getConnection(ep);
 		ClientConnection *cConn = dynamic_cast<ClientConnection*>(pConnBase.get());
@@ -103,8 +103,8 @@ bool TransferNode::disconnect(const ClientConnection &cConn) {
 	// switch to client mode
 	CloseConnectionPacket *packet = new CloseConnectionPacket();
 	PacketBasePtr pPacket(packet);
-	PacketBuffer buffer = this->packet_serializer->serialize(pPacket);
-	this->sendData(buffer, cConn.getEndPoint());
+	PacketBufferPtr pBuf = this->packet_serializer.serialize(pPacket);
+	this->sendData(pBuf, cConn.getEndPoint());
 	if (this->disconnected.tryWait(5000)) {
 		return true;
 	} else {

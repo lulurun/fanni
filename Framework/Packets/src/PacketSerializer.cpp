@@ -9,40 +9,40 @@ PacketSerializer::PacketSerializer(const PacketFactory &packet_factory):
 
 PacketSerializer::~PacketSerializer() {}
 
-PacketBuffer PacketSerializer::serialize(const PacketBasePtr &packet) const {
-	PacketBuffer buf(new __PacketBuffer());
-	packet->serializePacket(buf);
-	return buf;
+PacketBufferPtr PacketSerializer::serialize(const PacketBasePtr &pPacket) const {
+	PacketBufferPtr pBuf(new PacketBuffer());
+	pPacket->serializePacket(*pBuf.get());
+	return pBuf;
 }
 
-PacketBasePtr PacketSerializer::deserialize(PacketBuffer &buffer) const {
-	buffer->resetPos();
+PacketBasePtr PacketSerializer::deserialize(PacketBufferPtr &pBuf) const {
+	pBuf->resetPos();
 	PacketHeader header;
-	header.deserialize(buffer);
-	PacketBasePtr packet = this->packet_factory.createPacket(header.getPacketID());
-	if (packet.get() == NULL) {
+	header.deserialize(*pBuf.get());
+	PacketBasePtr pPacket = this->packet_factory.createPacket(header.getPacketID());
+	if (pPacket.get() == NULL) {
 		ErrorException::throw_exception(EXP_Packet, EXP_PRE_MSG, "unknown packet: %08x", header.getPacketID());
 	}
-	buffer->resetPos();
-	packet->deserializePacket(buffer); // TODO @@@ header is deserialized twice !!
-	return packet;
+	pBuf->resetPos();
+	pPacket->deserializePacket(*pBuf.get()); // TODO @@@ header is deserialized twice !!
+	return pPacket;
 }
 
-bool PacketSerializer::isZerocoded(PacketBuffer &buf) {
-    return ((*buf)[0] & PacketHeader::FLAG_ZEROCODED)!=0;
+bool PacketSerializer::isZerocoded(PacketBufferPtr &pBuf) {
+    return ((*pBuf)[0] & PacketHeader::FLAG_ZEROCODED)!=0;
 }
 
-bool PacketSerializer::isAppendedAcks(PacketBuffer &buf) {
-    return ((*buf)[0] & PacketHeader::FLAG_APPENDED_ACKS)!=0;
+bool PacketSerializer::isAppendedAcks(PacketBufferPtr &pBuf) {
+    return ((*pBuf)[0] & PacketHeader::FLAG_APPENDED_ACKS)!=0;
 }
 
-void PacketSerializer::zeroEncode(PacketBuffer &data) {
+void PacketSerializer::zeroEncode(PacketBufferPtr &pBuf) {
 	// Create a copy
-	PacketBuffer src_buf(new __PacketBuffer(data->getConstBuffer(), data->getLength()));
-	int srclen = src_buf->getLength();
-	const unsigned char* src = src_buf->getConstBuffer();
-	int bodylen = isAppendedAcks(src_buf) ? srclen - src[srclen - 1] * 4 - 1 : srclen;
-	unsigned char *dest = data->getBuffer();
+	PacketBufferPtr pSrc(new PacketBuffer(pBuf->getConstBuffer(), pBuf->getLength()));
+	int srclen = pSrc->getLength();
+	const unsigned char* src = pSrc->getConstBuffer();
+	int bodylen = isAppendedAcks(pSrc) ? srclen - src[srclen - 1] * 4 - 1 : srclen;
+	unsigned char *dest = pBuf->getBuffer();
 
 	int zerolen = 6; // Skip header, 6 = header length
 	//int zerolen = 0; // Skip header, 6 = header length
@@ -64,16 +64,16 @@ void PacketSerializer::zeroEncode(PacketBuffer &data) {
 			dest[zerolen++] = src[i];
 		}
 	}
-	data->setPos(zerolen);
+	pBuf->setPos(zerolen);
 }
 
-void PacketSerializer::zeroDecode(PacketBuffer &data) {
+void PacketSerializer::zeroDecode(PacketBufferPtr &pBuf) {
 	// Create a copy
-	PacketBuffer src_buf(new __PacketBuffer(data->getConstBuffer(), data->getLength()));
-	int srclen = src_buf->getLength();
+	PacketBufferPtr pSrc(new PacketBuffer(pBuf->getConstBuffer(), pBuf->getLength()));
+	int srclen = pSrc->getLength();
     int bodylen = srclen;
-	const unsigned char* src = src_buf->getConstBuffer();
-    unsigned char *dest = data->getBuffer();
+	const unsigned char* src = pSrc->getConstBuffer();
+    unsigned char *dest = pBuf->getBuffer();
 
 	int zerolen = 6; // Skip header, 6 = header length
 	//int zerolen = 0; // Skip header, 6 = header length
@@ -92,7 +92,7 @@ void PacketSerializer::zeroDecode(PacketBuffer &data) {
     for (; i < srclen; i++) {
         dest[zerolen++] = src[i];
     }
-	data->setPos(zerolen);
+	pBuf->setPos(zerolen);
 }
 
 }

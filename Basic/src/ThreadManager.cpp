@@ -5,45 +5,32 @@
 using namespace Poco;
 using namespace Fanni;
 
-// TODO @@@ currently not working
-ThreadManager::ThreadManager() {
-	// @@@ do not use the Poco::defaultpool
-	this->thread_pool = new ThreadPool();
-}
+ThreadManager::ThreadManager() {}
 
-ThreadManager::~ThreadManager() {
-	delete this->thread_pool;
-}
+ThreadManager::~ThreadManager() {}
 
-void ThreadManager::deliverTask(TaskPtr &data) {
-	Worker *worker = NULL;
-	{
-		this->delivery_ac++;
-		// TODO @@@ simple delivery policy !!
-		int idx = this->delivery_ac.value() % this->worker_list.size();
-		worker = this->worker_list[idx];
+void ThreadManager::deliverTask(TaskPtr &pTask) {
+	for (WORKER_LIST_TYPE::iterator it = this->worker_list.begin(); it!= this->worker_list.end(); it++) {
+		if ((*it)->isFree()) {
+			(*it)->addTask(pTask);
+			return;
+		}
 	}
-	if (worker) {
-		worker->addTask(data);
-	} else {
-		WarnException::throw_exception(EXP_TEST, EXP_PRE_MSG, "failed to get worker");
+	// can not find a free worker
+	this->delivery_ac++;
+	int idx = this->delivery_ac.value() % this->worker_list.size();
+	this->worker_list[idx]->addTask(pTask);
+}
+
+void ThreadManager::addWorker(WorkerPtr &pWorker) {
+	this->worker_list.push_back(pWorker);
+}
+
+void ThreadManager::stopAll() {
+	for (WORKER_LIST_TYPE::iterator it = this->worker_list.begin(); it!= this->worker_list.end(); it++) {
+		(*it)->stop();
 	}
-}
-
-void ThreadManager::start() {
-	for (WORKER_LIST_TYPE::iterator it = this->worker_list.begin(); it
-			!= this->worker_list.end(); it++) {
-		this->thread_pool->start(**it);
-	}
-}
-
-void ThreadManager::addWorker(Worker *worker) {
-	this->worker_list.push_back(worker);
-}
-
-void ThreadManager::stop() {
 	this->worker_list.clear();
-	this->thread_pool->joinAll();
 	DEBUG_LOG("ThreadManager stopped");
 }
 

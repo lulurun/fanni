@@ -19,16 +19,18 @@ namespace Fanni {
 #define PACKET_BUF_LEN 1500
 #endif
 
-typedef FixedLengthBuffer<PACKET_BUF_LEN> __PacketBuffer;
-typedef Poco::SharedPtr<__PacketBuffer> PacketBuffer;
+typedef FixedLengthBuffer<PACKET_BUF_LEN> PacketBuffer;
+typedef Poco::SharedPtr<PacketBuffer> PacketBufferPtr;
 
 // TODO @@@ finish me
 class PacketBufferPool {
 public:
+/*
 	static PacketBuffer CreatePacketBuffer() {
-		PacketBuffer buffer(new __PacketBuffer());
-		return buffer;
+		PacketBufferPtr pBuf(new PacketBuffer());
+		return pBuf;
 	}
+*/
 };
 
 typedef Serializable<PacketBuffer> PacketSerializable;

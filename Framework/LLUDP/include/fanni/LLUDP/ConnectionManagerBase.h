@@ -22,7 +22,7 @@
 namespace Fanni {
 
 class Fanni_LLUDP_API ConnectionManagerBase {
-private:
+protected:
 	typedef lockable<std::map<std::string, ConnectionBasePtr>> CONNECTION_MAP;
 	mutable CONNECTION_MAP conn_map;
 
@@ -32,8 +32,6 @@ private:
 	bool isConnected_unsafe(const EndPoint &ep) const;
 	ConnectionBasePtr &getConnection_unsafe(const EndPoint &ep) const;
 
-protected:
-	bool tryDispatch(PacketBuffer &buffer, const EndPoint &ep) const;
 	virtual ConnectionBasePtr createConnection(const PacketBasePtr &packet, const EndPoint &ep) = 0;
 
 	Poco::BasicEvent<const EndPoint> ConnectionAdded;

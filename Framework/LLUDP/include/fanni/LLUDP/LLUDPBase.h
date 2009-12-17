@@ -8,10 +8,17 @@
 #ifndef FANNI_LLUDPBASE_H_
 #define FANNI_LLUDPBASE_H_
 
+#include "Poco/AutoPtr.h"
+#include "Poco/Thread.h"
+#include "Poco/Net/DatagramSocket.h"
+#include "Poco/Net/SocketReactor.h"
+#include "Poco/Net/SocketNotification.h"
+#include "fanni/PacketBuffer.h"
+#include "fanni/LLUDP/LLUDP_def.h"
 #include "fanni/Logger.h"
 #include "fanni/EndPoint.h"
+#include "fanni/ThreadManager.h"
 #include "fanni/LLPackets/LLPackets.h"
-#include "fanni/LLUDP/UDPServerBase.h"
 #include "fanni/LLUDP/SystemPacketHandler.h"
 #include "fanni/LLUDP/LocalTaskHandler.h"
 #include "fanni/LLUDP/SystemPacketWorkerBase.h"
@@ -19,29 +26,33 @@
 
 namespace Fanni {
 
-class LLUDPBase : public UDPServerBase, public SystemPacketWorkerBase, public ConnectionManagerBase {
+class Fanni_LLUDP_API LLUDPBase : public SystemPacketWorkerBase, public ConnectionManagerBase {
 protected:
 	EndPoint server_ep;
 	SystemPacketHandlerFactory system_handler_factory;
 	ConnectionPacketHandlerFactory connection_handler_factory;
 	LocalTaskHandlerFactory task_handler_factory;
 
+private:
+	Poco::Net::DatagramSocket socket;
+	Poco::Net::SocketReactor reactor;
+	Poco::Thread reactor_thread;
+
+	// UDPServerHandler
+	void onReadable(const Poco::AutoPtr<Poco::Net::ReadableNotification>& pNf);
+	void onShutdown(const Poco::AutoPtr<Poco::Net::ShutdownNotification>& pNf);
+
+
+	ThreadManager worker_thread_mgr;
+
 public:
-	LLUDPBase(const EndPoint &ep) :
-	  UDPServerBase(ep), // start UDPServer
-	  server_ep(ep) {
-		LLPackets::init(this->packet_factory);
-		this->task_handler_factory.registerHandler("CloseConnection", new CloseConnectionTaskHandler());
-	};
-	virtual ~LLUDPBase() {};
+	LLUDPBase(const EndPoint &ep);
+	virtual ~LLUDPBase();
 
 	// UDPServerBase
-	virtual void processIncomingData(PacketBuffer &buffer, const EndPoint &ep) {
-		if (!this->tryDispatch(buffer, ep)) {
-			TaskPtr pTask(new IncomingData(buffer, ep));
-			this->addTask(pTask);
-		}
-	}
+	inline int sendData(PacketBufferPtr &pBuf, const EndPoint &ep) {
+		return this->socket.sendTo(pBuf->getBuffer(), pBuf->getLength(), ep);
+	};
 
 	// SystemPacketWorkerBase
 	virtual void dispatch(const PacketBasePtr &packet, const EndPoint &ep) {

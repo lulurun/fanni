@@ -18,21 +18,21 @@ void PacketHeader::serialize(PacketBuffer &buffer) const {
 	this->undef.serialize(buffer);
 	switch (this->freq) {
 	case FREQ_LOW:
-		buffer->putValue<uint16_t>(0xFFFF);
-		buffer->putValue<uint16_t>(this->id << 16 >> 16);
+		buffer.putValue<uint16_t>(0xFFFF);
+		buffer.putValue<uint16_t>(this->id << 16 >> 16);
 		break;
 	case FREQ_MEDIUM:
-		buffer->putValue<uint8_t>(0xFF);
-		buffer->putValue<uint8_t>(this->id << 24 >> 24);
+		buffer.putValue<uint8_t>(0xFF);
+		buffer.putValue<uint8_t>(this->id << 24 >> 24);
 		break;
 	case FREQ_HIGH:
-		buffer->putValue<uint8_t>(this->id << 24 >> 24);
+		buffer.putValue<uint8_t>(this->id << 24 >> 24);
 		break;
 	case FREQ_FIXED:
 		// TODO @@@ * LOW == FIXED
 		// in fact, no such case
-		buffer->putValue<uint16_t>(0xFFFF);
-		buffer->putValue<uint16_t>(this->id << 16 >> 16);
+		buffer.putValue<uint16_t>(0xFFFF);
+		buffer.putValue<uint16_t>(this->id << 16 >> 16);
 		break;
 	case FREQ_UNKNOWN:
     	ErrorException::throw_exception(EXP_Packet, EXP_PRE_MSG, "frequency is not initialized");
@@ -47,18 +47,18 @@ void PacketHeader::deserialize(PacketBuffer &buffer) {
 	this->flag.deserialize(buffer);
 	this->sequence.deserialize(buffer);
 	this->undef.deserialize(buffer);
-	uint8_t c1 = buffer->getValue<uint8_t>();
+	uint8_t c1 = buffer.getValue<uint8_t>();
 	if (c1 != 0xFF) {
 		this->freq = FREQ_HIGH;
 		this->id = c1;
 	} else {
-		uint8_t c2 = buffer->getValue<uint8_t>();
+		uint8_t c2 = buffer.getValue<uint8_t>();
 		if (c2 != 0xFF) {
 			this->freq = FREQ_MEDIUM;
 			this->id = c2 | 0x00FF0000;
 		} else {
 			this->freq = FREQ_LOW;
-			this->id = buffer->getValue<uint16_t>()  | 0xFFFF0000;
+			this->id = buffer.getValue<uint16_t>()  | 0xFFFF0000;
 			// TODO @@@ * LOW == FIXED
 		}
 	}

@@ -21,34 +21,29 @@ LLUDPBase &ConnectionBase::getUDPBase() const {
 	return this->udp;
 }
 
-void ConnectionBase::doTask(TaskPtr &task) {
-	IncomingData *incoming_data = dynamic_cast<IncomingData *>(task.get());
-	assert(incoming_data);
-	assert(incoming_data->ep.toString() == this->getEndPoint().toString()); // TODO @@@ ???
-	PacketBasePtr packet = this->packet_serializer.deserialize(incoming_data->data);
-
+void ConnectionBase::onDataReceived(const void* pSender, PacketBufferPtr &pBuf) {
+	PacketBasePtr pPacket = this->packet_serializer.deserialize(pBuf);
 	this->last_received.update();
-	if (this->ack_mgr.processIncomingPacket(packet)) {
+	if (this->ack_mgr.processIncomingPacket(pPacket)) {
 		try {
-			const ConnectionPacketHandlerBase &handler = this->connection_handler_factory.getHandler(packet->header.getPacketID());
-			handler(this, packet);
+			const ConnectionPacketHandlerBase &handler =
+				this->connection_handler_factory.getHandler(pPacket->header.getPacketID());
+			handler(this, pPacket);
 		} catch (Poco::NotFoundException &ex) {
-			ERROR_LOG("Exception: " << packet->header.getPacketID() << " " << ex.message());
+			ERROR_LOG("Exception: " << pPacket->header.getPacketID() << " " << ex.message());
 		}
 	}
 }
 
-void ConnectionBase::sendPacket(PacketBasePtr &packet) {
-	this->ack_mgr.processOutgoingPacket(packet);
-	PacketBuffer buffer = this->packet_serializer.serialize(packet);
-	this->udp.sendData(buffer, this->ep);
+void ConnectionBase::sendPacket(PacketBasePtr &pPacket) {
+	this->ack_mgr.processOutgoingPacket(pPacket);
+	PacketBufferPtr pBuf = this->packet_serializer.serialize(pPacket);
+	this->udp.sendData(pBuf, this->ep);
 }
 
 bool ConnectionBase::checkALIVE() {
 	return !this->last_received.isElapsed(CONNECTION_TIMEOUT);
 }
 
-void ConnectionBase::close() {
-	this->stop();
-}
+void ConnectionBase::close() {}
 

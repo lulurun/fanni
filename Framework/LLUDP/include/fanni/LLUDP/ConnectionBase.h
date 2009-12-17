@@ -11,22 +11,20 @@
 #include <cstdio>
 #include <string>
 #include "Poco/SharedPtr.h"
-#include "Poco/DateTimeFormatter.h"
 #include "Poco/Timestamp.h"
+#include "Poco/BasicEvent.h"
 #include "fanni/EndPoint.h"
-#include "fanni/TaskQueue.h"
-#include "fanni/ThreadWorker.h"
+#include "fanni/PacketBuffer.h"
 #include "fanni/Packets/PacketBase.h"
 #include "fanni/Packets/PacketSerializer.h"
 #include "fanni/LLUDP/LLUDP_def.h"
 #include "fanni/LLUDP/ConnectionPacketHandler.h"
-#include "fanni/LLUDP/ConnectionPacketWorkerBase.h"
 #include "fanni/LLUDP/AckManager.h"
 
 namespace Fanni {
 
 class LLUDPBase;
-class Fanni_LLUDP_API ConnectionBase : public Worker {
+class Fanni_LLUDP_API ConnectionBase {
 private:
 	const PacketSerializer &packet_serializer;
 	const ConnectionPacketHandlerFactory &connection_handler_factory;
@@ -40,16 +38,14 @@ protected:
 public:
 	ConnectionBase(const EndPoint &ep, const PacketSerializer &packet_serializer, LLUDPBase &udp);
 	virtual ~ConnectionBase();
-	void sendPacket(PacketBasePtr &packet);
+	void sendPacket(PacketBasePtr &pPacket);
 	bool checkALIVE();
 	LLUDPBase &getUDPBase() const;
 	const EndPoint &getEndPoint() const;
 
-	void doTask(TaskPtr &pTask);
 	virtual void close();
 
-	Poco::BasicEvent<int> ClosedEvent;
-	Poco::BasicEvent<int> ConnectedEvent;
+	void onDataReceived(const void* pSender, PacketBufferPtr &pBuf);
 };
 
 typedef Poco::SharedPtr<ConnectionBase> ConnectionBasePtr;

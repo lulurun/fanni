@@ -13,7 +13,7 @@ using namespace Fanni;
 using namespace Poco;
 
 Worker::Worker() : _name(""), _stop(false) {
-	this->start();
+	this->start(); // TODO @@@ dont call virtual func in ctor
 }
 
 Worker::~Worker() {
@@ -36,11 +36,13 @@ void Worker::run() {
 	while (!_stop) {
 		TaskPtr pTask(this->_queue.get());
 		if (pTask && !dynamic_cast<StopTask *>(pTask.get())) {
+			this->setBusy();
 			try {
 				this->doTask(pTask);
 			} catch (Poco::Exception &e) {
 				ERROR_LOG(this->_name << " caught exception: " << e.message());
 			}
+			this->setFree();
 		} else {
 			break;
 		}
@@ -52,6 +54,7 @@ void Worker::start() {
 }
 
 void Worker::stop() {
+	// TODO @@@ lock ??
 	if (!_stop) {
 		try {
 			this->_stop = true;
@@ -64,4 +67,3 @@ void Worker::stop() {
 		}
 	}
 }
-

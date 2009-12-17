@@ -16,14 +16,14 @@ public:
 	PacketSerializer(const PacketFactory &packet_factory);
 	virtual ~PacketSerializer();
 
-	PacketBuffer serialize(const PacketBasePtr &packet) const;
-	PacketBasePtr deserialize(PacketBuffer &buf) const;
+	PacketBufferPtr serialize(const PacketBasePtr &pPacket) const;
+	PacketBasePtr deserialize(PacketBufferPtr &pBuf) const;
 
-	static bool isZerocoded(PacketBuffer &buf);
-	static bool isAppendedAcks(PacketBuffer &buf);
+	static bool isZerocoded(PacketBufferPtr &pBuf);
+	static bool isAppendedAcks(PacketBufferPtr &pBuf);
 
-	static void zeroEncode(PacketBuffer &buf);
-	static void zeroDecode(PacketBuffer &buf);
+	static void zeroEncode(PacketBufferPtr &pBuf);
+	static void zeroDecode(PacketBufferPtr &pBuf);
 
 };
 

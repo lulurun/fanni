@@ -5,22 +5,20 @@
 
 using namespace Fanni;
 
-SystemPacketWorkerBase::SystemPacketWorkerBase() {
-	this->packet_serializer = new PacketSerializer(this->packet_factory);
+SystemPacketWorkerBase::SystemPacketWorkerBase() : packet_serializer(this->packet_factory) {
 	DEBUG_LOG("SystemPacketWorker started");
 }
 
 SystemPacketWorkerBase::~SystemPacketWorkerBase() {
-	delete this->packet_serializer;
 	DEBUG_LOG("SystemPacketWorker stopped");
 }
 
 void SystemPacketWorkerBase::doTask(TaskPtr &pTask) {
 	try {
-		IncomingData *incoming_data = dynamic_cast<IncomingData *>(pTask.get());
-		if (incoming_data) {
-			PacketBasePtr packet = this->packet_serializer->deserialize(incoming_data->data);
-			this->dispatch(packet, incoming_data->ep);
+		SystemPacketData *data = dynamic_cast<SystemPacketData *>(pTask.get());
+		if (data) {
+			PacketBasePtr pPacket = this->packet_serializer.deserialize(data->pBuf);
+			this->dispatch(pPacket, data->ep);
 		} else {
 			LocalTaskBasePtr pLocTask = pTask.cast<LocalTaskBase>();
 			assert(pLocTask.get());

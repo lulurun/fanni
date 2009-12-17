@@ -65,7 +65,6 @@ void TransferNodeConnectionBase::closeTransfer(const UUID &trans_id) {
 // ClientConnection
 ClientConnection::ClientConnection(uint32_t circuit_code, const EndPoint &ep, const PacketSerializer &packet_serializer, LLUDPBase &udp):
 	TransferNodeConnectionBase(circuit_code, ep, packet_serializer, udp) {
-	this->setName("ClientConnection_" + ep.toString());
 	this->FileInfoReplyEvent += Poco::Delegate<ClientConnection, const FileInfoReplyPacket>(this, &ClientConnection::onFileInfoReply);
 	this->TransferCompleteEvent += Poco::Delegate<ClientConnection, const TransferCompletePacket>(this, &ClientConnection::onTransferComplete);
 }
@@ -148,9 +147,9 @@ void ClientConnection::onFileInfoReply(const void* pSender, const FileInfoReplyP
 		PacketBasePtr pPacket(packet);
 		this->sendPacket(pPacket);
 		left_size -= read_size;
-		if (data_number % 5 == 0) {
+		if (data_number % 50 == 0) {
 			// MEMO @@@ do not send too much
-			Sleep(100);
+			Sleep(50);
 		}
 	}
 	fs.close();
@@ -170,7 +169,6 @@ void ClientConnection::onTransferComplete(const void* pSender, const TransferCom
 // ServerConnection
 ServerConnection::ServerConnection(uint32_t circuit_code, const EndPoint &ep, const PacketSerializer &packet_serializer, LLUDPBase &udp):
 	TransferNodeConnectionBase(circuit_code, ep, packet_serializer, udp) {
-	this->setName("SystemConnection_" + ep.toString());
 	this->FileInfoEvent += Poco::Delegate<ServerConnection, const FileInfoPacket>(this, &ServerConnection::onFileInfo);
 	this->FileDataEvent += Poco::Delegate<ServerConnection, const FileDataPacket>(this, &ServerConnection::onFileData);
 }

@@ -96,13 +96,13 @@ public:
 
 	virtual void serialize(PacketBuffer &buffer) const {
 		uint8_t length = static_cast<uint8_t>(this->val.size());
-		buffer->putValue<uint8_t>(length);
+		buffer.putValue<uint8_t>(length);
 		for(size_t i=0; i<length; i++) {
 			this->val[i].serialize(buffer);
 		}
 	}
 	virtual void deserialize(PacketBuffer &buffer) {
-		uint8_t length = buffer->getValue<uint8_t>();
+		uint8_t length = buffer.getValue<uint8_t>();
 		this->val.resize(length);
 		for(size_t i=0; i<length; i++) {
 			try {
@@ -124,10 +124,10 @@ public:
 	SerializableFixedSizeValue() : val(0){ };
 	virtual ~SerializableFixedSizeValue() {};
 	virtual void serialize(PacketBuffer &buffer) const {
-		buffer->putValue<T>(this->val);
+		buffer.putValue<T>(this->val);
 	};
 	virtual void deserialize(PacketBuffer &buffer) {
-		this->val = buffer->getValue<T>();
+		this->val = buffer.getValue<T>();
 	};
 	SerializableFixedSizeValue<T> &operator=(const T &val) {
 		this->val = val;
@@ -181,10 +181,10 @@ public:
 	}
 	virtual ~SerializableFixed() {};
 	virtual void serialize(PacketBuffer &buffer) const {
-		buffer->putBuf(this->val, Length);
+		buffer.putBuf(this->val, Length);
 	}
 	virtual void deserialize(PacketBuffer &buffer) {
-		buffer->getBuf(this->val, Length);
+		buffer.getBuf(this->val, Length);
 	}
 };
 
@@ -220,8 +220,8 @@ public:
 	}
 
 	void operator=(const PacketBuffer &buffer) {
-		this->val.resize(buffer->getLength());
-		::memcpy(&this->val[0], buffer->getConstBuffer(), buffer->getLength());
+		this->val.resize(buffer.getLength());
+		::memcpy(&this->val[0], buffer.getConstBuffer(), buffer.getLength());
 	}
 
 	void operator=(const std::string &buffer) {

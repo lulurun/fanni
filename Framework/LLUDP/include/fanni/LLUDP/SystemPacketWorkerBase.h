@@ -11,7 +11,6 @@
 #include "fanni/ThreadWorker.h"
 #include "fanni/Packets/PacketBase.h"
 #include "fanni/Packets/PacketSerializer.h"
-#include "fanni/TaskQueue.h"
 #include "fanni/LLUDP/LLUDP_def.h"
 
 namespace Fanni {
@@ -23,7 +22,7 @@ public:
 
 protected:
 	PacketFactory packet_factory;
-	PacketSerializer *packet_serializer;
+	PacketSerializer packet_serializer;
 
 	void doTask(TaskPtr &task);
 	virtual void dispatch(const PacketBasePtr &packet, const EndPoint &ep) = 0;
