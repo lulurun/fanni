@@ -192,10 +192,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\ConnectionPacketWorkerBase.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\LLUDPBase.cpp"
 				>
 			</File>
@@ -231,10 +227,6 @@
 			</File>
 			<File
 				RelativePath=".\include\fanni\LLUDP\ConnectionPacketHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\fanni\LLUDP\ConnectionPacketWorkerBase.h"
 				>
 			</File>
 			<File

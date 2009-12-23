@@ -15,7 +15,7 @@ SystemPacketWorkerBase::~SystemPacketWorkerBase() {
 
 void SystemPacketWorkerBase::doTask(TaskPtr &pTask) {
 	try {
-		SystemPacketData *data = dynamic_cast<SystemPacketData *>(pTask.get());
+		UDPPacketData *data = dynamic_cast<UDPPacketData *>(pTask.get());
 		if (data) {
 			PacketBasePtr pPacket = this->packet_serializer.deserialize(data->pBuf);
 			this->dispatch(pPacket, data->ep);

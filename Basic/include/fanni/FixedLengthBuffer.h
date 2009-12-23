@@ -17,7 +17,7 @@ class FixedLengthBuffer {
 private:
 	unsigned char *_ptr;
 	unsigned char *_tail;
-	unsigned char *_head;
+	unsigned char _head[FixedLength];
 
 	void check_capability(size_t len) const {
 		if (this->getLength() + len >= FixedLength) {
@@ -35,25 +35,21 @@ public:
 	static const unsigned int Capacity = FixedLength;
 
 	FixedLengthBuffer() {
-		this->_head = new unsigned char[FixedLength];
 		this->_ptr = this->_head;
 		this->_tail = this->_head;
 	};
 	FixedLengthBuffer(const unsigned char *data, size_t len) {
-		this->_head = new unsigned char[FixedLength];
 		::memcpy(this->_head, data, len);
 		this->_ptr = this->_head;
 		this->_tail = this->_head + len;
 	};
 	FixedLengthBuffer(const FixedLengthBuffer &buf) {
-		this->_head = new unsigned char[FixedLength];
 		size_t len = buf.getLength();
 		::memcpy(this->_head, buf._head, len);
 		this->_ptr = this->_head;
 		this->_tail = this->_head + len;
 	};
 	~FixedLengthBuffer() {
-		delete this->_head;
 	};
 
 	unsigned char operator[](int i) const {

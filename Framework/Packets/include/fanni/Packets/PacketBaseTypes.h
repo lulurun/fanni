@@ -2,6 +2,7 @@
 #define SERIALIZABLEBASETYPES_H_
 
 #include <string>
+#include <list>
 #include <vector>
 #include <string.h>
 #include "fanni/UUID.h"
@@ -15,14 +16,13 @@ namespace Fanni {
 template<class T, size_t Length>
 class Fanni_Packets_API MultipleSerializable : public PacketSerializable {
 public:
-	// TODO @@@ need better data structure
-	std::vector<T> val;
+	typedef std::list<T> VAR_TYPE;
+
+private:
+	VAR_TYPE val;
 public:
 	MultipleSerializable() {}
-	MultipleSerializable(const std::vector<T> &val) {
-		// @@@ copy
-		this->val = val;
-	}
+	MultipleSerializable(const std::list<T> &val) : val(val) {}
 	virtual ~MultipleSerializable() {};
 
 	void push(const T &obj) {
@@ -33,28 +33,24 @@ public:
 		}
 	}
 
-	const T &operator[](size_t idx) const {
-		if (idx >= Length) {
-	    	ErrorException::throw_exception(EXP_Packet, EXP_PRE_MSG, "out of range");
-		}
-		return this->val[idx];
-	}
+	operator VAR_TYPE &() { return this->val; }
+	operator const VAR_TYPE &() const { return this->val; }
 
 	virtual void serialize(PacketBuffer &buffer) const {
 		if (this->val.size() != Length) {
 	    	ErrorException::throw_exception(EXP_Packet, EXP_PRE_MSG, "not enough blocks for this MultipleSerializable ");
 		}
-		for(size_t i=0; i<Length; i++) {
-			this->val[i].serialize(buffer);
+		for(VAR_TYPE::const_iterator it = this->val.begin(); it != this->val.end(); it++) {
+			it->serialize(buffer);
 		}
 	}
 	virtual void deserialize(PacketBuffer &buffer) {
 		if (this->val.size() != Length) {
 			this->val.resize(Length);
 		}
-		for(size_t i=0; i<Length; i++) {
+		for(VAR_TYPE::iterator it = this->val.begin(); it != this->val.end(); it++) {
 			try {
-				this->val[i].deserialize(buffer);
+				it->deserialize(buffer);
 			} catch (ErrorException &e){
 		    	ErrorException::throw_exception(EXP_Packet, EXP_PRE_MSG, "deserialize Failed %s", e.get_msg());
 			}
@@ -65,12 +61,15 @@ public:
 template<class T>
 class Fanni_Packets_API VariableSerializable : public PacketSerializable {
 public:
+	typedef std::list<T> VAR_TYPE;
+
+private:
 	static const uint16_t MAX_LENGTH = 256;
-	std::vector<T> val;
+	VAR_TYPE val;
 
 public:
 	VariableSerializable() {}
-	VariableSerializable(const std::vector<T> &val) {
+	VariableSerializable(const std::list<T> &val) {
 		this->val = val;
 	}
 	virtual ~VariableSerializable() {};
@@ -83,30 +82,24 @@ public:
 		}
 	}
 
-	size_t size() const {
-		return this->val.size();
-	}
-
-	const T &operator[](size_t idx) const {
-		if (idx >= this->val.size()) {
-	    	ErrorException::throw_exception(EXP_Packet, EXP_PRE_MSG, "out of range");
-		}
-		return this->val[idx];
-	}
+	operator VAR_TYPE &() { return this->val; }
+	operator const VAR_TYPE &() const { return this->val; }
+	size_t size() const { return this->val.size(); }
 
 	virtual void serialize(PacketBuffer &buffer) const {
 		uint8_t length = static_cast<uint8_t>(this->val.size());
 		buffer.putValue<uint8_t>(length);
-		for(size_t i=0; i<length; i++) {
-			this->val[i].serialize(buffer);
+		for(VAR_TYPE::const_iterator it = this->val.begin(); it != this->val.end(); it++) {
+			it->serialize(buffer);
 		}
 	}
+
 	virtual void deserialize(PacketBuffer &buffer) {
 		uint8_t length = buffer.getValue<uint8_t>();
 		this->val.resize(length);
-		for(size_t i=0; i<length; i++) {
+		for(VAR_TYPE::iterator it = this->val.begin(); it != this->val.end(); it++) {
 			try {
-				this->val[i].deserialize(buffer);
+				it->deserialize(buffer);
 			} catch (ErrorException &e){
 				ErrorException::throw_exception(EXP_Packet, EXP_PRE_MSG, "deserialize Failed %s", e.get_msg());
 			}
@@ -122,6 +115,7 @@ private:
 
 public:
 	SerializableFixedSizeValue() : val(0){ };
+	SerializableFixedSizeValue(const T &val) : val(val){ };
 	virtual ~SerializableFixedSizeValue() {};
 	virtual void serialize(PacketBuffer &buffer) const {
 		buffer.putValue<T>(this->val);
@@ -133,26 +127,11 @@ public:
 		this->val = val;
 		return *this;
 	}
-	/*
-	void operator |=(const T &val) {
-		this->val |= val;
-	}
-	void operator &=(const T &val) {
-		this->val &= val;
-	}
-	*/
-	T operator |(const T &val) {
-		return this->val | val;
-	}
-	T operator &(const T &val) {
-		return this->val & val;
-	}
-	operator T&() {
-		return this->val;
-	}
-	operator const T&() const {
-		return this->val;
-	}
+
+	T operator |(const T &val) { return this->val | val; }
+	T operator &(const T &val) { return this->val & val; }
+	operator T&() { return this->val; }
+	operator const T&() const { return this->val; }
 };
 
 typedef SerializableFixedSizeValue<double> Fanni_Packets_API SerializableF64;
@@ -171,11 +150,14 @@ typedef SerializableFixedSizeValue<uint16_t> Fanni_Packets_API SerializableIPPOR
 template<int Length>
 class Fanni_Packets_API SerializableFixed : public PacketSerializable {
 public:
-	typedef unsigned char BUF_TYPE[Length];
-	BUF_TYPE val;
+	typedef unsigned char VAR_TYPE[Length];
+
+private:
+	VAR_TYPE val;
+
 public:
 	SerializableFixed() {}
-	SerializableFixed &operator=(const BUF_TYPE &val) {
+	SerializableFixed &operator=(const VAR_TYPE &val) {
 		::memcpy(this->val, val.data(), Length);
 		return *this;
 	}
@@ -189,12 +171,17 @@ public:
 };
 
 class Fanni_Packets_API SerializableUUID : public PacketSerializable {
-public:
+private:
 	UUID val;
 
 public:
 	SerializableUUID() {};
+	SerializableUUID(const UUID &val) : val(val) {};
 	virtual ~SerializableUUID() {};
+
+	//operator UUID &() { return this->val; }
+	operator const UUID &() const { return this->val; }
+
 	virtual void serialize(PacketBuffer &buffer) const;
 	virtual void deserialize(PacketBuffer &buffer);
 	void operator= (const UUID &uuid);
@@ -202,21 +189,30 @@ public:
 
 class Fanni_Packets_API SerializableVariable2 : public PacketSerializable {
 public:
-	std::vector<unsigned char> val;
+	typedef std::vector<unsigned char> VAR_TYPE;
+
+private:
+	VAR_TYPE val;
+
 public:
 	SerializableVariable2() { };
+	SerializableVariable2(const VAR_TYPE &val) : val(val) { };
 	virtual ~SerializableVariable2() { };
 	virtual void serialize(PacketBuffer &buffer) const;
 	virtual void deserialize(PacketBuffer &buffer);
 
 	std::string asString() const {
-		std::string str((char*)&this->val[0], 0, this->val.size());
+		std::string str(reinterpret_cast<const char*>(&this->val[0]), 0, this->val.size());
 		return str;
 	}
 
 	void setValue(const unsigned char* data, int len) {
 		this->val.resize(len);
 		::memcpy(&this->val[0], data, len);
+	}
+
+	const VAR_TYPE &getValue() const {
+		return this->val;
 	}
 
 	void operator=(const PacketBuffer &buffer) {
@@ -233,9 +229,14 @@ public:
 
 class Fanni_Packets_API SerializableVariable1 : public PacketSerializable {
 public:
-	std::vector<unsigned char> val;
+	typedef std::vector<unsigned char> VAR_TYPE;
+
+private:
+	VAR_TYPE val;
+
 public:
 	SerializableVariable1() { };
+	SerializableVariable1(const VAR_TYPE &val) : val(val) { };
 	virtual ~SerializableVariable1() { };
 	virtual void serialize(PacketBuffer &buffer) const;
 	virtual void deserialize(PacketBuffer &buffer);

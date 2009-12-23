@@ -54,10 +54,10 @@ void TransferNodeConnectionBase::closeTransfer(const UUID &trans_id) {
 	try {
 		Poco::FastMutex::ScopedLock l(this->status_map);
 		StatusPtr &pStatus = this->getTransfer_unsafe(trans_id); // TODO @@@ needed ?
-		INFO_LOG("send transfer success: " << trans_id.toString());
+		INFO_LOG("transfer success: " << trans_id.toString());
 		this->status_map.erase(trans_id.toString());
 	} catch (Poco::NotFoundException &ex) {
-		WARN_LOG("send transfer is no longer under manage: " << ex.message());
+		WARN_LOG("transfer is no longer under management: " << ex.message());
 	}
 }
 
@@ -109,7 +109,7 @@ bool ClientConnection::sendFile(const std::string &file_path) {
 
 void ClientConnection::onFileInfoReply(const void* pSender, const FileInfoReplyPacket &packet) {
 	TRACE_LOG("enter");
-	UUID transfer_id = packet.FileInfo.ReceiverTransferID.val; // TODO @@@ remove val
+	UUID transfer_id = packet.FileInfo.ReceiverTransferID;
 	StatusPtr pStatus;
 	try {
 		pStatus = this->getTransfer(transfer_id);
@@ -160,7 +160,7 @@ void ClientConnection::onFileInfoReply(const void* pSender, const FileInfoReplyP
 
 void ClientConnection::onTransferComplete(const void* pSender, const TransferCompletePacket &packet) {
 	TRACE_LOG("enter");
-	StatusPtr &pStatus = this->getTransfer(packet.FileData.SenderTransferID.val);
+	StatusPtr &pStatus = this->getTransfer(packet.FileData.SenderTransferID);
 	pStatus->setComplete();
 	TRACE_LOG("exit");
 }
@@ -190,7 +190,7 @@ StatusPtr ServerConnection::createStatus(uint32_t file_size, const std::string f
 void ServerConnection::onFileInfo(const void* pSender, const FileInfoPacket &packet) {
 	TRACE_LOG("enter");
 	std::string file_name = packet.FileInfo.Name.asString();
-	UUID transfer_id = packet.FileInfo.SenderTransferID.val; // TODO @@@ remove .val
+	UUID transfer_id = packet.FileInfo.SenderTransferID;
 	StatusPtr pStatus = this->createStatus(packet.FileInfo.Size, file_name, transfer_id);
 	INFO_LOG("got file info, prepare to receive: " << file_name << " " << transfer_id.toString());
 	// send reply packet
@@ -206,20 +206,15 @@ void ServerConnection::onFileData(const void* pSender, const FileDataPacket &pac
 	TRACE_LOG("enter");
 	StatusPtr pStatus;
 	try {
-		pStatus = this->getTransfer(packet.FileData.ReceiverTransferID.val);
+		pStatus = this->getTransfer(packet.FileData.ReceiverTransferID);
 	} catch (Poco::NotFoundException &ex) {
 		WARN_LOG("unknown FileDataPacket: " << ex.message());
 		return;
 	}
-	if (pStatus->update(packet.FileData.DataNumber, &packet.FileData.Data.val[0], packet.FileData.Data.val.size())) {
-		// send back to sender
-		TransferCompletePacket *complete_packet = new TransferCompletePacket();
-		complete_packet->FileData.SenderTransferID = pStatus->getTransferID();
-		PacketBasePtr pPacket(complete_packet);
-		this->sendPacket(pPacket);
-
-		INFO_LOG("received all file data: " << pStatus->getFileName() << " " << packet.FileData.ReceiverTransferID.val.toString());
-		string out_file = pStatus->getFileName() + "_" + packet.FileData.ReceiverTransferID.val.toString();
+	if (pStatus->update(packet.FileData.DataNumber, &packet.FileData.Data.getValue()[0], packet.FileData.Data.getValue().size())) {
+		INFO_LOG("received all file data: " << pStatus->getFileName() << " " <<
+			static_cast<const UUID &>(packet.FileData.ReceiverTransferID).toString());
+		string out_file = pStatus->getFileName() + "_" + static_cast<const UUID &>(packet.FileData.ReceiverTransferID).toString();
 		ofstream fs(out_file.c_str(), ios::binary);
 		if (fs.fail()) {
 			ERROR_LOG("unable to open file for writing" << out_file);
@@ -228,7 +223,13 @@ void ServerConnection::onFileData(const void* pSender, const FileDataPacket &pac
 		fs.write(reinterpret_cast<const char *>(pStatus->getFileBuffer()), pStatus->getFileSize());
 		fs.close();
 		// close this transfer, release memory // server
-		this->closeTransfer(packet.FileData.ReceiverTransferID.val);
+		this->closeTransfer(packet.FileData.ReceiverTransferID);
+
+		// send back to sender
+		TransferCompletePacket *complete_packet = new TransferCompletePacket();
+		complete_packet->FileData.SenderTransferID = pStatus->getTransferID();
+		PacketBasePtr pPacket(complete_packet);
+		this->sendPacket(pPacket);
 	}
 	TRACE_LOG("exit");
 }

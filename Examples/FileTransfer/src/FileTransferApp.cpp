@@ -113,20 +113,22 @@ protected:
 	}
 
 	void startClient() {
-		try {
-			EndPoint server_ep("0.0.0.0", 0);
-			TransferNode node(server_ep);
-			EndPoint connect_ep(this->ip, this->port);
-			INFO_LOG("send " << this->path << " to " << connect_ep.toString());
-			ClientConnection &cConn = node.connect(connect_ep);
-			cConn.sendFile(this->path);
-			if (node.disconnect(cConn)) {
-				INFO_LOG("disconnected");
-			} else {
-				INFO_LOG("disconnected without receiving reply");
+		for (int i=0; i<100; i++) {
+			try {
+				EndPoint server_ep("0.0.0.0", 0);
+				TransferNode node(server_ep);
+				EndPoint connect_ep(this->ip, this->port);
+				INFO_LOG("send " << this->path << " to " << connect_ep.toString());
+				ClientConnection &cConn = node.connect(connect_ep);
+				cConn.sendFile(this->path);
+				if (node.disconnect(cConn)) {
+					INFO_LOG("disconnected");
+				} else {
+					INFO_LOG("disconnected without receiving reply");
+				}
+			} catch (Poco::Exception &ex) {
+				ERROR_LOG("startClient Exception: " << ex.message());
 			}
-		} catch (Poco::Exception &ex) {
-			ERROR_LOG("startClient Exception: " << ex.message());
 		}
 	}
 

@@ -25,12 +25,6 @@ typedef Poco::SharedPtr<PacketBuffer> PacketBufferPtr;
 // TODO @@@ finish me
 class PacketBufferPool {
 public:
-/*
-	static PacketBuffer CreatePacketBuffer() {
-		PacketBufferPtr pBuf(new PacketBuffer());
-		return pBuf;
-	}
-*/
 };
 
 typedef Serializable<PacketBuffer> PacketSerializable;

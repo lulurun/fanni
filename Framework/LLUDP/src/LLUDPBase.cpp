@@ -4,19 +4,18 @@
 
 using namespace Fanni;
 
-class ConnectionPacketData : public TaskBase {
+class ConnectionPacketTask : public UDPPacketData {
 public:
-	PacketBufferPtr pBuf;
 	ConnectionBasePtr &pConn;
 
-	ConnectionPacketData(PacketBufferPtr &pBuf, ConnectionBasePtr &pConn) : pBuf(pBuf), pConn(pConn) {}
-	virtual ~ConnectionPacketData() {}
+	ConnectionPacketTask(UDPPacketData &pUDPData, ConnectionBasePtr &pConn) : UDPPacketData(pUDPData), pConn(pConn) {};
+	virtual ~ConnectionPacketTask() {};
 };
 
 class LLUDPBaseWorker : public Worker {
 private:
 	virtual void doTask(TaskPtr &pTask) {
-		ConnectionPacketData *data = dynamic_cast<ConnectionPacketData *>(pTask.get());
+		ConnectionPacketTask *data = dynamic_cast<ConnectionPacketTask *>(pTask.get());
 		if (data != NULL) {
 			data->pConn->onDataReceived(this, data->pBuf);
 		} else {
@@ -27,7 +26,7 @@ private:
 
 LLUDPBase::LLUDPBase(const EndPoint &ep) : server_ep(ep) {
 	// start worker threads
-	for (int i=0; i<5; i++) {
+	for (int i=0; i<15; i++) {
 		WorkerPtr pWorker(new LLUDPBaseWorker());
 		this->worker_thread_mgr.addWorker(pWorker);
 	}
@@ -54,10 +53,10 @@ LLUDPBase::~LLUDPBase() {
 }
 
 void LLUDPBase::onReadable(const Poco::AutoPtr<Poco::Net::ReadableNotification>& pNf) {
-	PacketBufferPtr pBuf(new PacketBuffer());
-	EndPoint ep;
+	UDPPacketData *data = new UDPPacketData();
+	TaskPtr pTask(data);
 	// receive
-	int recv_len = this->socket.receiveFrom(pBuf->getBuffer(), PACKET_BUF_LEN, ep);
+	int recv_len = this->socket.receiveFrom(data->pBuf->getBuffer(), PACKET_BUF_LEN, data->ep);
 	if (recv_len == -1) {
 		ERROR_LOG("recvfrom() returned -1");
 		return;
@@ -65,16 +64,15 @@ void LLUDPBase::onReadable(const Poco::AutoPtr<Poco::Net::ReadableNotification>&
 		ERROR_LOG("Connection Close");
 		return;
 	}
-	pBuf->setLength(recv_len);
+	data->pBuf->setLength(recv_len);
 	// dispatch
 	{
 		Poco::FastMutex::ScopedLock l(this->conn_map);
-		if (this->isConnected_unsafe(ep)) {
-			ConnectionBasePtr &pConn = this->getConnection_unsafe(ep);
-			TaskPtr pTask(new ConnectionPacketData(pBuf, pConn));
+		if (this->isConnected_unsafe(data->ep)) {
+			ConnectionBasePtr &pConn = this->getConnection_unsafe(data->ep);
+			TaskPtr pTask(new ConnectionPacketTask(*data, pConn));
 			this->worker_thread_mgr.deliverTask(pTask);
 		} else {
-			TaskPtr pTask(new SystemPacketData(pBuf, ep));
 			this->addTask(pTask);
 		}
 	}

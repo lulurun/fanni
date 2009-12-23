@@ -14,30 +14,6 @@
 
 namespace Fanni {
 
-/*
-template<class T>
-class Singleton {
-private:
-	static std::auto_ptr<T> instance;
-	static Poco::Mutex mutex;
-
-public:
-	static T &get() {
-		Poco::Mutex::ScopedLock l(mutex);
-		if (instance.get() == NULL) {
-			instance.reset(new T());
-		}
-		return *instance;
-	}
-};
-
-template<class T>
-std::auto_ptr<T> Singleton<T>::instance(NULL);
-
-template<class T>
-Poco::Mutex Singleton<T>::mutex;
-*/
-
 template <class T>
 class Singleton
 {

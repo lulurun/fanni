@@ -50,8 +50,8 @@ public:
 	virtual ~LLUDPBase();
 
 	// UDPServerBase
-	inline int sendData(PacketBufferPtr &pBuf, const EndPoint &ep) {
-		return this->socket.sendTo(pBuf->getBuffer(), pBuf->getLength(), ep);
+	inline int sendData(const PacketBufferPtr &pBuf, const EndPoint &ep) {
+		return this->socket.sendTo(pBuf->getConstBuffer(), pBuf->getLength(), ep);
 	};
 
 	// SystemPacketWorkerBase

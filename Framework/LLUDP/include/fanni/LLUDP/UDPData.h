@@ -17,13 +17,14 @@
 
 namespace Fanni {
 
-class SystemPacketData : public TaskBase {
+class UDPPacketData : public TaskBase {
 public:
 	PacketBufferPtr pBuf;
 	EndPoint ep;
 
-	SystemPacketData(PacketBufferPtr &pBuf, const EndPoint &ep) : pBuf(pBuf), ep(ep) {}
-	virtual ~SystemPacketData() {}
+	UDPPacketData() : pBuf(new PacketBuffer()) {};
+	UDPPacketData(PacketBufferPtr &pBuf, const EndPoint &ep) : pBuf(pBuf), ep(ep) {};
+	virtual ~UDPPacketData() {};
 };
 
 class LocalTaskBase : public TaskBase {

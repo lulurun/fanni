@@ -28,7 +28,7 @@ AckManager::~AckManager() {
 bool AckManager::processIncomingPacket(const PacketBasePtr &packet) {
 	bool ret = true;
 	// stat
-	this->stat.received_packets++;
+	this->stat.total_receive++;
 	// ACK
 	if (packet->header.isReliable()) {
 	    Poco::FastMutex::ScopedLock lock(this->ack_packet_queue);
@@ -53,8 +53,10 @@ bool AckManager::processIncomingPacket(const PacketBasePtr &packet) {
 	if (packet->header.getPacketID() == PacketAck_ID) {
 		const PacketAckPacket *ack_packet = dynamic_cast<const PacketAckPacket *>(packet.get());
 		assert(ack_packet);
-		DEBUG_LOG("removing resend packets: " << ack_packet->Packets.val.size());
-		for(std::vector<PacketAckPacket::PacketsBlock>::const_iterator it = ack_packet->Packets.val.begin(); it!=ack_packet->Packets.val.end(); it++) {
+		DEBUG_LOG("removing resend packets: " << ack_packet->Packets.size());
+		const VariableSerializable<PacketAckPacket::PacketsBlock>::VAR_TYPE &acked =
+			(const VariableSerializable<PacketAckPacket::PacketsBlock>::VAR_TYPE &)ack_packet->Packets;
+		for(VariableSerializable<PacketAckPacket::PacketsBlock>::VAR_TYPE::const_iterator it=acked.begin(); it!=acked.end(); it++) {
 			this->removeResendPacket_unsafe(it->ID);
 		}
 		ret = false;
@@ -72,7 +74,7 @@ void AckManager::processOutgoingPacket(PacketBasePtr &packet) {
 		}
 	}
 	// stat
-	this->stat.send_packets++;
+	this->stat.total_send++;
 }
 
 // Timer
@@ -94,7 +96,6 @@ void AckManager::checkACK() {
 		while (!this->ack_packet_queue.empty()) {
 			PacketAckPacket::PacketsBlock packets_block;
 			packets_block.ID = this->ack_packet_queue.front();
-			// TODO @@@ memory reallocate/copy inside "push" + coping packets_block
 			ack_packet->Packets.push(packets_block);
 			this->ack_packet_queue.pop_front();
 			if (++count == MAX_ACK_NUMBER) break;
@@ -102,7 +103,7 @@ void AckManager::checkACK() {
 		this->conn.sendPacket(packet);
 		total_count += count;
     }
-	this->stat.acked_packets += total_count;
+	this->stat.ack_send += total_count;
     DEBUG_LOG("ACKed " << total_count << " packets");
 }
 
@@ -112,7 +113,7 @@ void AckManager::checkRESEND() {
 	std::list<uint32_t> delete_list;
 	int resend_count = 0;
 	for(RESEND_PACKET_MAP::iterator it=this->resend_packet_map.begin(); it!=this->resend_packet_map.end(); it++) {
-		if (it->second->shouldResend()) {
+		if (it->second->shouldResend(this->stat.current_RTT*4)) {
 			PacketBasePtr &packet = it->second->get();
 			packet->setFlag(PacketHeader::FLAG_RESENT);
 			packet->setFlag(PacketHeader::FLAG_RELIABLE);
@@ -130,15 +131,22 @@ void AckManager::checkRESEND() {
 		for(std::list<uint32_t>::const_iterator it=delete_list.begin(); it!=delete_list.end(); it++ ) {
 			this->removeResendPacket_unsafe(*it);
 		}
-		this->stat.giveup_packets += delete_list.size();
+		this->stat.giveup += delete_list.size();
 	}
 	if (resend_count > 0) {
-		this->stat.resend_packets += resend_count;
+		this->stat.resend_send += resend_count;
 		DEBUG_LOG("resend " << resend_count << " packets");
 	}
 }
 
 void AckManager::removeResendPacket_unsafe(uint32_t seq) {
-	this->resend_packet_map.erase(seq); // TODO @@@ handle not found
+	RESEND_PACKET_MAP::iterator it = this->resend_packet_map.find(seq);
+	if (it != this->resend_packet_map.end()) {
+		{
+			// TODO @@@ lock: update RTT should be more complicated ??
+			this->stat.current_RTT = (int)it->second->elapsed();
+		}
+		this->resend_packet_map.erase(seq);
+	}
 }
 

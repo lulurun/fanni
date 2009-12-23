@@ -19,7 +19,7 @@ namespace Fanni {
 
 // TODO @@@ karn's algo
 static const int CONNECTION_TIMEOUT = 15 * 1000000; // 15 sec
-static const int RESEND_TIMEOUT = 750 * 1000; // 0.75 sec
+static const int RESEND_TIMEOUT = 6000 * 1000; // 0.75 sec
 static const int MAX_RESENDING_TRIES = 0xffff; // will give up transferring after trying to resend n times
 
 // TODO @@@ not thread safe
@@ -38,10 +38,15 @@ public:
 		packet(packet->clone()), last_sent(), resend_count(0){}
 	~ResendPacket() {}
 
-	bool shouldResend() {
-		return this->last_sent.isElapsed(RESEND_TIMEOUT);
+	bool shouldResend(Poco::Timestamp::TimeDiff timeout) const {
+		timeout = (timeout > 0) ? timeout : RESEND_TIMEOUT;
+		return this->last_sent.isElapsed(timeout);
 	}
-	bool shouldGiveup() { return this->resend_count >= MAX_RESENDING_TRIES; }
+	bool shouldGiveup() const { return this->resend_count >= MAX_RESENDING_TRIES; }
+
+	Poco::Timestamp::TimeDiff elapsed() const {
+		return this->last_sent.elapsed();
+	}
 
 	// MEMO @@@ only Call this before send packet
 	PacketBasePtr &get(){
@@ -60,25 +65,34 @@ public:
 	Poco::Timestamp created;
 	Poco::Timestamp destroyed;
 	*/
-	int send_packets;
-	int received_packets;
-	int acked_packets;
-	int resend_packets;
-	int giveup_packets;
+	int total_send;
+	int total_receive;
+	int ack_send;
+	int ack_receive;
+	int resend_send;
+	int resend_receive;
+	int giveup;
+	int current_RTT;
 
-	ConnectionStatistics() : send_packets(0), received_packets(0),
-		acked_packets(0), resend_packets(0), giveup_packets(0) {}
+	ConnectionStatistics() : total_send(0), total_receive(0),
+		ack_send(0), ack_receive(0), resend_send(0), resend_receive(0),
+		giveup(0), current_RTT(0) {}
 	~ConnectionStatistics() {};
+
 	const std::string toString() const {
-		char buffer[256];
+		char buffer[512];
 		std::sprintf(buffer,
-			"send packets    %d\n"
-			"receive packets %d\n"
-			"acked packets   %d\n"
-			"resend packets  %d\n"
-			"giveup packets  %d\n",
-			this->send_packets, this->received_packets,
-			this->acked_packets, this->resend_packets, this->giveup_packets);
+			"total send      %d\n"
+			"total receive   %d\n"
+			"ack send        %d\n"
+			"ack receive     %d\n"
+			"resend send     %d\n"
+			"resend receive  %d\n"
+			"giveup          %d\n"
+			"RTT             %d\n",
+			this->total_send, this->total_receive,
+			this->ack_send, this->ack_receive, this->resend_send, this->resend_receive,
+			this->giveup, this->current_RTT);
 		std::string result(buffer);
 		return result;
 	}
